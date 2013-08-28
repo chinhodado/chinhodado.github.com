@@ -1,0 +1,91 @@
+<html>
+<head>
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+</head>
+<body>
+	<h1> Change CIV's color format to RGB format </h1>
+	<form>
+		Red: <input type="text" id="red" class="civcolor"><br>
+		Green: <input type="text" id="green" class="civcolor"><br>
+		Blue: <input type="text" id="blue" class="civcolor"><br>
+	</form>
+
+	<p id="newcolor"></p>
+
+	<canvas id="myCanvas" width="200" height="100"></canvas>
+
+	<script>
+		$('.civcolor').each(function() {
+			var elem = $(this);
+
+			// Save current value of element
+			elem.data('oldVal', elem.val());
+
+			// Look for changes in the value
+			elem.bind("propertychange keyup input paste", function(event){
+				// If value has changed...
+				if (elem.data('oldVal') != elem.val()) {
+					// Updated stored value
+					elem.data('oldVal', elem.val());
+
+					// Do action
+					var red = document.getElementById('red').value * 255;
+					var green = document.getElementById('green').value * 255;
+					var blue = document.getElementById('blue').value * 255;
+					$("#newcolor").text("RGB color: (" + red + ", " + green + ", " + blue + ")");
+
+					var ctx = document.getElementById("myCanvas").getContext("2d");
+					var fill = "rgb(" + Math.round(red) + ", " + Math.round(green) + ", " + Math.round(blue) + ")";
+					console.log(fill);
+					ctx.fillStyle = fill;
+					ctx.fillRect(0,0,150,75);
+				}
+			});
+		});
+	</script>
+
+	<br><br><br>
+
+	<h1> Change RGB color to CIV's color format </h1>
+	<form>
+		Red: <input type="text" id="redrgb" class="rgbcolor"><br>
+		Green: <input type="text" id="greenrgb" class="rgbcolor"><br>
+		Blue: <input type="text" id="bluergb" class="rgbcolor"><br>
+	</form>
+
+	<p id="newcolorciv"></p>
+
+	<canvas id="myCanvas2" width="200" height="100"></canvas>
+
+	<script>
+		$('.rgbcolor').each(function() {
+			var elem = $(this);
+
+			// Save current value of element
+			elem.data('oldVal', elem.val());
+
+			// Look for changes in the value
+			elem.bind("propertychange keyup input paste", function(event){
+				// If value has changed...
+				if (elem.data('oldVal') != elem.val()) {
+					// Updated stored value
+					elem.data('oldVal', elem.val());
+
+					// Do action
+					var red = document.getElementById('redrgb').value / 255;
+					var green = document.getElementById('greenrgb').value / 255;
+					var blue = document.getElementById('bluergb').value / 255;
+					$("#newcolorciv").text("CIV color: (" + red.toFixed(3) + ", " + green.toFixed(3) + ", " + blue.toFixed(3) + ")");
+
+					var ctx = document.getElementById("myCanvas2").getContext("2d");
+					var fill = "rgb(" + Math.round(document.getElementById('redrgb').value) + ", " + Math.round(document.getElementById('greenrgb').value) + ", " + Math.round(document.getElementById('bluergb').value) + ")";
+					console.log(fill);
+					ctx.fillStyle = fill;
+					ctx.fillRect(0,0,150,75);
+				}
+			});
+		});
+	</script>
+
+</body>
+</html>
