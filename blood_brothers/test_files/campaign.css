@@ -1,0 +1,77 @@
+/* campaign css */
+
+/* reward-list */
+.reward-list {
+	padding:0 10px;
+}
+	.reward-list li {
+	}
+	/*
+	.reward-list li span {
+		display:block;
+		text-align:center;
+		background:url(mission_title.png) no-repeat center;
+		line-height:25px;
+		color:#ffead6;
+	}
+	*/
+		.reward-list li ul {
+			width:100%;
+			display:table;
+			margin:0 auto 5px;
+		}
+			.reward-list li ul li {
+				display:table-cell;
+				vertical-align: middle;
+				width:128px;
+				text-align: center;
+			}
+			.reward-list li ul li.arrow {
+				width:41px;
+			}
+/* //reward-list */
+
+/* send-total */
+.send-total {
+	display:-webkit-box;
+	margin: 0 10px;
+	-webkit-border-image: url("message_base.png") 12;
+	border-width:12px;
+	color:#000000;
+}
+	.send-total li {
+		padding-top:4px;
+		line-height:34px;
+		font-weight:bold;
+	}
+	.send-result {
+		font-size:2.4rem !important;
+		color:#9e1f24;
+		text-align:center;
+		margin: 0 10px;
+		width:86px;
+		background:url(count_base.png) no-repeat center;
+	}
+/* //send-total */
+/* campaign-botton */
+.cp-btn {
+	background:url(button.png) no-repeat;
+	background-size:158px 78px;
+	width:158px;
+	line-height:39px;
+	display:block;
+	margin:auto;
+	box-shadow: 0 0 2px #000000;
+	border-radius:10px;
+	color:#ffead6;
+	text-decoration:none;
+	font-size:20px;
+	text-align:center;
+}
+	.cp-btn:hover,.cp-btn:active {
+		background-position:0 -39px;
+		line-height:37px;
+		padding-top:2px;
+		color:#c8baad;
+	}
+/* //campaign-botton */

@@ -1,0 +1,148 @@
+/* ten million css */
+
+.contents {
+	padding: 64px 0 0;
+}
+
+.ten-million-sprite {
+	background: url(sprite_10m_campaign.png) no-repeat;
+	-webkit-background-size: 317px auto;
+	background-size: 317px auto;
+}
+
+.ten-million-line {
+	background-position: 0 -65px;
+	width: 286px;
+	height: 7px;
+	margin: 0 auto;
+}
+
+.ten-million-balloon {
+	background-position: 0 -73px;
+	width: 310px;
+	height: 118px;
+	margin: 0 auto;
+	-webkit-box-sizing: border-box;
+	padding: 18px 10px 24px;
+	line-height: 1.7rem;
+}
+
+.ten-million-message-count {
+	background-position: 0 -194px;
+	width: 286px;
+	height: 86px;
+	margin: 0 auto;
+	-webkit-box-sizing: border-box;
+	padding: 45px 69px 14px 173px;
+	font-size: 2.6rem;
+}
+.ten-million-heading {
+	background: url(bar.png) repeat-x;
+	-webkit-background-size: 32px 28px;
+	background-size: 32px 28px;
+	width: 100%;
+	height: 28px;
+	color: #fff;
+	-webkit-box-sizing: border-box;
+	padding-top: 2px;
+}
+
+.morale-items li {
+	padding: 0 5px;
+	text-align: center;
+	width: 110px;
+}
+	.morale-items .frame01 {
+		margin: 0 auto;
+	}
+		.ten-million-event-coin {
+			background-position: 0 0;
+			width: 42px;
+			height: 40px;
+			margin-top: 1px;
+		}
+
+.ten-million-select-ally > li:last-child {
+	display: none;
+}
+	.ten-million-notes li {
+		padding-left: 0.4rem;
+		text-indent: -0.4rem;
+		margin-bottom: 3px;
+	}
+		.ten-million-user-thumbnail {
+			background: #ccc;
+			border: 2px solid #9e1d0b;
+			-webkit-border-radius: 2px;
+			border-radius: 2px;
+			-webkit-box-shadow: 3px 2px 2px #5C5751;
+			width: 39px;
+			height: 39px;
+			position: relative;
+			top: 11px;
+			z-index: 1;
+		}
+		.ten-million-chara {
+			background-position: -213px 0;
+			width: 64px;
+			height: 64px;
+			position: relative;
+			right: 9px;
+			z-index: 0;
+			-webkit-box-sizing: border-box;
+			padding: 6px;
+		}
+			.ten-million-ally-level {
+				background-position: -102px 0;
+				width: 110px;
+				height: 22px;
+				-webkit-box-sizing: border-box;
+				padding: 2px 8px 3px 8px;
+				color: #FFE9D6;
+				position: relative;
+				top: -2px;
+				left: -2px;
+			}
+			.ten-million-button {
+				width: 84px;
+				margin: 3px 0 0;
+			}
+				.ten-million-button a {
+					text-decoration: none;
+					display: block;
+					-webkit-box-sizing: border-box;
+					padding: 7px;
+				}
+				.ten-million-button a,
+				.ten-million-button input {
+					background: none;
+					width: 100%;
+					height: 100%;
+					color: #E2D5C7;
+					text-align: center;
+				}
+
+.ten-million-popup {
+	background-position: 0 -280px;
+	width: 317px;
+	height: 324px;
+	-webkit-box-sizing: border-box;
+	padding: 42px;
+	margin: 0 auto;
+	position: relative;
+}
+	.ten-million-button-y-1,
+	.ten-million-button-y-2 {
+		position: absolute;
+		left: 50%;
+		bottom: 50px;
+	}
+	.ten-million-button-y-1 {
+		margin-left: -42px;
+	}
+	.ten-million-button-y-2 {
+		margin-left: -89px;
+	}
+		.ten-million-button-y-2 .ten-million-button {
+			display: block;
+		}

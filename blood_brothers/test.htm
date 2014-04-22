@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=320, initial-scale=1.5, minimum-scale=0.5, maximum-scale=4.0, user-scalable=0">
+
+
+
+<meta name="format-detection" content="telephone=no">
+<title>Blood Brothers</title>
+<link rel="stylesheet" href="test_files/default.css">
+<link rel="stylesheet" href="test_files/common.css">
+<link rel="stylesheet" href="test_files/campaign.css">
+<link rel="stylesheet" href="test_files/ten_million.css">
+<link rel="stylesheet" href="test_files/vote.css">
+<script type="text/javascript" src="test_files/jquery-2.js"></script><style type="text/css"></style>
+
+<script type="text/javascript">
+    var currentCard;
+    var currentSkillIndex = 0;
+    var currentCampaignId;
+    var currentChoices = {};
+    var voteMasterCampaigns = [{"campaignId":1,"description":"Vote for your favorite L familiar!","bannerId":202151,"openedAt":1398074400,"closedAt":1398592800,"finishedAt":1398679200,"rewardId1":213,"rewardId2":0,"rewardId3":0,"maxChoice":1},{"campaignId":2,"description":"Vote for your favorite EP familiar!","bannerId":202111,"openedAt":1398074400,"closedAt":1398592800,"finishedAt":1398679200,"rewardId1":213,"rewardId2":0,"rewardId3":0,"maxChoice":1}];
+    
+        voteMasterCampaigns['0'].choices = [{"campaignId":1,"choiceId":1,"choiceType":2,"candidateId":10634},{"campaignId":1,"choiceId":2,"choiceType":2,"candidateId":11212},{"campaignId":1,"choiceId":3,"choiceType":2,"candidateId":11088},{"campaignId":1,"choiceId":4,"choiceType":2,"candidateId":10876},{"campaignId":1,"choiceId":5,"choiceType":2,"candidateId":11214},{"campaignId":1,"choiceId":6,"choiceType":2,"candidateId":11021},{"campaignId":1,"choiceId":7,"choiceType":2,"candidateId":10992},{"campaignId":1,"choiceId":8,"choiceType":2,"candidateId":10635},{"campaignId":1,"choiceId":9,"choiceType":2,"candidateId":10831},{"campaignId":1,"choiceId":10,"choiceType":2,"candidateId":10626}];
+        
+            voteMasterCampaigns['0'].choices['0'].voteUrl = "http://blood.denagames.com/vote?campaign_id=1&choice_id=1&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=zwUSL4&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=bMJqJMg0N6YrSqGgeQK6N4X%2BVwQ%3D";
+        
+            voteMasterCampaigns['0'].choices['1'].voteUrl = "http://blood.denagames.com/vote?campaign_id=1&choice_id=2&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=4L1Tel&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=FuKm%2BFxUHXTIxXITNVV9m1UpLYE%3D";
+        
+            voteMasterCampaigns['0'].choices['2'].voteUrl = "http://blood.denagames.com/vote?campaign_id=1&choice_id=3&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=41SsHm&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=ULZQOFAdggZDvwsee%2FPUsptVBKI%3D";
+        
+            voteMasterCampaigns['0'].choices['3'].voteUrl = "http://blood.denagames.com/vote?campaign_id=1&choice_id=4&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=KXSHwT&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=qXlzzrLvssn17z%2Bee%2FmY11zCxK0%3D";
+        
+            voteMasterCampaigns['0'].choices['4'].voteUrl = "http://blood.denagames.com/vote?campaign_id=1&choice_id=5&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=iKSPch&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=1zMOOE0wlQeVZ1%2FhRtj%2BHDR%2BY%2F0%3D";
+        
+            voteMasterCampaigns['0'].choices['5'].voteUrl = "http://blood.denagames.com/vote?campaign_id=1&choice_id=6&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=esow30&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=Gp8nrfcMTjsQXgtow8eMVtITXTk%3D";
+        
+            voteMasterCampaigns['0'].choices['6'].voteUrl = "http://blood.denagames.com/vote?campaign_id=1&choice_id=7&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=pmm62F&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=0Pv%2BmVCb63uWjTyltmBSRrmXO5k%3D";
+        
+            voteMasterCampaigns['0'].choices['7'].voteUrl = "http://blood.denagames.com/vote?campaign_id=1&choice_id=8&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=hINGPO&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=kbHJ9meeflnR1XzkHZQxRWb39XQ%3D";
+        
+            voteMasterCampaigns['0'].choices['8'].voteUrl = "http://blood.denagames.com/vote?campaign_id=1&choice_id=9&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=qviUyZ&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=Ol1oyUv2dcpPhtFGS4sCV3bvM%2FM%3D";
+        
+            voteMasterCampaigns['0'].choices['9'].voteUrl = "http://blood.denagames.com/vote?campaign_id=1&choice_id=10&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=QOOS9G&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=%2B9EWDDABtBD5UooDIBJKgOr0fug%3D";
+        
+    
+        voteMasterCampaigns['1'].choices = [{"campaignId":2,"choiceId":1,"choiceType":2,"candidateId":10947},{"campaignId":2,"choiceId":2,"choiceType":2,"candidateId":11170},{"campaignId":2,"choiceId":3,"choiceType":2,"candidateId":11169},{"campaignId":2,"choiceId":4,"choiceType":2,"candidateId":10933},{"campaignId":2,"choiceId":5,"choiceType":2,"candidateId":10708},{"campaignId":2,"choiceId":6,"choiceType":2,"candidateId":11121},{"campaignId":2,"choiceId":7,"choiceType":2,"candidateId":11168},{"campaignId":2,"choiceId":8,"choiceType":2,"candidateId":11171},{"campaignId":2,"choiceId":9,"choiceType":2,"candidateId":10722},{"campaignId":2,"choiceId":10,"choiceType":2,"candidateId":11191}];
+        
+            voteMasterCampaigns['1'].choices['0'].voteUrl = "http://blood.denagames.com/vote?campaign_id=2&choice_id=1&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=LAprgL&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=MxEvV7UVNFWXzKIZHRXzayS2UY4%3D";
+        
+            voteMasterCampaigns['1'].choices['1'].voteUrl = "http://blood.denagames.com/vote?campaign_id=2&choice_id=2&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=yfByPh&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=TDvs3OmGofVTRsqTFtQhMO4oafg%3D";
+        
+            voteMasterCampaigns['1'].choices['2'].voteUrl = "http://blood.denagames.com/vote?campaign_id=2&choice_id=3&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=3fRa8m&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=%2F9sRc4jEbESRvPBIGw%2Bs6DI1eYQ%3D";
+        
+            voteMasterCampaigns['1'].choices['3'].voteUrl = "http://blood.denagames.com/vote?campaign_id=2&choice_id=4&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=VhShvD&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=Gi2R8d3LAB5vU9Pt4xH3pqb4jsE%3D";
+        
+            voteMasterCampaigns['1'].choices['4'].voteUrl = "http://blood.denagames.com/vote?campaign_id=2&choice_id=5&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=gw55WC&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=KGEm2qp6bCtU26kgddEfZTts7UE%3D";
+        
+            voteMasterCampaigns['1'].choices['5'].voteUrl = "http://blood.denagames.com/vote?campaign_id=2&choice_id=6&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=2KsHV4&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=4fHxByDZ0TcbS14nzA3fWgTOhw4%3D";
+        
+            voteMasterCampaigns['1'].choices['6'].voteUrl = "http://blood.denagames.com/vote?campaign_id=2&choice_id=7&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=JMZKZP&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=Pcn4wrS%2FKsfnprp5hn600Ueohts%3D";
+        
+            voteMasterCampaigns['1'].choices['7'].voteUrl = "http://blood.denagames.com/vote?campaign_id=2&choice_id=8&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=8QbmWB&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=iGfJ3nhGzQWvzxlzSqo7Nu43fHs%3D";
+        
+            voteMasterCampaigns['1'].choices['8'].voteUrl = "http://blood.denagames.com/vote?campaign_id=2&choice_id=9&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=2Viw7O&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=VDIYjPUvbwCaO2o%2FP61QMN8DKIQ%3D";
+        
+            voteMasterCampaigns['1'].choices['9'].voteUrl = "http://blood.denagames.com/vote?campaign_id=2&choice_id=10&oauth_token=tfjfhfiLqqv9F5OhGKBRzQ&oauth_timestamp=1398208035&oauth_nonce=hQwwWn&oauth_version=1.0&oauth_consumer_key=DUUQB6C5b9mbVs6uQia0ig&oauth_signature_method=HMAC-SHA1&oauth_signature=lD%2F1X5iZsx2iTnoDFNv6CaCHNt8%3D";
+        
+    
+
+    window.addEventListener('load', function(){
+        for (var i in voteMasterCampaigns) {
+            startEventCountdown(i);
+        }
+    });
+
+    function getRemainTime(limit){
+        var timeLimit = limit * 1000;
+        var now = Date.now();
+    
+        if(now >= timeLimit){ 
+            return "0d 00h 00m 00s";
+        }else{
+            var d = Math.floor((timeLimit-now)/(24*60*60*1000));
+            var h = ( '0'+Math.floor((timeLimit-now)/(60*60*1000))%24 ).substr(-2);
+            var m = ( '0'+Math.floor((timeLimit-now)/(60*1000))%60 ).substr(-2);
+            var s = ( '0'+Math.floor((timeLimit-now)/1000)%60 ).substr(-2);
+            return d+"d "+h+"h "+m+"m "+s+"s";
+        }
+    }
+
+    function startEventCountdown(index){
+        var timeLimit = voteMasterCampaigns[index].closedAt;
+        var element = document.getElementById("timeLimit-" + voteMasterCampaigns[index].campaignId);
+
+        function countdown(){
+            element.innerHTML = getRemainTime(timeLimit);
+            setTimeout(countdown, 1000);
+        }
+
+        if(element){
+            countdown(timeLimit, element);
+        }
+    }
+
+    function toggle(buttonId, campaignId, campaignIndex, choiceIndex) {
+        for (var i = 1; i < 4; i++) {
+            var buttonClassName = "vote-choice-button" + ((i > 1) ? ("-" + i) : "");
+            var buttonSelectedClassName = buttonClassName + "-selected";
+
+            if ($(buttonId).hasClass(buttonClassName)) {
+                $("[campaign-id='" + campaignId + "']").addClass(buttonClassName);
+                $("[campaign-id='" + campaignId + "']").removeClass(buttonSelectedClassName);
+                $(buttonId).removeClass(buttonClassName);
+                $(buttonId).addClass(buttonSelectedClassName);
+                currentChoices[campaignId] = voteMasterCampaigns[campaignIndex].choices[choiceIndex];
+                return;
+            }
+
+            if ($(buttonId).hasClass(buttonSelectedClassName)) {
+                $(buttonId).removeClass(buttonSelectedClassName);
+                $(buttonId).addClass(buttonClassName);
+                return;
+            }
+        }
+    }
+
+    function sendAsyncRequest(method, url, body, callback) {
+        var request = new XMLHttpRequest();
+        var COMPLETED = 4;
+        var OK = 200;
+        request.onreadystatechange = function() {
+            if (request.readyState == COMPLETED) {
+                if (request.status == OK) {
+                    callback(null, request.responseText);
+                } else {
+                    callback({status: request.status});
+                }
+            }
+        };
+        request.open(method, url);
+        request.send(body);
+    }
+
+    function submitVote(campaignId) {
+        currentCampaignId = campaignId;
+        if (!currentChoices[campaignId] || !currentChoices[campaignId].voteUrl) return;
+        showConfirmDialog();
+    }
+
+    function sendVote() {
+        hideConfirmDialog();
+        sendAsyncRequest("GET", currentChoices[currentCampaignId].voteUrl, {}, function(err, res) {
+            if (err) {
+                showErrorDialog();
+            } else {
+                showDoneDialog();
+            }
+        });
+    }
+
+    function touchPrevent(e) {
+        e.preventDefault();
+    }
+
+    function hideDialog(dialogId) {
+        $('body').removeClass('noscroll');
+        document.removeEventListener('touchmove', touchPrevent);
+        var bg = document.getElementById('dialogBack');
+        bg.style.visibility = 'hidden';
+        var target = document.getElementById(dialogId);
+        target.style.visibility = 'hidden';
+    }
+
+    function showDialog(dialogId) {
+        $('body').addClass('noscroll');
+        document.addEventListener('touchmove', touchPrevent);
+
+        var dialogWidth = 317;
+        var dialogHeight = 334;
+        if (dialogId == "card-detail-dialog") dialogHeight = 460;
+
+        var target = document.getElementById(dialogId);
+        target.style.left = Math.floor((window.innerWidth - dialogWidth)/2) + 'px';
+        target.style.top  = Math.floor((window.innerHeight - dialogHeight)/2) + 'px';
+        target.style.visibility = 'visible';
+        var bg = document.getElementById('dialogBack');
+        bg.style.width = window.innerWidth + 'px';
+        bg.style.visibility = 'visible';
+        document.getElementById(dialogId).style.visibility = 'visible';
+        return target;
+    }
+
+    function showConfirmDialog() {
+        showDialog("confirm-dialog");
+    }
+
+    function hideConfirmDialog() {
+        hideDialog("confirm-dialog");
+    }
+
+    function showDoneDialog() {
+        showDialog("done-dialog");
+    }
+
+    function hideDoneDialog() {
+        hideDialog("done-dialog");
+        location.reload();
+    }
+
+    function showErrorDialog() {
+        showDialog("error-dialog");
+    }
+
+    function hideErrorDialog() {
+        hideDialog("error-dialog");
+        location.reload();
+    }
+
+    function showCardDetailDialog(cardInfo) {
+        currentCard = cardInfo;
+        currentSkillIndex = 0;
+        var elem = document.getElementById("card-detail-figure");
+        var src = "http://blood-a.denagames.com/DownloadContent/common/card/figure/" + cardInfo.id + "l.png";
+
+        if (elem.src == src) {
+            $("#card-detail-loading-figure").css("visibility", "hidden");
+            $("#card-detail-figure").css("visibility", "visible");
+        } else {
+            elem.onload = function() {
+                $("#card-detail-loading-figure").css("visibility", "hidden");
+                $("#card-detail-figure").css("visibility", "visible");
+            }
+        }
+
+        $("#card-detail-loading-figure").css("visibility", "visible");
+        $("#card-detail-figure").css("visibility", "hidden");
+        showDialog("card-detail-dialog");
+        elem.src = "http://blood-a.denagames.com/DownloadContent/common/card/figure/" + cardInfo.id + "l.png";
+
+        $("#card-detail-figure-rarity").removeClass();
+        $("#card-detail-figure-rarity").addClass(getRarityClassName(cardInfo.rarity, cardInfo.evolution, cardInfo.maxEvolution));
+        $(".card-detail-name").text(unescape(cardInfo.name));
+        updateSkillDisplay();
+        $(".card-detail-default-action-name").text(unescape(cardInfo.standardAction.name));
+        $(".card-detail-default-action-description").text(unescape(cardInfo.standardAction.comment));
+        $(".card-detail-max-hp").text(cardInfo.opeHp);
+        $(".card-detail-max-atk").text(cardInfo.opeAtk);
+        $(".card-detail-max-def").text(cardInfo.opeDef);
+        $(".card-detail-max-wis").text(cardInfo.opeWis);
+        $(".card-detail-max-agi").text(cardInfo.opeAgi);
+        $(".card-detail-growth-type").text(getGrowthName(cardInfo.growthType));
+        $(".card-detail-value").text(cardInfo.price);
+        $(".card-detail-current-hp").text(cardInfo.opeHp + "/" + cardInfo.opeHp);
+    }
+
+    function updateSkillDisplay() {
+        $(".card-detail-skill-name").text(unescape(currentCard.skills[currentSkillIndex].name));
+        $(".card-detail-skill-description").text(unescape(currentCard.skills[currentSkillIndex].comment));
+        $(".arrow-left").css("visibility", "hidden");
+        $(".arrow-right").css("visibility", "hidden");
+        if (currentCard.skills[currentSkillIndex + 1] && currentCard.skills[currentSkillIndex + 1].name) {
+            $(".arrow-right").css("visibility", "visible");
+        }
+        if (currentCard.skills[currentSkillIndex - 1] && currentCard.skills[currentSkillIndex - 1].name) {
+            $(".arrow-left").css("visibility", "visible");
+        }
+        if (currentCard.skills[currentSkillIndex] && currentCard.skills[currentSkillIndex].name) {
+            $(".card-detail-skill-proc").text(currentCard.skills[currentSkillIndex].maxProbability + "%");
+        }
+    }
+
+    function prevSkill() {
+        currentSkillIndex--;
+        updateSkillDisplay();
+    }
+
+    function nextSkill() {
+        currentSkillIndex++;
+        updateSkillDisplay();
+    }
+
+    function getGrowthName(growthType) {
+        switch (growthType) {
+            case 2:
+                return "Fast";
+            case 1:
+                return "Normal";
+            case 3:
+                return "Late Bloomer";
+            default:
+                return "???"
+        }
+    }
+
+    function getRarityClassName(rarity, evolution, maxEvolution) {
+        var char_rarity;
+        switch (rarity) {
+            case 4:
+                return "card-figure-rarity-ep-" + evolution + "-" + maxEvolution;
+            case 5:
+                return "card-figure-rarity-l-" + evolution + "-" + maxEvolution;
+            default:
+                return "";
+        }
+    }
+
+    function hideCardDetailDialog() {
+        hideDialog("card-detail-dialog");
+        $(".arrow-left").css("visibility", "hidden");
+        $(".arrow-right").css("visibility", "hidden");
+        $("#card-detail-loading-figure").css("visibility", "hidden");
+        $("#card-detail-figure").css("visibility", "hidden");
+    }
+</script>
+
+</head>
+
+<body class="">
+
+<div class="mbgaui-container">
+<div class="background-area">
+<div class="contents">
+
+<header>
+    <div class="header-area">
+        <h1><img src="test_files/title.png" width="320" height="58"></h1>
+    </div>
+</header>
+
+<div style="position: relative;">
+    <img src="test_files/main.png" width="320px">
+</div>
+
+<section style="top: -10px; position: relative;">
+    <div class="ac mt10 mb10">
+        <img src="test_files/title1.png" width="320" height="45">
+    </div>
+
+    <div class="ac fn-brown fnb">
+        <p>Event Duration</p>
+    </div>
+    <div class="ac fn-red fnb">
+        <p>2014/04/21 3:00 am - 2014/04/27 3:00 am (PT).</p>
+    </div>
+    <div class="fn-brown padding-content">
+        <p>1. Vote for the L and EP familiars you like most in the poll, amongst 20 selected L and EP familiars(10 of each). </p>
+        <p>2.You may only vote once per familiar rarity.</p>
+        <p>3. 3 Bugles will be awarded per vote.</p>
+        <p>4. During an upcoming campaign, you may stand a chance to win one of the top 3 most popular L and EP familiars!</p>
+    </div>
+</section>
+
+    <!-- popup bg -->
+    <div id="dialogBack" style="background-color: rgb(0, 0, 0); position: fixed; left: 0px; top: 0px; z-index: 10002; visibility: hidden; width: 1366px; height: 840px; opacity: 0.5;">
+    </div>
+
+    <!-- popup -->
+    <div id="card-detail-dialog" class="fn-black" style="position: fixed; left: 524px; top: 96px; z-index: 10003; visibility: hidden;">
+        <div class="card-detail-dialog">
+            <div class="card-detail-figure">
+                <img id="card-detail-loading-figure" src="test_files/loading_figure.png" style="position: absolute; visibility: hidden;" width="150px" height="150px">
+                <img id="card-detail-figure" src="test_files/11212l.png" style="position: absolute; visibility: hidden;" width="150px" height="150px">
+                <div id="card-detail-figure-rarity" class="card-figure-rarity-l-2-2"></div>
+            </div>
+            <span class="card-detail-level fnb">Level: 99/99</span>
+            <span class="card-detail-name fnb">Millarca, Lady of Thorns II</span>
+            <span class="card-detail-skill-name fnb">Allure of the Rose</span>
+            <span class="card-detail-skill-description">Deal WIS-based damage to five random foes, ignoring position.</span>
+            <span class="card-detail-default-action-name fnb">Standard Action</span>
+            <span class="card-detail-default-action-description">WIS-based damage to one foe.</span>
+            <span class="card-detail-skill-proc">30%</span>
+            <span class="card-detail-max-hp">15305</span>
+            <span class="card-detail-max-atk">10668</span>
+            <span class="card-detail-max-def">15565</span>
+            <span class="card-detail-max-wis">21393</span>
+            <span class="card-detail-max-agi">18046</span>
+            <span class="card-detail-growth-type">Normal</span>
+            <span class="card-detail-value">26280</span>
+            <span class="card-detail-current-hp">15305/15305</span>
+
+            <div class="arrow-left" onclick="prevSkill();" style="visibility: hidden;"></div>
+            <div class="arrow-right" onclick="nextSkill();" style="visibility: hidden;"></div>
+
+            <div class="card-detail-ok-button" onclick="hideCardDetailDialog();"></div>
+        </div>
+    </div>
+
+    <!-- popup -->
+    <div id="confirm-dialog" style="position:fixed; left:0px; top:0px; z-index:10003; visibility:hidden;">
+        <div class="ten-million-sprite ten-million-popup">
+            <h2 class="fn-black f20 ac fnb mb40">Do you want to vote?</h2>
+            <div class="f18 fn-black mb40">
+                <p class="mb10"></p>
+            </div>
+            <form>
+                <ul class="btn-normal-rap ten-million-button-y-2 bpc">
+                    <li class="btn-normal ten-million-button mr10 mbgaui-widget-anchors" data-mbgaui-url=""><input onclick="hideConfirmDialog(); return false;" name="" value="No" type="submit"></li>
+                    <li class="btn-normal ten-million-button mbgaui-widget-anchors" data-mbgaui-url=""><input name="" onclick="sendVote(); return false;" value="Yes" type="submit"></li>
+                </ul>
+            </form>
+        </div>
+    </div>
+
+    <!-- popup -->
+    <div id="done-dialog" style="position:fixed; left:0px; top:0px; z-index:10004; visibility:hidden">
+        <div class="ten-million-sprite ten-million-popup">
+            <h2 class="fn-black f20 ac fnb mb40">Information</h2>
+            <div class="f18 fn-black mb40">
+                <p class="mb10">You voted. Check reward in wagon.</p>
+            </div>
+            <form>
+                <ul class="btn-normal-rap ten-million-button-y-1">
+                    <li class="btn-normal ten-million-button mbgaui-widget-anchors" data-mbgaui-url=""><input name="" onclick="hideDoneDialog(); return false;" value="OK" type="submit"></li>
+                </ul>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- popup -->
+    <div id="error-dialog" style="position:fixed; left:0px; top:0px; z-index:10004; visibility:hidden">
+        <div class="ten-million-sprite ten-million-popup">
+            <h2 class="fn-black f20 ac fnb mb40">Information</h2>
+            <div class="f18 fn-black mb40">
+                <p class="mb10">Error</p>
+            </div>
+            <form>
+                <ul class="btn-normal-rap ten-million-button-y-1">
+                    <li class="btn-normal ten-million-button mbgaui-widget-anchors" data-mbgaui-url=""><input name="" onclick="hideErrorDialog(); return false;" value="OK" type="submit"></li>
+                </ul>
+            </form>
+        </div>
+    </div>
+
+<div style="overflow:hidden;position:relative;background-color:#A57000;">
+<center>
+
+
+    <div style="background-color:#A57000;">
+    <img src="test_files/1.png" width="320" height="68">
+    <div class="time-remaining"><div class="time-remaining-background"><span class="fn-white">Time left:</span><span class="fn-white" id="timeLimit-1">4d 06h 14m 08s</span></div></div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-1-1" class="vote-btn-right vote-choice-button-3-selected" campaign-id="1" onclick="toggle('#vote-choice-button-3-1-1', '1', 0, 0)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-left " onclick='showCardDetailDialog({"id":10634,"name":"Hel, Goddess of Death II","coment":"Ah, sweet oblivion. How I missed thee...","rarity":5,"sexType":2,"raceType1":12,"raceType2":0,"cardType":1,"price":26170,"baseHp":4750,"baseAtk":5680,"baseDef":4750,"baseWis":5110,"baseAgi":5880,"maxHp":13070,"maxAtk":15600,"maxDef":13070,"maxWis":14050,"maxAgi":16160,"opeHp":14709,"opeAtk":17450,"opeDef":14709,"opeWis":15771,"opeAgi":18057,"maxLevel":99,"growthType":1,"skillId1":239,"skillId2":240,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":0,"skills":[{"id":239,"rarity":4,"name":"Dark Rush","comment":"Deal massive AGI-based damage to three random foes, ignoring position.","baseProbability":11,"maxProbability":30},{"id":240,"rarity":3,"name":"Midnight Smile","comment":"Raise AGI of self and adjacent familiars at start of battle.","baseProbability":13,"maxProbability":70}],"standardAction":{"id":0,"name":"Standard Attack","comment":"Deal ATK-based damage to one foe."}});'>
+                    <div><img src="test_files/10634m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-left"><p>Hel, Goddess of Death II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-1-2" class="vote-choice-button-3 vote-btn-left" campaign-id="1" onclick="toggle('#vote-choice-button-3-1-2', '1', 0, 1)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-right " onclick='showCardDetailDialog({"id":11212,"name":"Millarca, Lady of Thorns II","coment":"Don%27t grieve. We%27ll meet again soon... ","rarity":5,"sexType":2,"raceType1":12,"raceType2":0,"cardType":1,"price":26280,"baseHp":4960,"baseAtk":3400,"baseDef":5040,"baseWis":7000,"baseAgi":5880,"maxHp":13620,"maxAtk":9340,"maxDef":13860,"maxWis":19240,"maxAgi":16150,"opeHp":15305,"opeAtk":10668,"opeDef":15565,"opeWis":21393,"opeAgi":18046,"maxLevel":99,"growthType":1,"skillId1":407,"skillId2":408,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":10007,"skills":[{"id":407,"rarity":4,"name":"Allure of the Rose","comment":"Deal WIS-based damage to five random foes, ignoring position.","baseProbability":11,"maxProbability":30},{"id":408,"rarity":3,"name":"Covenant of the Rose","comment":"Raise AGI of self and adjacent familiars at start of battle.","baseProbability":13,"maxProbability":70}],"standardAction":{"id":10007,"name":"Standard Action","comment":"WIS-based damage to one foe."}});'>
+                    <div><img src="test_files/11212m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-right"><p>Millarca, Lady of Thorns II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-1-3" class="vote-choice-button-3 vote-btn-right" campaign-id="1" onclick="toggle('#vote-choice-button-3-1-3', '1', 0, 2)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-left " onclick='showCardDetailDialog({"id":11088,"name":"Ovinnik, Hex Beast II","coment":"A hex on those who spill my blood!","rarity":5,"sexType":3,"raceType1":3,"raceType2":0,"cardType":1,"price":25850,"baseHp":6190,"baseAtk":3580,"baseDef":6730,"baseWis":5400,"baseAgi":3950,"maxHp":17040,"maxAtk":9840,"maxDef":18500,"maxWis":14840,"maxAgi":10860,"opeHp":19010,"opeAtk":11210,"opeDef":20592,"opeWis":16627,"opeAgi":12315,"maxLevel":99,"growthType":1,"skillId1":356,"skillId2":342,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":10007,"skills":[{"id":356,"rarity":4,"name":"Wicked Bolt","comment":"Deal heavy WIS-based damage to three random foes, ignoring position.","baseProbability":11,"maxProbability":30},{"id":342,"rarity":3,"name":"Shadow Master","comment":"Raise HP of self and adjacent familiars at beginning of battle.","baseProbability":13,"maxProbability":70}],"standardAction":{"id":10007,"name":"Standard Action","comment":"WIS-based damage to one foe."}});'>
+                    <div><img src="test_files/11088m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-left"><p>Ovinnik, Hex Beast II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-1-4" class="vote-choice-button-3 vote-btn-left" campaign-id="1" onclick="toggle('#vote-choice-button-3-1-4', '1', 0, 3)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-right " onclick='showCardDetailDialog({"id":10876,"name":"Pontifex Antiquus II","coment":"I am summoned unto rapture.","rarity":5,"sexType":1,"raceType1":1,"raceType2":0,"cardType":1,"price":26180,"baseHp":4720,"baseAtk":5330,"baseDef":4360,"baseWis":5980,"baseAgi":5800,"maxHp":12960,"maxAtk":14640,"maxDef":11960,"maxWis":16450,"maxAgi":15920,"opeHp":14590,"opeAtk":16410,"opeDef":13507,"opeWis":18371,"opeAgi":17797,"maxLevel":99,"growthType":1,"skillId1":229,"skillId2":167,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":0,"skills":[{"id":229,"rarity":3,"name":"Spirit Word","comment":"Deal massive WIS-based damage to three random foes.","baseProbability":11,"maxProbability":30},{"id":167,"rarity":3,"name":"Bulwark","comment":"Reduce physical damage taken by self and nearby familiars.","baseProbability":13,"maxProbability":70}],"standardAction":{"id":0,"name":"Standard Attack","comment":"Deal ATK-based damage to one foe."}});'>
+                    <div><img src="test_files/10876m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-right"><p>Pontifex Antiquus II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-1-5" class="vote-choice-button-3 vote-btn-right" campaign-id="1" onclick="toggle('#vote-choice-button-3-1-5', '1', 0, 4)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-left " onclick='showCardDetailDialog({"id":11214,"name":"Melek, the Black Peacock II","coment":"My feathers...covered in blood...","rarity":5,"sexType":3,"raceType1":3,"raceType2":0,"cardType":1,"price":25810,"baseHp":6230,"baseAtk":5220,"baseDef":7040,"baseWis":4120,"baseAgi":3200,"maxHp":17120,"maxAtk":14360,"maxDef":19380,"maxWis":11300,"maxAgi":8810,"opeHp":19097,"opeAtk":16107,"opeDef":21545,"opeWis":12792,"opeAgi":10094,"maxLevel":99,"growthType":1,"skillId1":374,"skillId2":375,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":0,"skills":[{"id":374,"rarity":4,"name":"Streaming Feathers","comment":"Convert damage to heal self and adjacent familiars.","baseProbability":12,"maxProbability":50},{"id":375,"rarity":4,"name":"Windcutter Blade","comment":"Deal massive ATK-based damage to three random foes, ignoring position.","baseProbability":11,"maxProbability":30}],"standardAction":{"id":0,"name":"Standard Attack","comment":"Deal ATK-based damage to one foe."}});'>
+                    <div><img src="test_files/11214m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-left"><p>Melek, the Black Peacock II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-1-6" class="vote-choice-button-3 vote-btn-left" campaign-id="1" onclick="toggle('#vote-choice-button-3-1-6', '1', 0, 5)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-right " onclick='showCardDetailDialog({"id":11021,"name":"Vlad the Impaler II","coment":"The curtain falls!","rarity":5,"sexType":1,"raceType1":12,"raceType2":0,"cardType":1,"price":26160,"baseHp":5290,"baseAtk":6360,"baseDef":4400,"baseWis":4750,"baseAgi":5360,"maxHp":14560,"maxAtk":17500,"maxDef":12120,"maxWis":13070,"maxAgi":14750,"opeHp":16323,"opeAtk":19508,"opeDef":13680,"opeWis":14709,"opeAgi":16529,"maxLevel":99,"growthType":1,"skillId1":296,"skillId2":295,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":0,"skills":[{"id":296,"rarity":4,"name":"Blood Offering","comment":"Deal ATK-based damage and disable six random foes, ignoring position.","baseProbability":11,"maxProbability":30},{"id":295,"rarity":3,"name":"Dream Lure","comment":"Sometimes disable up to three foes at start of battle.","baseProbability":13,"maxProbability":70}],"standardAction":{"id":0,"name":"Standard Attack","comment":"Deal ATK-based damage to one foe."}});'>
+                    <div><img src="test_files/11021m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-right"><p>Vlad the Impaler II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-1-7" class="vote-choice-button-3 vote-btn-right" campaign-id="1" onclick="toggle('#vote-choice-button-3-1-7', '1', 0, 6)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-left " onclick='showCardDetailDialog({"id":10992,"name":"Zeruel, Angel of War II","coment":"While evil lives, I will rise again!","rarity":5,"sexType":3,"raceType1":1,"raceType2":0,"cardType":1,"price":26260,"baseHp":5520,"baseAtk":6380,"baseDef":4480,"baseWis":4360,"baseAgi":5520,"maxHp":15180,"maxAtk":17560,"maxDef":12310,"maxWis":11960,"maxAgi":15170,"opeHp":16995,"opeAtk":19573,"opeDef":13886,"opeWis":13507,"opeAgi":16984,"maxLevel":99,"growthType":1,"skillId1":351,"skillId2":352,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":0,"skills":[{"id":351,"rarity":4,"name":"Sword of Fealty","comment":"Deal ATK-based damage to four random foes.","baseProbability":11,"maxProbability":30},{"id":352,"rarity":4,"name":"Spell of Revival","comment":"Self and adjacent allies are automatically revived after being killed.","baseProbability":13,"maxProbability":70}],"standardAction":{"id":0,"name":"Standard Attack","comment":"Deal ATK-based damage to one foe."}});'>
+                    <div><img src="test_files/10992m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-left"><p>Zeruel, Angel of War II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-1-8" class="vote-choice-button-3 vote-btn-left" campaign-id="1" onclick="toggle('#vote-choice-button-3-1-8', '1', 0, 7)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-right " onclick='showCardDetailDialog({"id":10635,"name":"Hollofernyiges II","coment":"A Wyrm Lord, vanquished? Never!","rarity":5,"sexType":3,"raceType1":9,"raceType2":0,"cardType":1,"price":25500,"baseHp":5360,"baseAtk":5450,"baseDef":4480,"baseWis":4700,"baseAgi":5510,"maxHp":14770,"maxAtk":14960,"maxDef":12300,"maxWis":12940,"maxAgi":15130,"opeHp":16551,"opeAtk":16757,"opeDef":13875,"opeWis":14568,"opeAgi":16941,"maxLevel":99,"growthType":1,"skillId1":33,"skillId2":0,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":0,"skills":[{"id":33,"rarity":3,"name":"Whirlwind","comment":"Deal heavy AGI-based damage to three foes.","baseProbability":11,"maxProbability":30}],"standardAction":{"id":0,"name":"Standard Attack","comment":"Deal ATK-based damage to one foe."}});'>
+                    <div><img src="test_files/10635m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-right"><p>Hollofernyiges II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-1-9" class="vote-choice-button-3 vote-btn-right" campaign-id="1" onclick="toggle('#vote-choice-button-3-1-9', '1', 0, 8)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-left " onclick='showCardDetailDialog({"id":10831,"name":"Pegasus Knight II","coment":"Carry me home, Pegasus...","rarity":5,"sexType":1,"raceType1":2,"raceType2":0,"cardType":5,"price":26190,"baseHp":4930,"baseAtk":6200,"baseDef":4980,"baseWis":4200,"baseAgi":5880,"maxHp":13570,"maxAtk":17060,"maxDef":13680,"maxWis":11560,"maxAgi":16150,"opeHp":15251,"opeAtk":19032,"opeDef":15370,"opeWis":13073,"opeAgi":18046,"maxLevel":99,"growthType":1,"skillId1":311,"skillId2":312,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":0,"skills":[{"id":311,"rarity":3,"name":"Black Phantasm","comment":"Deal heavy ATK-based damage to up to two foes.","baseProbability":11,"maxProbability":30},{"id":312,"rarity":3,"name":"Demon Spear","comment":"A spear technique from the West. Deal heavy ATK-based damage to up to two foes.","baseProbability":11,"maxProbability":30}],"standardAction":{"id":0,"name":"Standard Attack","comment":"Deal ATK-based damage to one foe."}});'>
+                    <div><img src="test_files/10831m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-left"><p>Pegasus Knight II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-1-10" class="vote-choice-button-3 vote-btn-left" campaign-id="1" onclick="toggle('#vote-choice-button-3-1-10', '1', 0, 9)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-right " onclick='showCardDetailDialog({"id":10626,"name":"Scorching Marid II","coment":"The fire in my heart will never die!","rarity":5,"sexType":3,"raceType1":12,"raceType2":0,"cardType":1,"price":24080,"baseHp":4540,"baseAtk":5810,"baseDef":4670,"baseWis":4040,"baseAgi":5020,"maxHp":12480,"maxAtk":15970,"maxDef":12830,"maxWis":11120,"maxAgi":13780,"opeHp":14070,"opeAtk":17851,"opeDef":14449,"opeWis":12597,"opeAgi":15478,"maxLevel":99,"growthType":1,"skillId1":169,"skillId2":0,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":0,"skills":[{"id":169,"rarity":4,"name":"Silent Cheer","comment":"Raise the skill trigger rate of adjacent familiars.","baseProbability":13,"maxProbability":70}],"standardAction":{"id":0,"name":"Standard Attack","comment":"Deal ATK-based damage to one foe."}});'>
+                    <div><img src="test_files/10626m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-right"><p>Scorching Marid II</p></div>
+            </div>
+        </div>
+    
+    
+    <div class="sprite common-line mb12 txt-hidden" style="visibility: hidden"></div>
+    <div class="vote-submit-button" onclick="submitVote(1)">Submit</div>
+    
+    <div style="width:320px; height: 10px;"></div>
+    <p>&nbsp;</p>
+    <p class="fnb fn-red" style="padding-bottom:10px;color:#5F1200 !important">*Familiars above are  the evolved versions.</p>
+    </div>
+
+    <div style="background-color:#5F1200;">
+    <img src="test_files/2.png" width="320" height="68">
+    <div class="time-remaining"><div class="time-remaining-background"><span class="fn-white">Time left:</span><span class="fn-white" id="timeLimit-2">4d 06h 14m 08s</span></div></div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-2-1" class="vote-choice-button-3 vote-btn-right" campaign-id="2" onclick="toggle('#vote-choice-button-3-2-1', '2', 1, 0)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-left " onclick='showCardDetailDialog({"id":10947,"name":"Ankou, Harbinger of  Death II","coment":"Ride with me into the beyond!","rarity":4,"sexType":1,"raceType1":12,"raceType2":0,"cardType":5,"price":25830,"baseHp":6520,"baseAtk":3590,"baseDef":6440,"baseWis":5440,"baseAgi":3840,"maxHp":15200,"maxAtk":8380,"maxDef":15050,"maxWis":12700,"maxAgi":8950,"opeHp":17017,"opeAtk":9628,"opeDef":16854,"opeWis":14308,"opeAgi":10246,"maxLevel":99,"growthType":1,"skillId1":345,"skillId2":346,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":10007,"skills":[{"id":345,"rarity":4,"name":"Wheel of Death","comment":"Deal massive WIS-based damage to three random foes, ignoring position.","baseProbability":11,"maxProbability":30},{"id":346,"rarity":3,"name":"Hellish Rebirth","comment":"Revive and fully restore HP of 1 random familiar.","baseProbability":12,"maxProbability":50}],"standardAction":{"id":10007,"name":"Standard Action","comment":"WIS-based damage to one foe."}});'>
+                    <div><img src="test_files/10947m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-left"><p>Ankou, Harbinger of  Death II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-2-2" class="vote-choice-button-3 vote-btn-left" campaign-id="2" onclick="toggle('#vote-choice-button-3-2-2', '2', 1, 1)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-right " onclick='showCardDetailDialog({"id":11170,"name":"Gryla, the Lullaby II","coment":"Strange. I hear...singing.","rarity":4,"sexType":2,"raceType1":3,"raceType2":0,"cardType":5,"price":25340,"baseHp":6320,"baseAtk":4380,"baseDef":6060,"baseWis":5830,"baseAgi":3240,"maxHp":14750,"maxAtk":10220,"maxDef":14140,"maxWis":13610,"maxAgi":7560,"opeHp":16529,"opeAtk":11622,"opeDef":15868,"opeWis":15294,"opeAgi":8740,"maxLevel":99,"growthType":1,"skillId1":308,"skillId2":316,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":0,"skills":[{"id":308,"rarity":4,"name":"Bloodied Hands","comment":"Deal heavy WIS-based damage to four random foes.","baseProbability":11,"maxProbability":30},{"id":316,"rarity":4,"name":"Healing Prism","comment":"Convert damage to heal self and adjacent familiars.","baseProbability":11,"maxProbability":30}],"standardAction":{"id":0,"name":"Standard Attack","comment":"Deal ATK-based damage to one foe."}});'>
+                    <div><img src="test_files/11170m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-right"><p>Gryla, the Lullaby II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-2-3" class="vote-choice-button-3 vote-btn-right" campaign-id="2" onclick="toggle('#vote-choice-button-3-2-3', '2', 1, 2)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-left " onclick='showCardDetailDialog({"id":11169,"name":"Jack o%27 Frost II","coment":"When the weather turns cold, I%27ll be back!","rarity":4,"sexType":1,"raceType1":6,"raceType2":0,"cardType":1,"price":25770,"baseHp":5120,"baseAtk":3350,"baseDef":4610,"baseWis":6190,"baseAgi":6500,"maxHp":11960,"maxAtk":7800,"maxDef":10750,"maxWis":14450,"maxAgi":15180,"opeHp":13507,"opeAtk":9000,"opeDef":12196,"opeWis":16204,"opeAgi":16995,"maxLevel":99,"growthType":1,"skillId1":333,"skillId2":0,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":10009,"skills":[{"id":333,"rarity":4,"name":"Cold-Blooded Smile","comment":"Deal AGI-based damage and sometimes freeze all foes.","baseProbability":11,"maxProbability":30}],"standardAction":{"id":10009,"name":"Standard Action","comment":"WIS-based damage and sometimes freeze target."}});'>
+                    <div><img src="test_files/11169m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-left"><p>Jack o' Frost II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-2-4" class="vote-choice-button-3 vote-btn-left" campaign-id="2" onclick="toggle('#vote-choice-button-3-2-4', '2', 1, 3)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-right " onclick='showCardDetailDialog({"id":10933,"name":"Linnorm, the Hailstorm II","coment":"Go! My body will shield you from the foe!","rarity":4,"sexType":3,"raceType1":3,"raceType2":0,"cardType":1,"price":26020,"baseHp":4660,"baseAtk":4180,"baseDef":4520,"baseWis":6350,"baseAgi":6310,"maxHp":10870,"maxAtk":9740,"maxDef":10550,"maxWis":14820,"maxAgi":14720,"opeHp":12326,"opeAtk":11102,"opeDef":11979,"opeWis":16605,"opeAgi":16497,"maxLevel":99,"growthType":1,"skillId1":313,"skillId2":0,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":0,"skills":[{"id":313,"rarity":3,"name":"White Ruin","comment":"Deal heavy WIS-based damage to all foes, ignoring position.","baseProbability":11,"maxProbability":30}],"standardAction":{"id":0,"name":"Standard Attack","comment":"Deal ATK-based damage to one foe."}});'>
+                    <div><img src="test_files/10933m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-right"><p>Linnorm, the Hailstorm II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-2-5" class="vote-choice-button-3 vote-btn-right" campaign-id="2" onclick="toggle('#vote-choice-button-3-2-5', '2', 1, 4)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-left " onclick='showCardDetailDialog({"id":10708,"name":"Ettin II","coment":"You sleepy, brother? Me sleepy...","rarity":4,"sexType":1,"raceType1":4,"raceType2":0,"cardType":1,"price":25980,"baseHp":6130,"baseAtk":5510,"baseDef":5590,"baseWis":3540,"baseAgi":5210,"maxHp":14320,"maxAtk":12860,"maxDef":13040,"maxWis":8260,"maxAgi":12140,"opeHp":16063,"opeAtk":14482,"opeDef":14677,"opeWis":9498,"opeAgi":13702,"maxLevel":99,"growthType":1,"skillId1":304,"skillId2":0,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":10006,"skills":[{"id":304,"rarity":3,"name":"Ferocious Omen","comment":"Raise ATK of self and adjacent familiars.","baseProbability":13,"maxProbability":70}],"standardAction":{"id":10006,"name":"Standard Action","comment":"ATK-based damage to three random foes."}});'>
+                    <div><img src="test_files/10708m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-left"><p>Ettin II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-2-6" class="vote-choice-button-3 vote-btn-left" campaign-id="2" onclick="toggle('#vote-choice-button-3-2-6', '2', 1, 5)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-right " onclick='showCardDetailDialog({"id":11121,"name":"Kalevan, the Forest Green II","coment":"I smell the forest on the wind...","rarity":4,"sexType":1,"raceType1":2,"raceType2":0,"cardType":1,"price":25970,"baseHp":4780,"baseAtk":6900,"baseDef":4500,"baseWis":4550,"baseAgi":5240,"maxHp":11150,"maxAtk":16120,"maxDef":10490,"maxWis":10620,"maxAgi":12250,"opeHp":12629,"opeAtk":18013,"opeDef":11914,"opeWis":12055,"opeAgi":13821,"maxLevel":99,"growthType":1,"skillId1":297,"skillId2":240,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":0,"skills":[{"id":297,"rarity":4,"name":"Awe of the Wild","comment":"Deal massive AGI-based damage to three random foes, ignoring position.","baseProbability":11,"maxProbability":30},{"id":240,"rarity":3,"name":"Midnight Smile","comment":"Raise AGI of self and adjacent familiars at start of battle.","baseProbability":13,"maxProbability":70}],"standardAction":{"id":0,"name":"Standard Attack","comment":"Deal ATK-based damage to one foe."}});'>
+                    <div><img src="test_files/11121m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-right"><p>Kalevan, the Forest Green II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-2-7" class="vote-choice-button-3 vote-btn-right" campaign-id="2" onclick="toggle('#vote-choice-button-3-2-7', '2', 1, 6)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-left " onclick='showCardDetailDialog({"id":11168,"name":"Badalisc, the Gourmet II","coment":"Ah, how I have feasted...","rarity":4,"sexType":3,"raceType1":3,"raceType2":0,"cardType":1,"price":26080,"baseHp":5360,"baseAtk":6160,"baseDef":4490,"baseWis":4260,"baseAgi":5810,"maxHp":12500,"maxAtk":14360,"maxDef":10460,"maxWis":9920,"maxAgi":13540,"opeHp":14092,"opeAtk":16107,"opeDef":11882,"opeWis":11297,"opeAgi":15218,"maxLevel":99,"growthType":1,"skillId1":315,"skillId2":0,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":0,"skills":[{"id":315,"rarity":4,"name":"Trembling Horn","comment":"Deal ATK-based damage to four random foes.","baseProbability":11,"maxProbability":30}],"standardAction":{"id":0,"name":"Standard Attack","comment":"Deal ATK-based damage to one foe."}});'>
+                    <div><img src="test_files/11168m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-left"><p>Badalisc, the Gourmet II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-2-8" class="vote-choice-button-3 vote-btn-left" campaign-id="2" onclick="toggle('#vote-choice-button-3-2-8', '2', 1, 7)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-right " onclick='showCardDetailDialog({"id":11171,"name":"Bronzeclad Hyena II","coment":"Leave me. My kin will feed on my bones.","rarity":4,"sexType":3,"raceType1":3,"raceType2":0,"cardType":1,"price":25980,"baseHp":5570,"baseAtk":4040,"baseDef":4480,"baseWis":7270,"baseAgi":4620,"maxHp":13010,"maxAtk":9430,"maxDef":10440,"maxWis":16960,"maxAgi":10780,"opeHp":14644,"opeAtk":10766,"opeDef":11860,"opeWis":18923,"opeAgi":12228,"maxLevel":99,"growthType":1,"skillId1":321,"skillId2":0,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":10008,"skills":[{"id":321,"rarity":4,"name":"Roaring Blood","comment":"Deal WIS-based damage to six random foes.","baseProbability":11,"maxProbability":30}],"standardAction":{"id":10008,"name":"Standard Action","comment":"WIS-based damage to one foe."}});'>
+                    <div><img src="test_files/11171m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-right"><p>Bronzeclad Hyena II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-2-9" class="vote-choice-button-3 vote-btn-right" campaign-id="2" onclick="toggle('#vote-choice-button-3-2-9', '2', 1, 8)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-left " onclick='showCardDetailDialog({"id":10722,"name":"Delphyne, Thunder Dragon II","coment":"Careful...the thunder lingers in my body.","rarity":4,"sexType":3,"raceType1":7,"raceType2":0,"cardType":1,"price":25970,"baseHp":4520,"baseAtk":5560,"baseDef":4490,"baseWis":7240,"baseAgi":4160,"maxHp":10560,"maxAtk":12970,"maxDef":10460,"maxWis":16900,"maxAgi":9720,"opeHp":11990,"opeAtk":14601,"opeDef":11882,"opeWis":18858,"opeAgi":11080,"maxLevel":99,"growthType":1,"skillId1":288,"skillId2":0,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":0,"skills":[{"id":288,"rarity":4,"name":"Chain Attack","comment":"Deal WIS-based damage to six random foes, ignoring position.","baseProbability":11,"maxProbability":30}],"standardAction":{"id":0,"name":"Standard Attack","comment":"Deal ATK-based damage to one foe."}});'>
+                    <div><img src="test_files/10722m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-left"><p>Delphyne, Thunder Dragon II</p></div>
+            </div>
+        </div>
+    
+        <div class="vote-cell-2">
+            <div class="vote-choice-container-2">
+                
+                    <div id="vote-choice-button-3-2-10" class="vote-choice-button-3 vote-btn-left" campaign-id="2" onclick="toggle('#vote-choice-button-3-2-10', '2', 1, 9)"></div>
+                
+                <div class="vote-candidate-l-3 vote-candidate-right " onclick='showCardDetailDialog({"id":11191,"name":"Freyja, Earth Goddess II","coment":"I offer up my love to all living things...","rarity":4,"sexType":2,"raceType1":6,"raceType2":0,"cardType":1,"price":25990,"baseHp":5600,"baseAtk":6560,"baseDef":5330,"baseWis":3820,"baseAgi":4680,"maxHp":13070,"maxAtk":15300,"maxDef":12440,"maxWis":8920,"maxAgi":10920,"opeHp":14709,"opeAtk":17125,"opeDef":14027,"opeWis":10213,"opeAgi":12380,"maxLevel":99,"growthType":1,"skillId1":387,"skillId2":0,"skillId3":0,"evolution":2,"maxEvolution":2,"defaultSkillId":0,"skills":[{"id":387,"rarity":4,"name":"Earth%27s Fury","comment":"Deal ATK-based damage to four random foes.","baseProbability":11,"maxProbability":30}],"standardAction":{"id":0,"name":"Standard Attack","comment":"Deal ATK-based damage to one foe."}});'>
+                    <div><img src="test_files/11191m.png"></div>
+                    
+                </div>
+                <div class="vote-choice-name-3 fn-white vote-choice-name-right"><p>Freyja, Earth Goddess II</p></div>
+            </div>
+        </div>
+    
+    
+    <div class="sprite common-line mb12 txt-hidden" style="visibility: hidden"></div>
+    <div class="vote-submit-button" onclick="submitVote(2)">Submit</div>
+    
+    <div style="width:320px; height: 10px;"></div>
+    <p>&nbsp;</p>
+    <p class="fnb fn-red" style="padding-bottom:10px;color:#A57000 !important">*Familiars above are  the evolved versions.</p>
+    </div>
+
+</center>
+</div>
+</div><!-- /contents -->
+</div><!-- /background-area -->
+</div><!-- /mbgaui-container -->
+
+
+</body></html>
