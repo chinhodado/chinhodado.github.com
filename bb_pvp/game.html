@@ -1,0 +1,185 @@
+<html>
+
+<head>
+    <title>Blood Brothers simulator</title>
+
+    <script src="lib/svg.min.js"></script>
+    <script src="lib/svg.filter.min.js"></script>
+    <script src="compiled.js"></script>
+
+    <style type="text/css">
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        .wrapper {
+            display: table;
+            table-layout: fixed;
+
+            width:100%;
+        }
+        .wrapper div {
+            display: table-cell;
+
+        }
+        .wrapper center {
+            display: table-caption;
+        }
+
+        .svg {
+            display: block;
+            margin: 0 auto;
+        }
+        body{
+          overflow:hidden; /* This will remove the default scroll, not really needed, safer nonetheless */
+        }
+        #battleEventDiv {
+            float: left; 
+            width: 40%; 
+            height: 100%; 
+            overflow: auto;
+            font-family: "Consolas";
+            font-size: 12px;
+        }
+        #rightSide {
+            padding-left: 20px;
+            width:60%;
+            height:100%; 
+            float: left; 
+            overflow: auto;
+            overflow-x: hidden;
+            font-family: "Consolas";
+            font-size: 12px;
+        }
+        #svgWrapper {
+            margin: 0 auto;
+            width: 400;
+            height: 600;
+            background-image: url('img/bg01.png');
+            background-size: 100%;
+        }
+
+    </style>
+
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-38672868-6', 'chinhodado.github.io');
+        ga('send', 'pageview');
+    </script>
+</head>
+
+<body>
+    <div id="battleEventDiv">
+        <div style="display: none;" id="simDiv">
+            Simulation: 100,000 battles
+            <br>
+            Simulation progress:
+            <progress value="0" max="100000" id="progressBar" style="width: 300px;"></progress>
+            <div id="simResultDiv">
+            </div>
+        </div>
+    </div>
+
+    <div id="rightSide">
+        <div id="player2Fam" style="margin-bottom:30px;" class="wrapper">
+            <center>Player 2</center>
+            <div id="player2Fam0">
+                <p>player2 fam 0 </p>         
+            </div>
+            <div id="player2Fam1">
+                <p>player2 fam 1 </p>         
+            </div>
+            <div id="player2Fam2">
+                <p>player2 fam 2 </p>         
+            </div>
+            <div id="player2Fam3">
+                <p>player2 fam 3 </p>         
+            </div>
+            <div id="player2Fam4">
+                <p>player2 fam 4 </p>         
+            </div>
+        </div>
+
+        <div id="svgWrapper">
+            <div id="svg2"></div>
+            <div id="svg1"></div>
+        </div>
+
+        <div id="player1Fam" style="margin-bottom:30px; margin-top: 30px; " class="wrapper">
+            <center>Player 1</center>
+            <div id="player1Fam0">
+                <p>player1 fam 0 </p>         
+            </div>
+            <div id="player1Fam1">
+                <p>player1 fam 1 </p>         
+            </div>
+            <div id="player1Fam2">
+                <p>player1 fam 2 </p>         
+            </div>
+            <div id="player1Fam3">
+                <p>player1 fam 3 </p>         
+            </div>
+            <div id="player1Fam4">
+                <p>player1 fam 4 </p>         
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var data = {};
+        data.player1formation = getURLParameter("p1formation");
+        data.player2formation = getURLParameter("p2formation");
+        data.player1cardsInfo = [];
+        data.player2cardsInfo = [];
+
+        for (var i = 0; i < 5; i++) {
+            data.player1cardsInfo.push(famDatabase[getURLParameter("p1fam" + i)]);
+            data.player2cardsInfo.push(famDatabase[getURLParameter("p2fam" + i)]);
+        }
+        var worker = null;
+
+        var mode = getURLParameter("mode");
+        if (mode == "normal") {
+            var newGame = new BattleModel(data, null);
+            newGame.startBattle();
+        }
+        else if (mode == "random") {
+            var newGame = new BattleModel(null, "random");
+            newGame.startBattle();
+        }
+        else if (mode == "sim") {
+            // create a new game just to display the fam and formation
+            var newGame = new BattleModel(data, null);
+
+            // hide/show some elements on the page
+            document.getElementById("simDiv").setAttribute("style", "display: block;");
+            document.getElementById("player2Fam").innerHTML = "<center>Player 2</center>";
+            document.getElementById("player1Fam").innerHTML = "<center>Player 1</center>";
+
+            // now make the worker do the simulation in background
+            worker = new Worker("worker.js");
+            worker.onmessage = function (event) {
+                if (event.data.status == "ongoing") {
+                    document.getElementById("progressBar").setAttribute("value", event.data.progress);
+                }
+                else if (event.data.status == "done") {
+                    document.getElementById("simResultDiv").innerHTML += ("Player 2 won: " + event.data.p2WinCount +
+                        "<br> Player 1 won: " + event.data.p1WinCount + 
+                        "<br><a href=setting.html>Go back to main page </a>");
+                    worker.terminate();
+                }
+            };
+            worker.postMessage(data);
+        }
+    </script>
+
+</body>
+
+</html>
