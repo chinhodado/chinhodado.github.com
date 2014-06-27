@@ -1,182 +1,179 @@
+<!DOCTYPE html>
 <html>
-
 <head>
-    <title>Blood Brothers simulator</title>
+    <title>Blood Brothers Simulator</title>
+    <meta name="description" content="A PvP Simulator for the Blood Brothers RPG game">
+    <meta name="keywords" content="blood, brothers, simulator, PvP, RPG">
+    <link href='http://fonts.googleapis.com/css?family=Alegreya+Sans:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/dialog.css">
+    <link rel="stylesheet" href="css/game.css">
 
     <script src="lib/svg.min.js"></script>
     <script src="lib/svg.filter.min.js"></script>
     <script src="compiled.js"></script>
-
-    <style type="text/css">
-        * {
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-        }
-        .wrapper {
-            display: table;
-            table-layout: fixed;
-
-            width:100%;
-        }
-        .wrapper div {
-            display: table-cell;
-
-        }
-        .wrapper center {
-            display: table-caption;
-        }
-
-        .svg {
-            display: block;
-            margin: 0 auto;
-        }
-        body{
-          overflow:hidden; /* This will remove the default scroll, not really needed, safer nonetheless */
-        }
-        #battleEventDiv {
-            float: left; 
-            width: 40%; 
-            height: 100%; 
-            overflow: auto;
-            font-family: "Consolas";
-            font-size: 12px;
-        }
-        #rightSide {
-            padding-left: 20px;
-            width:60%;
-            height:100%; 
-            float: left; 
-            overflow: auto;
-            overflow-x: hidden;
-            font-family: "Consolas";
-            font-size: 12px;
-        }
-        #svgWrapper {
-            margin: 0 auto;
-            width: 400;
-            height: 600;
-            background-image: url('img/bg01.png');
-            background-size: 100%;
-        }
-
-    </style>
-
-    <script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date(); a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
-        ga('create', 'UA-38672868-6', 'chinhodado.github.io');
-        ga('send', 'pageview');
-    </script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="js/dialog.js"></script>
+    <script src="js/helper.js"></script>
+    <script src="js/ga.js"></script>
 </head>
 
 <body>
-    <div id="battleEventDiv">
+    <div class="leftCol">
         <div style="display: none;" id="simDiv">
-            Simulation: 100,000 battles
+            Simulation: 10,000 battles
             <br>
             Simulation progress:
-            <progress value="0" max="100000" id="progressBar" style="width: 300px;"></progress>
+            <progress value="0" max="10000" id="progressBar" style="width: 95%;"></progress>
             <div id="simResultDiv">
             </div>
         </div>
+
+        <div id="gameDiv">
+            <div id="infoDiv"></div>
+
+            <div id="permDiv">
+                Click the <b>Start Battle</b> button below to view the battle. <br /><br />
+                Click on a familiar to see its details. <br /><br />
+                Refresh this page to view another battle.<br /><br />
+                Click <a href="setting.html">here</a> to return to the main page.
+            </div>
+        </div>
+
+        <div id="githubDiv">
+            Like this? <a href="https://github.com/chinhodado/bb_pvp_simulator" target="_blank">Star</a> it on Github <br />
+            Has suggestions or bug reports? <a href="https://github.com/chinhodado/bb_pvp_simulator/issues?state=open" target="_blank">Create</a> a new issue
+        </div>
     </div>
 
-    <div id="rightSide">
-        <div id="player2Fam" style="margin-bottom:30px;" class="wrapper">
-            <center>Player 2</center>
-            <div id="player2Fam0">
-                <p>player2 fam 0 </p>         
-            </div>
-            <div id="player2Fam1">
-                <p>player2 fam 1 </p>         
-            </div>
-            <div id="player2Fam2">
-                <p>player2 fam 2 </p>         
-            </div>
-            <div id="player2Fam3">
-                <p>player2 fam 3 </p>         
-            </div>
-            <div id="player2Fam4">
-                <p>player2 fam 4 </p>         
-            </div>
-        </div>
-
+    <div class="midCol">
         <div id="svgWrapper">
-            <div id="svg2"></div>
-            <div id="svg1"></div>
+            <div id="svg"></div>
+            <div class="mbgaui-container">
+
+                <!-- popup bg -->
+                <div id="dialogBack">
+                </div>
+
+                <!-- popup -->
+                <div id="card-detail-dialog" class="fn-black">
+                    <div class="card-detail-dialog">
+                        <div class="card-detail-figure">
+                            <img id="card-detail-loading-figure" src="img/loading_figure.png" width="150" height="150">
+                            <img id="card-detail-figure" src="img/loading_figure.png" width="100" height="150">
+                            <!--<div id="card-detail-figure-rarity" class="card-figure-rarity-l-2-2"></div>-->
+                        </div>
+                        <span class="card-detail-level fnb">Level: 99/99</span>
+                        <span class="card-detail-name fnb"></span>
+                        <span class="card-detail-skill-name fnb"></span>
+                        <span class="card-detail-skill-description"></span>
+                        <span class="card-detail-default-action-name fnb"></span>
+                        <span class="card-detail-default-action-description"></span>
+                        <span class="card-detail-skill-proc">30%</span>
+                        <span class="card-detail-max-hp"></span>
+                        <span class="card-detail-max-atk"></span>
+                        <span class="card-detail-max-def"></span>
+                        <span class="card-detail-max-wis"></span>
+                        <span class="card-detail-max-agi"></span>
+                        <span class="card-detail-growth-type"></span>
+                        <span class="card-detail-value">12345</span>
+                        <span class="card-detail-current-hp"></span>
+
+                        <div class="arrow-left" onclick="prevSkill();" style="visibility: hidden;"></div>
+                        <div class="arrow-right" onclick="nextSkill();" style="visibility: hidden;"></div>
+
+                        <div class="card-detail-ok-button" onclick="hideCardDetailDialog();"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <button id="startButton">Start battle</button>
+    </div>
+
+    <div class="rightCol">
+        <div style="width: 100%; position: relative; height: 50%">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h3 class="panel-title" id="infoDivP2Title">Player 2</h3>
+                </div>
+                <div class="panel-body" id="infoDivP2">
+                </div>
+            </div>
         </div>
 
-        <div id="player1Fam" style="margin-bottom:30px; margin-top: 30px; " class="wrapper">
-            <center>Player 1</center>
-            <div id="player1Fam0">
-                <p>player1 fam 0 </p>         
-            </div>
-            <div id="player1Fam1">
-                <p>player1 fam 1 </p>         
-            </div>
-            <div id="player1Fam2">
-                <p>player1 fam 2 </p>         
-            </div>
-            <div id="player1Fam3">
-                <p>player1 fam 3 </p>         
-            </div>
-            <div id="player1Fam4">
-                <p>player1 fam 4 </p>         
+        <div style="width: 100%; position: relative; height: 50%">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h3 class="panel-title" id="infoDivP1Title">Player 1</h3>
+                </div>
+                <div class="panel-body" id="infoDivP1">
+                </div>
             </div>
         </div>
     </div>
 
     <script type="text/javascript">
-        var data = {};
-        data.player1formation = getURLParameter("p1formation");
-        data.player2formation = getURLParameter("p2formation");
-        data.player1cardsInfo = [];
-        data.player2cardsInfo = [];
 
-        for (var i = 0; i < 5; i++) {
-            data.player1cardsInfo.push(famDatabase[getURLParameter("p1fam" + i)]);
-            data.player2cardsInfo.push(famDatabase[getURLParameter("p2fam" + i)]);
-        }
-        var worker = null;
-
-        var mode = getURLParameter("mode");
-        if (mode == "normal") {
-            var newGame = new BattleModel(data, null);
+        function playGame() {
+            BattleGraphic.PLAY_MODE = 'AUTO';
+            BattleLogger.IS_DEBUG_MODE = false;
+            document.getElementById('startButton').onclick = function () {
+                this.disabled = true;
+                BattleGraphic.getInstance().resetInitialField();
+                BattleGraphic.getInstance().displayMajorEventAnimation(0);
+            }
+            var newGame = new BattleModel(data, option);
             newGame.startBattle();
         }
-        else if (mode == "random") {
-            var newGame = new BattleModel(null, "random");
-            newGame.startBattle();
-        }
-        else if (mode == "sim") {
+
+        function playSim() {
             // create a new game just to display the fam and formation
-            var newGame = new BattleModel(data, null);
+            if (option.p1RandomMode) {
+                BattleGraphic.HIDE_PLAYER1 = true;
+            }
+
+            if (option.p2RandomMode) {
+                BattleGraphic.HIDE_PLAYER2 = true;
+            }
+            BattleLogger.IS_DEBUG_MODE = false;
+            BattleModel.IS_MASS_SIMULATION = true;
+            var newGame = new BattleModel(data, option);
 
             // hide/show some elements on the page
+            document.getElementById("gameDiv").setAttribute("style", "display: none;");
+            document.getElementById("startButton").setAttribute("style", "display: none;")
             document.getElementById("simDiv").setAttribute("style", "display: block;");
-            document.getElementById("player2Fam").innerHTML = "<center>Player 2</center>";
-            document.getElementById("player1Fam").innerHTML = "<center>Player 1</center>";
 
             // now make the worker do the simulation in background
-            worker = new Worker("worker.js");
+            worker = new Worker("js/worker.js");
             worker.onmessage = function (event) {
                 if (event.data.status == "ongoing") {
                     document.getElementById("progressBar").setAttribute("value", event.data.progress);
                 }
                 else if (event.data.status == "done") {
+                    document.getElementById("progressBar").setAttribute("value", 10000);
                     document.getElementById("simResultDiv").innerHTML += ("Player 2 won: " + event.data.p2WinCount +
-                        "<br> Player 1 won: " + event.data.p1WinCount + 
+                        "<br> Player 1 won: " + event.data.p1WinCount +
                         "<br><a href=setting.html>Go back to main page </a>");
                     worker.terminate();
                 }
             };
-            worker.postMessage(data);
+            // start the worker. Need to pass the tierList information in since the worker 
+            // can't access sessionStorage
+            worker.postMessage([data, option, sessionStorage.tierList]);
+        }
+
+        var dataOption = getBattleDataOption();
+        var data = dataOption[0], option = dataOption[1];
+
+        var worker = null;
+
+        var mode = getURLParameter("mode");
+        if (mode !== "sim") {
+            getTierList("play");
+        }
+        else if (mode == "sim") {
+            getTierList("sim");
         }
     </script>
 
