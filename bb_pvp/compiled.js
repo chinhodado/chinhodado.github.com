@@ -1536,6 +1536,29 @@ var BattleLogger = (function () {
     BattleLogger._instance = null;
     return BattleLogger;
 })();
+var BrigGenerator = (function () {
+    function BrigGenerator() {
+    }
+    BrigGenerator.getBrig = function (randomMode, tierListString, isBloodclash) {
+        var randomList = FamiliarDatabase.getRandomFamList(+randomMode, tierListString);
+        var brigIds = [];
+        var maxIndex = isBloodclash ? 9 : 4;
+
+        if (isBloodclash) {
+            var randIndex = getRandomInt(0, maxIndex);
+            brigIds[randIndex] = getRandomElement(FamiliarDatabase.getWarlordList());
+        }
+
+        for (var i = 0; i <= maxIndex; i++) {
+            if (!brigIds[i]) {
+                brigIds[i] = getRandomElement(randomList);
+            }
+        }
+
+        return brigIds;
+    };
+    return BrigGenerator;
+})();
 var ENUM;
 (function (ENUM) {
     (function (SkillType) {
@@ -1636,6 +1659,93 @@ var ENUM;
         StatusType[StatusType["WILL_ATTACK_AGAIN"] = 18] = "WILL_ATTACK_AGAIN";
     })(ENUM.StatusType || (ENUM.StatusType = {}));
     var StatusType = ENUM.StatusType;
+
+    (function (SkillRange) {
+        SkillRange[SkillRange["EITHER_SIDE"] = 1] = "EITHER_SIDE";
+        SkillRange[SkillRange["BOTH_SIDES"] = 2] = "BOTH_SIDES";
+        SkillRange[SkillRange["SELF_BOTH_SIDES"] = 3] = "SELF_BOTH_SIDES";
+        SkillRange[SkillRange["ALL"] = 4] = "ALL";
+        SkillRange[SkillRange["ENEMY_NEAR_1"] = 5] = "ENEMY_NEAR_1";
+        SkillRange[SkillRange["ENEMY_NEAR_2"] = 6] = "ENEMY_NEAR_2";
+        SkillRange[SkillRange["ENEMY_NEAR_3"] = 7] = "ENEMY_NEAR_3";
+        SkillRange[SkillRange["ENEMY_ALL"] = 8] = "ENEMY_ALL";
+        SkillRange[SkillRange["ENEMY_FRONT"] = 9] = "ENEMY_FRONT";
+        SkillRange[SkillRange["ENEMY_MID"] = 10] = "ENEMY_MID";
+        SkillRange[SkillRange["ENEMY_REAR"] = 11] = "ENEMY_REAR";
+        SkillRange[SkillRange["ENEMY_FRONT_ALL"] = 12] = "ENEMY_FRONT_ALL";
+        SkillRange[SkillRange["ENEMY_MID_ALL"] = 13] = "ENEMY_MID_ALL";
+        SkillRange[SkillRange["ENEMY_REAR_ALL"] = 14] = "ENEMY_REAR_ALL";
+        SkillRange[SkillRange["ENEMY_FRONT_MID_ALL"] = 15] = "ENEMY_FRONT_MID_ALL";
+        SkillRange[SkillRange["ENEMY_RANDOM_3"] = 16] = "ENEMY_RANDOM_3";
+        SkillRange[SkillRange["ENEMY_RANDOM_6"] = 17] = "ENEMY_RANDOM_6";
+        SkillRange[SkillRange["ENEMY_REAR_RANDOM_3"] = 18] = "ENEMY_REAR_RANDOM_3";
+        SkillRange[SkillRange["ENEMY_RANDOM_4"] = 19] = "ENEMY_RANDOM_4";
+        SkillRange[SkillRange["ENEMY_RANDOM_5"] = 20] = "ENEMY_RANDOM_5";
+        SkillRange[SkillRange["MYSELF"] = 21] = "MYSELF";
+        SkillRange[SkillRange["EVERYONE"] = 22] = "EVERYONE";
+        SkillRange[SkillRange["ENEMY_RANDOM_2"] = 23] = "ENEMY_RANDOM_2";
+        SkillRange[SkillRange["WIDE_ALL"] = 24] = "WIDE_ALL";
+        SkillRange[SkillRange["WIDE_ENEMY_ALL"] = 25] = "WIDE_ENEMY_ALL";
+        SkillRange[SkillRange["WIDE_NEIGHBOR"] = 26] = "WIDE_NEIGHBOR";
+        SkillRange[SkillRange["WIDE_SELF_NEIGHBOR"] = 27] = "WIDE_SELF_NEIGHBOR";
+        SkillRange[SkillRange["RIGHT"] = 28] = "RIGHT";
+        SkillRange[SkillRange["SELF_RIGHT"] = 29] = "SELF_RIGHT";
+        SkillRange[SkillRange["LEFT"] = 30] = "LEFT";
+        SkillRange[SkillRange["SELF_LEFT"] = 31] = "SELF_LEFT";
+        SkillRange[SkillRange["ENEMY_NEAR_4"] = 32] = "ENEMY_NEAR_4";
+        SkillRange[SkillRange["ENEMY_NEAR_5"] = 33] = "ENEMY_NEAR_5";
+        SkillRange[SkillRange["ENEMY_FRONT_REAR_ALL"] = 34] = "ENEMY_FRONT_REAR_ALL";
+        SkillRange[SkillRange["ATTACKER"] = 35] = "ATTACKER";
+        SkillRange[SkillRange["SELF_IMMEDIATE_RIGHT"] = 36] = "SELF_IMMEDIATE_RIGHT";
+        SkillRange[SkillRange["SELF_IMMEDIATE_LEFT"] = 37] = "SELF_IMMEDIATE_LEFT";
+
+        SkillRange[SkillRange["FRIEND_RANDOM"] = 101] = "FRIEND_RANDOM";
+        SkillRange[SkillRange["FRIEND_RANDOM_2"] = 102] = "FRIEND_RANDOM_2";
+        SkillRange[SkillRange["FRIEND_RANDOM_3"] = 103] = "FRIEND_RANDOM_3";
+        SkillRange[SkillRange["FRIEND_RANDOM_4"] = 104] = "FRIEND_RANDOM_4";
+        SkillRange[SkillRange["FRIEND_RANDOM_5"] = 105] = "FRIEND_RANDOM_5";
+        SkillRange[SkillRange["FRIEND_RANDOM_6"] = 106] = "FRIEND_RANDOM_6";
+
+        SkillRange[SkillRange["FRIEND_SELF_RANDOM"] = 111] = "FRIEND_SELF_RANDOM";
+        SkillRange[SkillRange["FRIEND_SELF_RANDOM_2"] = 112] = "FRIEND_SELF_RANDOM_2";
+        SkillRange[SkillRange["FRIEND_SELF_RANDOM_3"] = 113] = "FRIEND_SELF_RANDOM_3";
+        SkillRange[SkillRange["FRIEND_SELF_RANDOM_4"] = 114] = "FRIEND_SELF_RANDOM_4";
+        SkillRange[SkillRange["FRIEND_SELF_RANDOM_5"] = 115] = "FRIEND_SELF_RANDOM_5";
+        SkillRange[SkillRange["FRIEND_SELF_RANDOM_6"] = 116] = "FRIEND_SELF_RANDOM_6";
+
+        SkillRange[SkillRange["FRIEND_UNIQUE_RANDOM"] = 121] = "FRIEND_UNIQUE_RANDOM";
+        SkillRange[SkillRange["FRIEND_UNIQUE_RANDOM_2"] = 122] = "FRIEND_UNIQUE_RANDOM_2";
+        SkillRange[SkillRange["FRIEND_UNIQUE_RANDOM_3"] = 123] = "FRIEND_UNIQUE_RANDOM_3";
+        SkillRange[SkillRange["FRIEND_UNIQUE_RANDOM_4"] = 124] = "FRIEND_UNIQUE_RANDOM_4";
+        SkillRange[SkillRange["FRIEND_UNIQUE_RANDOM_5"] = 125] = "FRIEND_UNIQUE_RANDOM_5";
+        SkillRange[SkillRange["FRIEND_UNIQUE_RANDOM_6"] = 126] = "FRIEND_UNIQUE_RANDOM_6";
+
+        SkillRange[SkillRange["FRIEND_SELF_UNIQUE_RANDOM"] = 131] = "FRIEND_SELF_UNIQUE_RANDOM";
+        SkillRange[SkillRange["FRIEND_SELF_UNIQUE_RANDOM_2"] = 132] = "FRIEND_SELF_UNIQUE_RANDOM_2";
+        SkillRange[SkillRange["FRIEND_SELF_UNIQUE_RANDOM_3"] = 133] = "FRIEND_SELF_UNIQUE_RANDOM_3";
+        SkillRange[SkillRange["FRIEND_SELF_UNIQUE_RANDOM_4"] = 134] = "FRIEND_SELF_UNIQUE_RANDOM_4";
+        SkillRange[SkillRange["FRIEND_SELF_UNIQUE_RANDOM_5"] = 135] = "FRIEND_SELF_UNIQUE_RANDOM_5";
+        SkillRange[SkillRange["FRIEND_SELF_UNIQUE_RANDOM_6"] = 136] = "FRIEND_SELF_UNIQUE_RANDOM_6";
+
+        SkillRange[SkillRange["FORCED_SELF_RANDOM_1"] = 142] = "FORCED_SELF_RANDOM_1";
+        SkillRange[SkillRange["FORCED_SELF_RANDOM_2"] = 143] = "FORCED_SELF_RANDOM_2";
+        SkillRange[SkillRange["FORCED_SELF_RANDOM_3"] = 144] = "FORCED_SELF_RANDOM_3";
+        SkillRange[SkillRange["FORCED_SELF_RANDOM_4"] = 145] = "FORCED_SELF_RANDOM_4";
+        SkillRange[SkillRange["FORCED_SELF_UNIQUE_RANDOM_2"] = 153] = "FORCED_SELF_UNIQUE_RANDOM_2";
+        SkillRange[SkillRange["FORCED_SELF_UNIQUE_RANDOM_3"] = 154] = "FORCED_SELF_UNIQUE_RANDOM_3";
+        SkillRange[SkillRange["FORCED_SELF_UNIQUE_RANDOM_4"] = 155] = "FORCED_SELF_UNIQUE_RANDOM_4";
+
+        SkillRange[SkillRange["BOTH_SIDES_SCALED"] = 202] = "BOTH_SIDES_SCALED";
+        SkillRange[SkillRange["SELF_BOTH_SIDES_SCALED"] = 203] = "SELF_BOTH_SIDES_SCALED";
+        SkillRange[SkillRange["ALL_SCALED"] = 204] = "ALL_SCALED";
+        SkillRange[SkillRange["ENEMY_ALL_SCALED"] = 208] = "ENEMY_ALL_SCALED";
+        SkillRange[SkillRange["ENEMY_FRONT_ALL_SCALED"] = 212] = "ENEMY_FRONT_ALL_SCALED";
+        SkillRange[SkillRange["ENEMY_MID_ALL_SCALED"] = 213] = "ENEMY_MID_ALL_SCALED";
+        SkillRange[SkillRange["ENEMY_REAR_ALL_SCALED"] = 214] = "ENEMY_REAR_ALL_SCALED";
+        SkillRange[SkillRange["ENEMY_FRONT_MID_ALL_SCALED"] = 215] = "ENEMY_FRONT_MID_ALL_SCALED";
+        SkillRange[SkillRange["ENEMY_FRONT_REAR_ALL_SCALED"] = 234] = "ENEMY_FRONT_REAR_ALL_SCALED";
+    })(ENUM.SkillRange || (ENUM.SkillRange = {}));
+    var SkillRange = ENUM.SkillRange;
 
     (function (WardType) {
         WardType[WardType["PHYSICAL"] = 1] = "PHYSICAL";
@@ -2697,7 +2807,7 @@ var famDatabase = {
         name: "Apep", stats: [20543, 20975, 15503, 14302, 16729],
         skills: [468],
         autoAttack: 10017,
-        img: "img2$1/__cb20140528104324/$2/1/16/Apep%2C_the_Chaotic_Figure.png",
+        img: "img1$1/__cb20140528104324/$2/7/79/Apep_the_Chaotic_Figure.png",
         fullName: "Apep the Chaotic"
     },
     10593: {
@@ -3634,7 +3744,7 @@ var famDatabase = {
     10746: {
         name: "Iseult", stats: [12731, 10977, 11708, 15865, 14193],
         skills: [144],
-        img: "img2$1/__cb20130629202258/$2/f/f2/Iseult%2C_the_Redeemer_II_Figure.png",
+        img: "img1$1/__cb20130629202258/$2/3/3b/Iseult_the_Redeemer_II_Figure.png",
         fullName: "Iseult the Redeemer II"
     },
     11376: {
@@ -4513,7 +4623,7 @@ var famDatabase = {
     11000: {
         name: "Tanba", stats: [17580, 23213, 17883, 23289, 18057],
         skills: [236],
-        img: "img3$1/__cb20130921071545/$2/f/f6/Tanba%2C_Founder_of_Ninja_II_Figure.png",
+        img: "img3$1/__cb20130921071545/$2/a/a8/Tanba%2C_Founder_of_the_Ninja_II_Figure.png",
         fullName: "Tanba, Founder of Ninja II"
     },
     327: {
@@ -4636,7 +4746,7 @@ var famDatabase = {
     10747: {
         name: "Tristan", stats: [13832, 16193, 15197, 13052, 15771],
         skills: [122],
-        img: "img4$1/__cb20130629202258/$2/a/ad/Tristan%2C_the_Sorrowful_II_Figure.png",
+        img: "img3$1/__cb20130629202258/$2/c/c3/Tristan_the_Sorrowful_II_Figure.png",
         fullName: "Tristan the Sorrowful II"
     },
     10647: {
@@ -4839,12 +4949,12 @@ var FamiliarDatabase = (function () {
         return this.tierList[tierToGet];
     };
 
-    FamiliarDatabase.getAllIdList = function () {
+    FamiliarDatabase.getAllFamiliarList = function () {
         if (!this.allIdList) {
             this.allIdList = [];
 
             for (var key in famDatabase) {
-                if (famDatabase.hasOwnProperty(key)) {
+                if (famDatabase.hasOwnProperty(key) && !famDatabase[key].isWarlord) {
                     this.allIdList.push(key);
                 }
             }
@@ -4862,7 +4972,7 @@ var FamiliarDatabase = (function () {
 
         switch (type) {
             case 1 /* ALL */:
-                return this.getAllIdList();
+                return this.getAllFamiliarList();
             case 2 /* X_ONLY */:
                 return tierX;
             case 3 /* SP_ONLY */:
@@ -4884,6 +4994,10 @@ var FamiliarDatabase = (function () {
             default:
                 throw new Error("Invalid brig random type");
         }
+    };
+
+    FamiliarDatabase.getWarlordList = function () {
+        return [1, 2, 3, 4, 5, 6, 7, 8];
     };
     FamiliarDatabase.tierList = null;
 
@@ -5338,6 +5452,30 @@ var SkillDatabase = {
         range: 3, prob: 70,
         desc: "Raise AGI of self and adjacent familiars."
     },
+    6: {
+        name: "Blade Break", type: 1, func: 2, calc: 0,
+        arg1: 0.5, arg2: 1,
+        range: 7, prob: 70,
+        desc: "Lower ATK of up to three foes."
+    },
+    7: {
+        name: "Shield Rend", type: 1, func: 2, calc: 0,
+        arg1: 0.5, arg2: 2,
+        range: 7, prob: 70,
+        desc: "Lower DEF of up to three foes."
+    },
+    8: {
+        name: "Mind Rust", type: 1, func: 2, calc: 0,
+        arg1: 0.5, arg2: 3,
+        range: 7, prob: 70,
+        desc: "Lower WIS of up to three foes."
+    },
+    9: {
+        name: "Speed Sap", type: 1, func: 2, calc: 0,
+        arg1: 0.5, arg2: 4,
+        range: 7, prob: 70,
+        desc: "Lower AGI of up to three foes."
+    },
     10: {
         name: "Scythe Storm", type: 2, func: 3, calc: 3,
         arg1: 1,
@@ -5565,6 +5703,30 @@ var SkillDatabase = {
         range: 5, prob: 30, ward: 3,
         desc: "Deal heavy damage to one foe."
     },
+    77: {
+        name: "Blade Break 1", type: 1, func: 2, calc: 0,
+        arg1: 0.1, arg2: 1,
+        range: 8, prob: 70,
+        desc: "Lower ATK of all foes."
+    },
+    78: {
+        name: "Shield Rend 1", type: 1, func: 2, calc: 0,
+        arg1: 0.1, arg2: 2,
+        range: 8, prob: 70,
+        desc: "Lower DEF of all foes."
+    },
+    79: {
+        name: "Mind Rust 1", type: 1, func: 2, calc: 0,
+        arg1: 0.1, arg2: 3,
+        range: 8, prob: 70,
+        desc: "Lower WIS of all foes."
+    },
+    80: {
+        name: "Speed Sap 1", type: 1, func: 2, calc: 0,
+        arg1: 0.1, arg2: 4,
+        range: 8, prob: 70,
+        desc: "Lower AGI of all foes."
+    },
     81: {
         name: "Boon of Blade & Shield 2", type: 1, func: 1, calc: 0,
         arg1: 0.2, arg2: 1, arg3: 2,
@@ -5577,11 +5739,83 @@ var SkillDatabase = {
         range: 4, prob: 70,
         desc: "Raise AGI of all familiars."
     },
+    86: {
+        name: "Blade Break 2", type: 1, func: 2, calc: 0,
+        arg1: 0.2, arg2: 1,
+        range: 8, prob: 70,
+        desc: "Lower ATK of all foes."
+    },
+    87: {
+        name: "Shield Rend 2", type: 1, func: 2, calc: 0,
+        arg1: 0.2, arg2: 2,
+        range: 8, prob: 70,
+        desc: "Lower DEF of all foes."
+    },
+    88: {
+        name: "Mind Rust 2", type: 1, func: 2, calc: 0,
+        arg1: 0.2, arg2: 3,
+        range: 8, prob: 70,
+        desc: "Lower WIS of all foes."
+    },
+    89: {
+        name: "Speed Sap 2", type: 1, func: 2, calc: 0,
+        arg1: 0.2, arg2: 4,
+        range: 8, prob: 70,
+        desc: "Lower AGI of all foes."
+    },
     94: {
         name: "Grace of Winds 3", type: 1, func: 1, calc: 0,
         arg1: 0.3, arg2: 4,
         range: 4, prob: 70,
         desc: "Raise AGI of all familiars."
+    },
+    95: {
+        name: "Blade Break 3", type: 1, func: 2, calc: 0,
+        arg1: 0.3, arg2: 1,
+        range: 8, prob: 70,
+        desc: "Lower ATK of all foes."
+    },
+    96: {
+        name: "Shield Rend 3", type: 1, func: 2, calc: 0,
+        arg1: 0.3, arg2: 2,
+        range: 8, prob: 70,
+        desc: "Lower DEF of all foes."
+    },
+    97: {
+        name: "Mind Rust 3", type: 1, func: 2, calc: 0,
+        arg1: 0.3, arg2: 3,
+        range: 8, prob: 70,
+        desc: "Lower WIS of all foes."
+    },
+    98: {
+        name: "Speed Sap 3", type: 1, func: 2, calc: 0,
+        arg1: 0.3, arg2: 4,
+        range: 8, prob: 70,
+        desc: "Lower AGI of all foes."
+    },
+    104: {
+        name: "Blade Break 4", type: 1, func: 2, calc: 0,
+        arg1: 0.4, arg2: 1,
+        range: 8, prob: 70,
+        desc: "Lower ATK of all foes."
+    },
+    105: {
+        name: "Shield Rend 4", type: 1, func: 2, calc: 0,
+        arg1: 0.4, arg2: 2,
+        range: 8, prob: 70,
+        desc: "Lower DEF of all foes."
+    },
+    106: {
+        name: "Mind Rust 4", type: 1, func: 2, calc: 0,
+        arg1: 0.4, arg2: 3,
+        range: 8, prob: 70,
+        desc: "Lower WIS of all foes."
+    },
+    107: {
+        name: "Speed Sap 4", type: 1, func: 2, calc: 0,
+        arg1: 0.4, arg2: 4,
+        range: 8, prob: 70,
+        desc: "Lower AGI of all foes."
     },
     108: {
         name: "Icestorm", type: 2, func: 4, calc: 2,
@@ -8058,8 +8292,9 @@ var SkillLogicFactory = (function () {
         switch (skillFunc) {
             case 1 /* BUFF */:
                 return new BuffSkillLogic();
+            case 2 /* DEBUFF */:
             case 32 /* CASTER_BASED_DEBUFF */:
-                return new CasterBasedDebuffSkillLogic();
+                return new DebuffSkillLogic();
             case 38 /* ONHIT_DEBUFF */:
                 return new OnHitDebuffSkillLogic();
             case 16 /* DISPELL */:
@@ -8176,14 +8411,10 @@ var BuffSkillLogic = (function (_super) {
                     case 2 /* DEF */:
                     case 3 /* WIS */:
                     case 4 /* AGI */:
-                        var skillMod = skill.skillFuncArg1;
-
-                        if (skill.skillFuncArg2 != 9 /* ALL_STATUS */) {
-                        } else {
-                            basedOnStatType = ENUM.StatusType[statusType];
-                            baseStat = target.getStat(basedOnStatType);
+                        if (skill.skillRange == 3 /* SELF_BOTH_SIDES */) {
+                            baseStat = executor.getStat(basedOnStatType);
                         }
-
+                        var skillMod = skill.skillFuncArg1;
                         var buffAmount = Math.round(skillMod * baseStat);
                         break;
                     case 5 /* ATTACK_RESISTANCE */:
@@ -8224,12 +8455,12 @@ var BuffSkillLogic = (function (_super) {
     return BuffSkillLogic;
 })(SkillLogic);
 
-var CasterBasedDebuffSkillLogic = (function (_super) {
-    __extends(CasterBasedDebuffSkillLogic, _super);
-    function CasterBasedDebuffSkillLogic() {
+var DebuffSkillLogic = (function (_super) {
+    __extends(DebuffSkillLogic, _super);
+    function DebuffSkillLogic() {
         _super.apply(this, arguments);
     }
-    CasterBasedDebuffSkillLogic.prototype.execute = function (data) {
+    DebuffSkillLogic.prototype.execute = function (data) {
         var skill = data.skill;
         var executor = data.executor;
 
@@ -8239,7 +8470,7 @@ var CasterBasedDebuffSkillLogic = (function (_super) {
             this.battleModel.processDebuff(executor, targets[i], skill);
         }
     };
-    return CasterBasedDebuffSkillLogic;
+    return DebuffSkillLogic;
 })(SkillLogic);
 
 var ClearStatusSkillLogic = (function (_super) {
@@ -8523,7 +8754,7 @@ var ProtectSkillLogic = (function (_super) {
     ProtectSkillLogic.prototype.willBeExecuted = function (data) {
         var targets = data.skill.getTargets(data.executor);
 
-        if (this.cardManager.isSameCard(data.targetCard, data.executor) && data.skill.skillRange != 21) {
+        if (this.cardManager.isSameCard(data.targetCard, data.executor) && data.skill.skillRange != 21 /* MYSELF */) {
             return false;
         }
 
@@ -8591,7 +8822,7 @@ var EvadeSkillLogic = (function (_super) {
     EvadeSkillLogic.prototype.willBeExecuted = function (data) {
         var targets = data.skill.getTargets(data.executor);
 
-        if (this.cardManager.isSameCard(data.targetCard, data.executor) && data.skill.skillRange != 21) {
+        if (this.cardManager.isSameCard(data.targetCard, data.executor) && data.skill.skillRange != 21 /* MYSELF */) {
             return false;
         }
 
@@ -9033,7 +9264,7 @@ var RangeFactory = (function () {
     };
 
     RangeFactory.isEnemyScaledRange = function (id) {
-        return this.isEnemyNearScaledRange(id) || id == 208;
+        return this.isEnemyNearScaledRange(id) || id == 208 /* ENEMY_ALL_SCALED */;
     };
 
     RangeFactory.getScaledRatio = function (id, targetsLeft) {
@@ -9046,7 +9277,7 @@ var RangeFactory = (function () {
     };
 
     RangeFactory.isRowBasedRange = function (rangeId) {
-        if (rangeId === 12 || rangeId === 14 || rangeId === 15) {
+        if (rangeId === 12 /* ENEMY_FRONT_ALL */ || rangeId === 14 /* ENEMY_REAR_ALL */ || rangeId === 15 /* ENEMY_FRONT_MID_ALL */) {
             return true;
         }
 
@@ -9056,7 +9287,7 @@ var RangeFactory = (function () {
     RangeFactory.canBeAoeRange = function (rangeId) {
         var canBe = false;
 
-        if (this.isEnemyNearRange(rangeId) || this.isEnemyNearScaledRange(rangeId) || this.isRowBasedRange(rangeId) || rangeId == 8 || rangeId == 208) {
+        if (this.isEnemyNearRange(rangeId) || this.isEnemyNearScaledRange(rangeId) || this.isRowBasedRange(rangeId) || rangeId == 8 /* ENEMY_ALL */ || rangeId == 208 /* ENEMY_ALL_SCALED */) {
             canBe = true;
         }
 
@@ -9065,26 +9296,26 @@ var RangeFactory = (function () {
 
     RangeFactory.createRange = function (id, selectDead) {
         switch (id) {
-            case 1:
+            case 1 /* EITHER_SIDE */:
                 return new EitherSideRange(id, selectDead);
-            case 2:
+            case 2 /* BOTH_SIDES */:
                 return new BothSidesRange(id, selectDead);
-            case 3:
+            case 3 /* SELF_BOTH_SIDES */:
                 return new SelfBothSidesRange(id);
-            case 4:
+            case 4 /* ALL */:
                 return new AllRange(id);
-            case 8:
-            case 208:
+            case 8 /* ENEMY_ALL */:
+            case 208 /* ENEMY_ALL_SCALED */:
                 return new EnemyAllRange(id);
-            case 12:
+            case 12 /* ENEMY_FRONT_ALL */:
                 return new EnemyFrontAllRange(id);
-            case 14:
+            case 14 /* ENEMY_REAR_ALL */:
                 return new EnemyRearAllRange(id);
-            case 15:
+            case 15 /* ENEMY_FRONT_MID_ALL */:
                 return new EnemyFrontMidAllRange(id);
-            case 21:
+            case 21 /* MYSELF */:
                 return new SelfRange(id, selectDead);
-            case 28:
+            case 28 /* RIGHT */:
                 return new RightRange(id);
             default:
                 throw new Error("Invalid range or not implemented");
@@ -9318,8 +9549,8 @@ var EitherSideRange = (function (_super) {
 
 var RightRange = (function (_super) {
     __extends(RightRange, _super);
-    function RightRange(id) {
-        _super.call(this, id);
+    function RightRange() {
+        _super.apply(this, arguments);
     }
     RightRange.prototype.getTargets = function (executor) {
         var targets = [];
@@ -9356,19 +9587,19 @@ var SelfRange = (function (_super) {
 
 var SelfBothSidesRange = (function (_super) {
     __extends(SelfBothSidesRange, _super);
-    function SelfBothSidesRange(id) {
-        _super.call(this, id);
+    function SelfBothSidesRange() {
+        _super.apply(this, arguments);
     }
     SelfBothSidesRange.prototype.getTargets = function (executor) {
         var targets = [];
 
-        if (!executor.isDead) {
-            targets.push(executor);
-        }
-
         var leftCard = CardManager.getInstance().getLeftSideCard(executor);
         if (leftCard && !leftCard.isDead) {
             targets.push(leftCard);
+        }
+
+        if (!executor.isDead) {
+            targets.push(executor);
         }
 
         var rightCard = CardManager.getInstance().getRightSideCard(executor);
@@ -9383,8 +9614,8 @@ var SelfBothSidesRange = (function (_super) {
 
 var AllRange = (function (_super) {
     __extends(AllRange, _super);
-    function AllRange(id) {
-        _super.call(this, id);
+    function AllRange() {
+        _super.apply(this, arguments);
     }
     AllRange.prototype.getTargets = function (executor) {
         var targets = [];
@@ -9446,8 +9677,8 @@ var EnemyNearRange = (function (_super) {
 
 var EnemyAllRange = (function (_super) {
     __extends(EnemyAllRange, _super);
-    function EnemyAllRange(id) {
-        _super.call(this, id);
+    function EnemyAllRange() {
+        _super.apply(this, arguments);
     }
     EnemyAllRange.prototype.getTargets = function (executor) {
         var enemyCards = CardManager.getInstance().getEnemyCurrentMainCards(executor.player);
@@ -9743,11 +9974,8 @@ var BattleModel = (function () {
 
         if (option.p1RandomMode) {
             this.p1RandomMode = option.p1RandomMode;
-            var p1randomList = FamiliarDatabase.getRandomFamList(+option.p1RandomMode, tierListString);
             p1_formation = pickRandomProperty(Formation.FORMATION_CONFIG);
-            for (var i = 0; i < 10; i++) {
-                p1_cardIds.push(getRandomElement(p1randomList));
-            }
+            p1_cardIds = BrigGenerator.getBrig(option.p1RandomMode, tierListString, this.isBloodClash);
 
             for (var i = 0; i < 3; i++) {
                 p1_warlordSkillIds.push(+getRandomElement(availableSkills));
@@ -9760,11 +9988,8 @@ var BattleModel = (function () {
 
         if (option.p2RandomMode) {
             this.p2RandomMode = option.p2RandomMode;
-            var p2randomList = FamiliarDatabase.getRandomFamList(+option.p2RandomMode, tierListString);
             p2_formation = pickRandomProperty(Formation.FORMATION_CONFIG);
-            for (var i = 0; i < 10; i++) {
-                p2_cardIds.push(getRandomElement(p2randomList));
-            }
+            p2_cardIds = BrigGenerator.getBrig(option.p2RandomMode, tierListString, this.isBloodClash);
 
             for (var i = 0; i < 3; i++) {
                 p2_warlordSkillIds.push(+getRandomElement(availableSkills));
