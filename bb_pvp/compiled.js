@@ -21,6 +21,8 @@ var AfflictionFactory = (function () {
                 return new PoisonAffliction();
             case 5 /* SILENT */:
                 return new SilentAffliction();
+            case 8 /* BURN */:
+                return new BurnAffliction();
             default:
                 throw new Error("Invalid affliction type!");
         }
@@ -47,6 +49,8 @@ var Affliction = (function () {
                 return "Poisoned";
             case 5 /* SILENT */:
                 return "Silent";
+            case 8 /* BURN */:
+                return "Burned";
             default:
                 throw new Error("Invalid affliction type!");
         }
@@ -221,6 +225,39 @@ var BlindAffliction = (function (_super) {
         this.missProb = option.missProb;
     };
     return BlindAffliction;
+})(Affliction);
+
+var BurnAffliction = (function (_super) {
+    __extends(BurnAffliction, _super);
+    function BurnAffliction() {
+        _super.call(this, 8 /* BURN */);
+        this.damage = 0;
+        this.values = [];
+    }
+    BurnAffliction.prototype.canAttack = function () {
+        return true;
+    };
+
+    BurnAffliction.prototype.update = function (card) {
+        BattleModel.getInstance().damageToTargetDirectly(card, this.damage, "burn");
+    };
+
+    BurnAffliction.prototype.add = function (option) {
+        var arr = this.values;
+        arr.push(option.damage);
+        arr.sort(function (a, b) {
+            return b - a;
+        });
+
+        this.damage = 0;
+        for (var i = 0; i < BurnAffliction.STACK_NUM; i++) {
+            if (arr[i]) {
+                this.damage += arr[i];
+            }
+        }
+    };
+    BurnAffliction.STACK_NUM = 3;
+    return BurnAffliction;
 })(Affliction);
 
 var BattleGraphic = (function () {
@@ -572,7 +609,7 @@ var BattleGraphic = (function () {
         var that = this;
 
         if (majorIndex >= majorLog.length) {
-            document.getElementById("startButton").disabled = false;
+            battleFinishedCallback();
             return;
         }
 
@@ -722,8 +759,6 @@ var BattleGraphic = (function () {
             this.getMainBattleEffect().text(data.battleDesc).center(200, 300).opacity(1).animate({ duration: '3s' }).opacity(0);
             this.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
         }
-
-        return;
     };
 
     BattleGraphic.prototype.displayStatusEvent = function (majorIndex, minorIndex, option) {
@@ -773,8 +808,6 @@ var BattleGraphic = (function () {
 
             this.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
         }
-
-        return;
     };
 
     BattleGraphic.prototype.displayReviveEvent = function (majorIndex, minorIndex, option) {
@@ -801,8 +834,6 @@ var BattleGraphic = (function () {
 
             this.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
         }
-
-        return;
     };
 
     BattleGraphic.prototype.displayProtectEvent = function (majorIndex, minorIndex, option) {
@@ -890,8 +921,6 @@ var BattleGraphic = (function () {
                 }
             });
         }
-
-        return;
     };
 
     BattleGraphic.prototype.displayReserveSwitchEvent = function (majorIndex, minorIndex, option) {
@@ -916,8 +945,6 @@ var BattleGraphic = (function () {
             this.displayHP(100, mainId, main.formationColumn, 0);
             this.getAfflictionText(mainId, main.formationColumn).hide();
         }
-
-        return;
     };
 
     BattleGraphic.prototype.displayDescriptionEvent = function (majorIndex, minorIndex, option) {
@@ -946,8 +973,6 @@ var BattleGraphic = (function () {
                 this.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
             }
         }
-
-        return;
     };
 
     BattleGraphic.prototype.displayBcAddProbEvent = function (majorIndex, minorIndex, option) {
@@ -965,8 +990,6 @@ var BattleGraphic = (function () {
 
             this.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
         }
-
-        return;
     };
 
     BattleGraphic.prototype.displayAfflictionEvent = function (majorIndex, minorIndex, option) {
@@ -978,8 +1001,6 @@ var BattleGraphic = (function () {
 
             this.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
         }
-
-        return;
     };
 
     BattleGraphic.prototype.displayHpChangeEvent = function (majorIndex, minorIndex, option) {
@@ -991,8 +1012,6 @@ var BattleGraphic = (function () {
             this.displayPostDamage(target.getPlayerId(), target.formationColumn, majorIndex, minorIndex);
             this.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
         }
-
-        return;
     };
 
     BattleGraphic.prototype.displayBattleEvent = function (majorIndex, minorIndex, option) {
@@ -1079,10 +1098,10 @@ var BattleGraphic = (function () {
                 }
             }
         } else if (Skill.isIndirectSkill(data.skillId)) {
-            var exploDuration = 0.2;
+            exploDuration = 0.2;
 
             if (Skill.isWisAutoAttack(data.skillId)) {
-                var procEffect = this.getProcEffect(executor.getPlayerId(), executor.formationColumn, 'spellCircle');
+                procEffect = this.getProcEffect(executor.getPlayerId(), executor.formationColumn, 'spellCircle');
                 procEffect.animate({ duration: '0.2s' }).opacity(1);
                 exploDuration = 0.4;
             }
@@ -1351,6 +1370,8 @@ var BattleLogger = (function () {
                         infoText.affliction += (" (" + afflict.validTurnNum + " turn)");
                     } else if (afflict.type === 1 /* POISON */) {
                         infoText.affliction += (" (" + afflict.percent + " %)");
+                    } else if (afflict.type === 8 /* BURN */) {
+                        infoText.affliction += (" (" + afflict.damage + ")");
                     } else {
                         infoText.affliction += " (1 turn)";
                     }
@@ -1460,7 +1481,7 @@ var BattleLogger = (function () {
             var p1res = cardManager.getPlayerOriginalReserveCards(battle.player1);
             var p2res = cardManager.getPlayerOriginalReserveCards(battle.player2);
 
-            for (var i = 0; i < 5; i++) {
+            for (i = 0; i < 5; i++) {
                 if (p1res[i].dbId != dbId1 || p2res[i].dbId != dbId2) {
                     needWarn = false;
                     break;
@@ -1483,15 +1504,17 @@ var BattleLogger = (function () {
     BattleLogger.prototype.getRandomModeText = function (type) {
         switch (type) {
             case 1 /* ALL */:
-            case 2 /* X_ONLY */:
-            case 3 /* SP_ONLY */:
-            case 4 /* SP_UP */:
-            case 5 /* S_ONLY */:
-            case 6 /* S_UP */:
-            case 7 /* AP_ONLY */:
-            case 8 /* AP_UP */:
-            case 9 /* A_ONLY */:
-            case 10 /* A_UP */:
+            case 2 /* XP_ONLY */:
+            case 3 /* X_ONLY */:
+            case 4 /* X_UP */:
+            case 5 /* SP_ONLY */:
+            case 6 /* SP_UP */:
+            case 7 /* S_ONLY */:
+            case 8 /* S_UP */:
+            case 9 /* AP_ONLY */:
+            case 10 /* AP_UP */:
+            case 11 /* A_ONLY */:
+            case 12 /* A_UP */:
                 return " (random " + ENUM.RandomBrigText[type] + ")";
             default:
                 return "";
@@ -1680,6 +1703,7 @@ var ENUM;
         SkillFunc[SkillFunc["IMITATE"] = 26] = "IMITATE";
         SkillFunc[SkillFunc["EVADE"] = 27] = "EVADE";
         SkillFunc[SkillFunc["PROTECT_REFLECT"] = 28] = "PROTECT_REFLECT";
+
         SkillFunc[SkillFunc["COUNTER_DISPELL"] = 29] = "COUNTER_DISPELL";
         SkillFunc[SkillFunc["TURN_ORDER_CHANGE"] = 31] = "TURN_ORDER_CHANGE";
         SkillFunc[SkillFunc["CASTER_BASED_DEBUFF"] = 32] = "CASTER_BASED_DEBUFF";
@@ -1691,6 +1715,7 @@ var ENUM;
         SkillFunc[SkillFunc["ONHIT_DEBUFF"] = 38] = "ONHIT_DEBUFF";
         SkillFunc[SkillFunc["ONHIT_BUFF"] = 39] = "ONHIT_BUFF";
         SkillFunc[SkillFunc["CLEAR_DEBUFF"] = 40] = "CLEAR_DEBUFF";
+        SkillFunc[SkillFunc["COUNTER_INDIRECT"] = 41] = "COUNTER_INDIRECT";
     })(ENUM.SkillFunc || (ENUM.SkillFunc = {}));
     var SkillFunc = ENUM.SkillFunc;
 
@@ -1708,6 +1733,15 @@ var ENUM;
         SkillCalcType[SkillCalcType["WIS_AGI"] = 10] = "WIS_AGI";
     })(ENUM.SkillCalcType || (ENUM.SkillCalcType = {}));
     var SkillCalcType = ENUM.SkillCalcType;
+
+    (function (ProtectAttackType) {
+        ProtectAttackType[ProtectAttackType["ALL"] = 0] = "ALL";
+        ProtectAttackType[ProtectAttackType["NORMAL"] = 1] = "NORMAL";
+        ProtectAttackType[ProtectAttackType["SKILL"] = 2] = "SKILL";
+        ProtectAttackType[ProtectAttackType["NOT_COUNTER"] = 3] = "NOT_COUNTER";
+        ProtectAttackType[ProtectAttackType["COUNTER"] = 4] = "COUNTER";
+    })(ENUM.ProtectAttackType || (ENUM.ProtectAttackType = {}));
+    var ProtectAttackType = ENUM.ProtectAttackType;
 
     (function (StatType) {
         StatType[StatType["HP"] = 0] = "HP";
@@ -1839,6 +1873,7 @@ var ENUM;
         AfflictionType[AfflictionType["DISABLE"] = 4] = "DISABLE";
         AfflictionType[AfflictionType["SILENT"] = 5] = "SILENT";
         AfflictionType[AfflictionType["BLIND"] = 7] = "BLIND";
+        AfflictionType[AfflictionType["BURN"] = 8] = "BURN";
     })(ENUM.AfflictionType || (ENUM.AfflictionType = {}));
     var AfflictionType = ENUM.AfflictionType;
 
@@ -1889,29 +1924,33 @@ var ENUM;
     (function (RandomBrigType) {
         RandomBrigType[RandomBrigType["NONE"] = 0] = "NONE";
         RandomBrigType[RandomBrigType["ALL"] = 1] = "ALL";
-        RandomBrigType[RandomBrigType["X_ONLY"] = 2] = "X_ONLY";
-        RandomBrigType[RandomBrigType["SP_ONLY"] = 3] = "SP_ONLY";
-        RandomBrigType[RandomBrigType["SP_UP"] = 4] = "SP_UP";
-        RandomBrigType[RandomBrigType["S_ONLY"] = 5] = "S_ONLY";
-        RandomBrigType[RandomBrigType["S_UP"] = 6] = "S_UP";
-        RandomBrigType[RandomBrigType["AP_ONLY"] = 7] = "AP_ONLY";
-        RandomBrigType[RandomBrigType["AP_UP"] = 8] = "AP_UP";
-        RandomBrigType[RandomBrigType["A_ONLY"] = 9] = "A_ONLY";
-        RandomBrigType[RandomBrigType["A_UP"] = 10] = "A_UP";
+        RandomBrigType[RandomBrigType["XP_ONLY"] = 2] = "XP_ONLY";
+        RandomBrigType[RandomBrigType["X_ONLY"] = 3] = "X_ONLY";
+        RandomBrigType[RandomBrigType["X_UP"] = 4] = "X_UP";
+        RandomBrigType[RandomBrigType["SP_ONLY"] = 5] = "SP_ONLY";
+        RandomBrigType[RandomBrigType["SP_UP"] = 6] = "SP_UP";
+        RandomBrigType[RandomBrigType["S_ONLY"] = 7] = "S_ONLY";
+        RandomBrigType[RandomBrigType["S_UP"] = 8] = "S_UP";
+        RandomBrigType[RandomBrigType["AP_ONLY"] = 9] = "AP_ONLY";
+        RandomBrigType[RandomBrigType["AP_UP"] = 10] = "AP_UP";
+        RandomBrigType[RandomBrigType["A_ONLY"] = 11] = "A_ONLY";
+        RandomBrigType[RandomBrigType["A_UP"] = 12] = "A_UP";
     })(ENUM.RandomBrigType || (ENUM.RandomBrigType = {}));
     var RandomBrigType = ENUM.RandomBrigType;
 
     (function (RandomBrigText) {
         RandomBrigText[RandomBrigText["all"] = 1] = "all";
-        RandomBrigText[RandomBrigText["Tier X"] = 2] = "Tier X";
-        RandomBrigText[RandomBrigText["Tier S+"] = 3] = "Tier S+";
-        RandomBrigText[RandomBrigText["Tier S+ and up"] = 4] = "Tier S+ and up";
-        RandomBrigText[RandomBrigText["Tier S"] = 5] = "Tier S";
-        RandomBrigText[RandomBrigText["Tier S and up"] = 6] = "Tier S and up";
-        RandomBrigText[RandomBrigText["Tier A+"] = 7] = "Tier A+";
-        RandomBrigText[RandomBrigText["Tier A+ and up"] = 8] = "Tier A+ and up";
-        RandomBrigText[RandomBrigText["Tier A"] = 9] = "Tier A";
-        RandomBrigText[RandomBrigText["Tier A and up"] = 10] = "Tier A and up";
+        RandomBrigText[RandomBrigText["Tier X+"] = 2] = "Tier X+";
+        RandomBrigText[RandomBrigText["Tier X"] = 3] = "Tier X";
+        RandomBrigText[RandomBrigText["Tier X and up"] = 4] = "Tier X and up";
+        RandomBrigText[RandomBrigText["Tier S+"] = 5] = "Tier S+";
+        RandomBrigText[RandomBrigText["Tier S+ and up"] = 6] = "Tier S+ and up";
+        RandomBrigText[RandomBrigText["Tier S"] = 7] = "Tier S";
+        RandomBrigText[RandomBrigText["Tier S and up"] = 8] = "Tier S and up";
+        RandomBrigText[RandomBrigText["Tier A+"] = 9] = "Tier A+";
+        RandomBrigText[RandomBrigText["Tier A+ and up"] = 10] = "Tier A+ and up";
+        RandomBrigText[RandomBrigText["Tier A"] = 11] = "Tier A";
+        RandomBrigText[RandomBrigText["Tier A and up"] = 12] = "Tier A and up";
     })(ENUM.RandomBrigText || (ENUM.RandomBrigText = {}));
     var RandomBrigText = ENUM.RandomBrigText;
 
@@ -2154,6 +2193,13 @@ var Card = (function () {
             return undefined;
         } else {
             return this.affliction.percent;
+        }
+    };
+    Card.prototype.getBurnDamage = function () {
+        if (!this.affliction || this.affliction.type != 8 /* BURN */) {
+            return undefined;
+        } else {
+            return this.affliction.damage;
         }
     };
 
@@ -2446,7 +2492,6 @@ var CardManager = (function () {
         copy.sort(function (a, b) {
             return a.procIndex - b.procIndex;
         });
-
         return copy;
     };
 
@@ -3146,6 +3191,19 @@ var famDatabase = {
         img: "img4$1/__cb20140417053801/$2/f/f3/Brang_Two-Heads_II_Figure.png",
         fullName: "Brang Two-Heads II"
     },
+    11209: {
+        name: "Rabbit", stats: [18999, 13951, 20007, 9986, 18035],
+        skills: [435, 436],
+        img: "img2$1/__cb20140423020348/$2/6/6e/Brass_Rabbit_Figure.png",
+        fullName: "Brass Rabbit"
+    },
+    11194: {
+        name: "Tarantula", stats: [19324, 14568, 18024, 15695, 12120],
+        skills: [396, 397],
+        autoAttack: 10005,
+        img: "img2$1/__cb20140318135240/$2/7/71/Brass_Tarantula_II_Figure.png",
+        fullName: "Brass Tarantula II"
+    },
     11171: {
         name: "Hyena", stats: [14644, 10766, 11860, 18923, 12228],
         skills: [321],
@@ -3170,6 +3228,13 @@ var famDatabase = {
         skills: [371],
         img: "img1$1/__cb20140213034945/$2/c/c7/Caassimolar%2C_the_Chimera_II_Figure.png",
         fullName: "Caassimolar, the Chimera II"
+    },
+    11449: {
+        name: "Camazo", stats: [22628, 22585, 22173, 16139, 18208],
+        skills: [601, 445],
+        autoAttack: 10038,
+        img: "img2$1/__cb20141014080304/$2/6/6c/Camazo%2C_Knight_of_Bats_II_Figure.png",
+        fullName: "Camazo, Knight of Bats II"
     },
     11119: {
         name: "Canhel", stats: [15608, 19606, 17992, 11329, 16399],
@@ -3300,6 +3365,13 @@ var famDatabase = {
         img: "img1$1/__cb20141009082936/$2/8/8e/Dantalion%2C_Duke_of_Hell_II_Figure.png",
         fullName: "Dantalion, Duke of Hell II"
     },
+    21445: {
+        name: "Darkwind Wyvern", stats: [22211, 8270, 19352, 20917, 17649],
+        skills: [607],
+        autoAttack: 10042,
+        img: "img4$1/__cb20141025082638/$2/d/dd/Darkwind_Wyvern_Figure.png",
+        fullName: "Darkwind Wyvern"
+    },
     10905: {
         name: "Danzo", stats: [14774, 17277, 14872, 17667, 16128],
         skills: [237],
@@ -3391,6 +3463,13 @@ var famDatabase = {
         skills: [179],
         img: "img2$1/__cb20130430110741/$2/5/5f/Edgardo%2C_Grand_Inquisitor_II_Figure.png",
         fullName: "Edgardo, Grand Inquisitor II"
+    },
+    11450: {
+        name: "Elsa", stats: [19010, 19021, 15132, 10018, 17851],
+        skills: [602],
+        autoAttack: 10039,
+        img: "img2$1/__cb20141014080304/$2/f/fe/Elsa%2C_Undead_Bride_II_Figure.png",
+        fullName: "Elsa, Undead Bride II"
     },
     21276: {
         name: "Empusa", stats: [20706, 12623, 16110, 20999, 17510],
@@ -3556,6 +3635,13 @@ var famDatabase = {
         img: "img3$1/__cb20140515012432/$2/9/91/Ghislandi%2C_the_Unchained_II_Figure.png",
         fullName: "Ghislandi, the Unchained II"
     },
+    11453: {
+        name: "GCE", stats: [15100, 7564, 11403, 17254, 16609],
+        skills: [604],
+        autoAttack: 10007,
+        img: "img3$1/__cb20141014080306/$2/3/33/Ghost_Carriage_Express_II_Figure.png",
+        fullName: "Ghost Carriage Express II"
+    },
     11304: {
         name: "Gigantopithecus", stats: [24210, 25055, 21946, 13994, 15998],
         skills: [491],
@@ -3677,6 +3763,13 @@ var famDatabase = {
         skills: [232],
         img: "img1$1/__cb20130901131933/$2/9/98/Haokah%2C_the_Lightning_Brave_II_Figure.png",
         fullName: "Haokah, the Lightning Brave II"
+    },
+    11451: {
+        name: "Hatshepsut", stats: [17049, 16334, 13041, 6097, 16096],
+        skills: [603],
+        autoAttack: 10040,
+        img: "img2$1/__cb20141014080305/$2/b/bd/Hatshepsut%2C_Mummy_Queen_II_Figure.png",
+        fullName: "Hatshepsut, Mummy Queen II"
     },
     10951: {
         name: "Hecatoncheir", stats: [11807, 13902, 14768, 13928, 13366],
@@ -3981,6 +4074,13 @@ var famDatabase = {
         img: "img1$1/__cb20130106224520/$2/6/63/Lanvall%2C_Lizard_Cavalier_II_Figure.png",
         fullName: "Lanvall, Lizard Cavalier II"
     },
+    11347: {
+        name: "Lava Dragon", stats: [19021, 8881, 16237, 18891, 16497],
+        skills: [534, 535],
+        autoAttack: 10019,
+        img: "img3$1/__cb20140809012705/$2/d/de/Lava_Dragon_II_Figure.png",
+        fullName: "Lava Dragon II"
+    },
     11128: {
         name: "Leupold", stats: [17585, 11038, 12963, 9794, 16510],
         skills: [378],
@@ -4040,6 +4140,13 @@ var famDatabase = {
         skills: [336],
         img: "img3$1/__cb20140221092054/$2/4/46/Magdal%2C_Dragonmaster_II_Figure.png",
         fullName: "Magdal, Dragonmaster II"
+    },
+    11429: {
+        name: "Maisie", stats: [19194, 19097, 16258, 8101, 17905],
+        skills: [599, 600],
+        autoAttack: 10037,
+        img: "img1$1/__cb20141011104105/$2/d/da/Maisie%2C_Grimoire_Keeper_II_Figure.png",
+        fullName: "Maisie, Grimoire Keeper II"
     },
     10365: {
         name: "Makalipon", stats: [10343, 8405, 10611, 12280, 10343],
@@ -4681,6 +4788,13 @@ var famDatabase = {
         img: "img1$1/__cb20131002005342/$2/0/06/Sir_Brandiles%2C_the_Flameblade_II_Figure.png",
         fullName: "Sir Brandiles, the Flameblade II"
     },
+    11455: {
+        name: "Skeleton King", stats: [19714, 19064, 20982, 6097, 18143],
+        skills: [605, 606],
+        autoAttack: 10041,
+        img: "img3$1/__cb20141016101616/$2/b/b5/Skeleton_King_II_Figure.png",
+        fullName: "Skeleton King II"
+    },
     11074: {
         name: "Skoll", stats: [15002, 13160, 15153, 9000, 16302],
         skills: [301, 367],
@@ -4764,7 +4878,7 @@ var famDatabase = {
         name: "Tanba", stats: [17580, 23213, 17883, 23289, 18057],
         skills: [236],
         img: "img3$1/__cb20130921071545/$2/a/a8/Tanba%2C_Founder_of_the_Ninja_II_Figure.png",
-        fullName: "Tanba, Founder of Ninja II"
+        fullName: "Tanba, Founder of the Ninja II"
     },
     327: {
         name: "Tangata", stats: [10500, 10800, 10630, 10740, 12480],
@@ -4981,6 +5095,13 @@ var famDatabase = {
         img: "img2$1/__cb20131210234034/$2/d/dc/Waheela%2C_Dire_Wolf_II_Figure.png",
         fullName: "Waheela, Dire Wolf II"
     },
+    11396: {
+        name: "Wicker Man", stats: [16605, 6833, 11654, 16670, 16930],
+        skills: [581, 582],
+        autoAttack: 10036,
+        img: "img2$1/__cb20140926194802/$2/d/d2/Wicker_Man_II_Figure.png",
+        fullName: "Wicker Man II"
+    },
     10570: {
         name: "Wolfert", stats: [14189, 23972, 13723, 13290, 13431],
         skills: [118],
@@ -5064,7 +5185,7 @@ var FamiliarDatabase = (function () {
         if (!this.tierList) {
             this.tierList = {};
             var allTierList = JSON.parse(allTierString);
-            var tierArray = ["tierX", "tierS+", "tierS", "tierA+", "tierA", "tierB", "tierC"];
+            var tierArray = ["X+", "X", "S+", "S", "A+", "A", "B", "C"];
 
             for (var i = 0; i < tierArray.length; i++) {
                 var tierNameList = [];
@@ -5105,33 +5226,38 @@ var FamiliarDatabase = (function () {
     };
 
     FamiliarDatabase.getRandomFamList = function (type, allTierString) {
-        var tierX = this.getTierList("tierX", allTierString);
-        var tierSP = this.getTierList("tierS+", allTierString);
-        var tierS = this.getTierList("tierS", allTierString);
-        var tierAP = this.getTierList("tierA+", allTierString);
-        var tierA = this.getTierList("tierA", allTierString);
+        var tierXP = this.getTierList("X+", allTierString);
+        var tierX = this.getTierList("X", allTierString);
+        var tierSP = this.getTierList("S+", allTierString);
+        var tierS = this.getTierList("S", allTierString);
+        var tierAP = this.getTierList("A+", allTierString);
+        var tierA = this.getTierList("A", allTierString);
 
         switch (type) {
             case 1 /* ALL */:
                 return this.getAllFamiliarList();
-            case 2 /* X_ONLY */:
+            case 2 /* XP_ONLY */:
+                return tierXP;
+            case 3 /* X_ONLY */:
                 return tierX;
-            case 3 /* SP_ONLY */:
+            case 4 /* X_UP */:
+                return tierX.concat(tierXP);
+            case 5 /* SP_ONLY */:
                 return tierSP;
-            case 4 /* SP_UP */:
-                return tierSP.concat(tierX);
-            case 5 /* S_ONLY */:
+            case 6 /* SP_UP */:
+                return tierSP.concat(tierX).concat(tierXP);
+            case 7 /* S_ONLY */:
                 return tierS;
-            case 6 /* S_UP */:
-                return tierS.concat(tierSP.concat(tierX));
-            case 7 /* AP_ONLY */:
+            case 8 /* S_UP */:
+                return tierS.concat(tierSP).concat(tierX).concat(tierXP);
+            case 9 /* AP_ONLY */:
                 return tierAP;
-            case 8 /* AP_UP */:
-                return tierAP.concat(tierS.concat(tierSP.concat(tierX)));
-            case 9 /* A_ONLY */:
+            case 10 /* AP_UP */:
+                return tierAP.concat(tierS).concat(tierSP).concat(tierX).concat(tierXP);
+            case 11 /* A_ONLY */:
                 return tierA;
-            case 10 /* A_UP */:
-                return tierA.concat(tierAP.concat(tierS.concat(tierSP.concat(tierX))));
+            case 12 /* A_UP */:
+                return tierA.concat(tierAP).concat(tierS).concat(tierSP).concat(tierX).concat(tierXP);
             default:
                 throw new Error("Invalid brig random type");
         }
@@ -5263,6 +5389,7 @@ var Skill = (function () {
             case 3 /* ATTACK */:
             case 13 /* COUNTER */:
             case 14 /* PROTECT_COUNTER */:
+            case 28 /* PROTECT_REFLECT */:
             case 21 /* DEBUFFATTACK */:
             case 33 /* CASTER_BASED_DEBUFF_ATTACK */:
             case 36 /* DRAIN_ATTACK */:
@@ -5380,7 +5507,7 @@ var Skill = (function () {
                 if (skillInfo.arg3 && skillInfo.arg2 != 17 /* HP_SHIELD */)
                     statuses.push(skillInfo.arg3);
                 break;
-
+            case 2 /* DEBUFF */:
             case 21 /* DEBUFFATTACK */:
             case 22 /* DEBUFFINDIRECT */:
             case 33 /* CASTER_BASED_DEBUFF_ATTACK */:
@@ -5417,8 +5544,15 @@ var Skill = (function () {
         }
     };
 
-    Skill.canEvadeFromSkill = function (attackSkill) {
-        return (attackSkill.skillFunc != 13 /* COUNTER */ && attackSkill.skillFunc != 14 /* PROTECT_COUNTER */ && !attackSkill.isAutoAttack);
+    Skill.canProtectFromAttackType = function (type, attackSkill) {
+        switch (type) {
+            case 2 /* SKILL */:
+                return (attackSkill.skillFunc != 13 /* COUNTER */ && attackSkill.skillFunc != 14 /* PROTECT_COUNTER */ && attackSkill.skillFunc != 41 /* COUNTER_INDIRECT */ && attackSkill.id == 10000);
+            case 3 /* NOT_COUNTER */:
+                return (attackSkill.skillFunc != 13 /* COUNTER */ && attackSkill.skillFunc != 14 /* PROTECT_COUNTER */ && attackSkill.skillFunc != 41 /* COUNTER_INDIRECT */);
+            default:
+                throw new Error("Unimplemented ProtectAttackType");
+        }
     };
 
     Skill.prototype.isIndirectSkill = function () {
@@ -5453,8 +5587,12 @@ var Skill = (function () {
         return this.logic.execute(data);
     };
 
-    Skill.prototype.getTargets = function (executor) {
-        return this.range.getTargets(executor);
+    Skill.prototype.getTarget = function (executor) {
+        return this.range.getTarget(executor);
+    };
+
+    Skill.prototype.getReady = function (executor) {
+        this.range.getReady(executor);
     };
     Skill.availableSkillsForSelect = null;
     return Skill;
@@ -5567,6 +5705,37 @@ function getCasterBasedDebuffAmount(executor) {
     var value = executor.getWIS() * FACTOR;
 
     return -1 * value;
+}
+
+function getReflectAmount(attacker, attackSkill, caster, target, ignorePosFactor, oriDmg) {
+    var DIFF_FACTOR = 0.7;
+
+    var POS_ATTACK_FACTOR = {};
+    POS_ATTACK_FACTOR[3 /* REAR */] = 0.8;
+    POS_ATTACK_FACTOR[2 /* MID */] = 1;
+    POS_ATTACK_FACTOR[1 /* FRONT */] = 1.2;
+
+    var POS_DAMAGE_FACTOR = {};
+    POS_DAMAGE_FACTOR[3 /* REAR */] = 0.8;
+    POS_DAMAGE_FACTOR[2 /* MID */] = 1;
+    POS_DAMAGE_FACTOR[1 /* FRONT */] = 1.2;
+
+    var damage;
+    var x = oriDmg;
+    switch (attackSkill.skillCalcType) {
+        case 1 /* ATK */:
+        case 3 /* AGI */:
+            var xFormation = ignorePosFactor ? 1 : POS_ATTACK_FACTOR[attacker.formationRow] * POS_DAMAGE_FACTOR[caster.formationRow];
+            var formation = ignorePosFactor ? 1 : POS_ATTACK_FACTOR[caster.formationRow] * POS_DAMAGE_FACTOR[target.formationRow];
+            damage = (x / xFormation + Math.max(0, caster.getDEF() - target.getDEF()) * DIFF_FACTOR) * formation;
+            break;
+        case 2 /* WIS */:
+            damage = x + Math.max(0, caster.getDEF() - (target.getWIS() + target.getDEF()) / 2) * DIFF_FACTOR;
+            break;
+    }
+    damage = Math.floor(damage * getRandomArbitary(0.9, 1.1));
+
+    return damage;
 }
 var SkillDatabase = {
     10000: {
@@ -7322,6 +7491,18 @@ var SkillDatabase = {
         range: 7, prob: 70,
         desc: "Chance to silence up to three foes for one turn at the start of battle."
     },
+    396: {
+        name: "Venom Snare", type: 5, func: 28, calc: 7,
+        arg1: 0.23, arg2: 1, arg3: 7, arg4: 3, arg5: 0.3,
+        range: 21, prob: 30,
+        desc: "Reflect ATK-based damage back to up to three foes."
+    },
+    397: {
+        name: "Tarantella", type: 1, func: 1, calc: 0,
+        arg1: 0.3, arg2: 2,
+        range: 3, prob: 70,
+        desc: "Raise DEF of self and adjacent familiars."
+    },
     398: {
         name: "Knuckle Guard", type: 5, func: 12, calc: 0,
         arg1: 0,
@@ -7507,6 +7688,18 @@ var SkillDatabase = {
         arg1: 1.45,
         range: 313, prob: 30, ward: 1,
         desc: "AGI-based damage to up to three foes. Increased if fewer foes."
+    },
+    435: {
+        name: "Obedience", type: 2, func: 3, calc: 3,
+        arg1: 1.5, arg2: 2, arg3: 0.3,
+        range: 19, prob: 30, ward: 1,
+        desc: "Deal heavy AGI-based damage to and sometimes paralyze four random foes."
+    },
+    436: {
+        name: "Troublemaker", type: 5, func: 28, calc: 7,
+        arg1: 0.23, arg2: 3, arg3: 7, arg4: 3, arg5: 0.3,
+        range: 21, prob: 50,
+        desc: "Reflect AGI-based damage back to up to three foes."
     },
     438: {
         name: "Poison Torrent", type: 2, func: 3, calc: 1,
@@ -8043,6 +8236,18 @@ var SkillDatabase = {
         range: 4, prob: 70,
         desc: "Raise WIS and AGI of all party members."
     },
+    534: {
+        name: "Lava Torrent", type: 1, func: 19, calc: 0,
+        arg1: 0, arg2: 8, arg3: 0.5, arg4: 3000,
+        range: 7, prob: 70,
+        desc: "Chance to burn up to three foes at start of battle."
+    },
+    535: {
+        name: "Eruption", type: 2, func: 4, calc: 2,
+        arg1: 1.75,
+        range: 15, prob: 30, ward: 3,
+        desc: "Deal heavy WIS-based damage to front/middle lines, ignoring position."
+    },
     536: {
         name: "Arboreal Succor", type: 2, func: 40, calc: 0,
         range: 4, prob: 70,
@@ -8281,6 +8486,18 @@ var SkillDatabase = {
         range: 314, prob: 30, ward: 2,
         desc: "Heavy WIS-based damage to up to four foes. Increased if fewer foes."
     },
+    581: {
+        name: "Sacred Offering", type: 1, func: 32, calc: 0,
+        arg1: 0.2, arg2: 2,
+        range: 8, prob: 70,
+        desc: "Greatly lower DEF of all foes."
+    },
+    582: {
+        name: "Crumble", type: 2, func: 4, calc: 2,
+        arg1: 1.4, arg2: 8, arg3: 0.4, arg4: 2000,
+        range: 20, prob: 30, ward: 2,
+        desc: "Deal heavy WIS-based damage and sometimes burn five random foes, ignoring position."
+    },
     585: {
         name: "Death's Call", type: 2, func: 34, calc: 2,
         arg1: 1.6, arg2: 3, arg3: 0.4, arg4: 0.2,
@@ -8341,6 +8558,60 @@ var SkillDatabase = {
         range: 8, prob: 70,
         desc: "Greatly lower AGI of all foes upon his death."
     },
+    599: {
+        name: "Poisoned Wine", type: 2, func: 4, calc: 1,
+        arg1: 1.2, arg2: 4, arg3: 0.3,
+        range: 17, prob: 30, ward: 1,
+        desc: "Deal ATK-based damage to six random foes and sometimes disable them, ignoring position."
+    },
+    600: {
+        name: "Poison-Laced Hood", type: 3, func: 41, calc: 1,
+        arg1: 1.8, arg2: 1, arg3: 1, arg4: 20,
+        range: 21, prob: 50, ward: 1,
+        desc: "Chance of poisonous counter attack (20% of max HP) when struck, ignoring position."
+    },
+    601: {
+        name: "Veil of Night", type: 2, func: 3, calc: 3,
+        arg1: 1.85,
+        range: 19, prob: 30, ward: 1,
+        desc: "Deal heavy AGI-based damage to four random foes."
+    },
+    602: {
+        name: "Cake Cutting", type: 2, func: 3, calc: 1,
+        arg1: 1.15, arg2: 1, arg3: 1, arg4: 10,
+        range: 20, prob: 30, ward: 1,
+        desc: "Deal venomous ATK-based damage to five random foes."
+    },
+    603: {
+        name: "Bandage Garotte", type: 2, func: 37, calc: 1,
+        arg1: 2.05, arg2: 0.15, arg3: 27, arg4: 21,
+        range: 16, prob: 30, ward: 1,
+        desc: "Massive ATK-based damage and drain HP from three random foes, ignoring position."
+    },
+    604: {
+        name: "Blindside", type: 2, func: 4, calc: 2,
+        arg1: 1.9,
+        range: 16, prob: 30, ward: 2,
+        desc: "Deal heavy WIS-based damage to three random foes, ignoring position."
+    },
+    605: {
+        name: "Bone Shatter", type: 2, func: 3, calc: 1,
+        arg1: 1.6,
+        range: 19, prob: 30, ward: 1,
+        desc: "Deal heavy ATK-based damage to four random foes."
+    },
+    606: {
+        name: "Overawe", type: 5, func: 28, calc: 7,
+        arg1: 0.45, arg2: 10, arg3: 23, arg4: 3, arg5: 0.1,
+        range: 21, prob: 50,
+        desc: "Reflect 90% of AGI/WIS-based damage back to two random foes."
+    },
+    607: {
+        name: "Breath of Darkness", type: 2, func: 4, calc: 2,
+        arg1: 1.35, arg2: 8, arg3: 0.4, arg4: 2500,
+        range: 8, prob: 30, ward: 3,
+        desc: "Deal WIS-based damage to all foes and sometimes burn targets, ignoring position."
+    },
     10001: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
         arg1: 1,
@@ -8358,6 +8629,12 @@ var SkillDatabase = {
         arg1: 1.05, arg2: 2, arg3: 0.2,
         range: 5, prob: 100, ward: 2, isAutoAttack: true,
         desc: "WIS-based damage, sometimes paralyzing target."
+    },
+    10005: {
+        name: "Standard Action", type: 2, func: 4, calc: 1,
+        arg1: 1,
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
     },
     10006: {
         name: "Standard Action", type: 2, func: 3, calc: 1,
@@ -8532,6 +8809,48 @@ var SkillDatabase = {
         arg1: 1.3,
         range: 5, prob: 100, ward: 1, isAutoAttack: true,
         desc: "ATK-based damage to one foe."
+    },
+    10036: {
+        name: "Standard Action", type: 2, func: 4, calc: 2,
+        arg1: 1, arg2: 8, arg3: 0.4, arg4: 2000,
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "WIS-based damage and sometimes burn target."
+    },
+    10037: {
+        name: "Standard Action", type: 2, func: 4, calc: 1,
+        arg1: 1, arg2: 1, arg3: 0.5, arg4: 15,
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage and sometimes envenom target."
+    },
+    10038: {
+        name: "Standard Action", type: 2, func: 36, calc: 1,
+        arg1: 1, arg2: 0.4, arg3: 27, arg4: 21,
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage and drain HP from target."
+    },
+    10039: {
+        name: "Standard Action", type: 2, func: 3, calc: 1,
+        arg1: 1, arg2: 1, arg3: 0.5, arg4: 15,
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage and sometimes envenom target."
+    },
+    10040: {
+        name: "Standard Action", type: 2, func: 37, calc: 1,
+        arg1: 1, arg2: 0.2, arg3: 27, arg4: 21,
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage and drain HP from target."
+    },
+    10041: {
+        name: "Standard Action", type: 2, func: 3, calc: 1,
+        arg1: 1.2,
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
+    10042: {
+        name: "Standard Action", type: 2, func: 4, calc: 2,
+        arg1: 1.3,
+        range: 5, prob: 100, ward: 3, isAutoAttack: true,
+        desc: "WIS-based damage to one foe."
     }
 };
 var SkillLogicFactory = (function () {
@@ -8566,7 +8885,10 @@ var SkillLogicFactory = (function () {
                 return new EvadeSkillLogic();
             case 14 /* PROTECT_COUNTER */:
                 return new ProtectCounterSkillLogic();
+            case 28 /* PROTECT_REFLECT */:
+                return new ProtectReflectSkillLogic();
             case 13 /* COUNTER */:
+            case 41 /* COUNTER_INDIRECT */:
                 return new CounterSkillLogic();
             case 29 /* COUNTER_DISPELL */:
                 return new CounterDispellSkillLogic();
@@ -8628,14 +8950,14 @@ var BuffSkillLogic = (function (_super) {
         _super.apply(this, arguments);
     }
     BuffSkillLogic.prototype.willBeExecuted = function (data) {
-        var targets = data.skill.range.getTargets(data.executor);
-        return _super.prototype.willBeExecuted.call(this, data) && targets && (targets.length > 0);
+        var hasTarget = data.skill.range.hasValidTarget(data.executor);
+        return _super.prototype.willBeExecuted.call(this, data) && hasTarget;
     };
 
     BuffSkillLogic.prototype.execute = function (data) {
         var skill = data.skill;
         var executor = data.executor;
-        var targets = skill.range.getTargets(executor);
+        skill.getReady(executor);
 
         if (skill.skillFuncArg2 != 9 /* ALL_STATUS */) {
             var statusToBuff = [skill.skillFuncArg2];
@@ -8650,9 +8972,9 @@ var BuffSkillLogic = (function (_super) {
         var basedOnStatType = ENUM.SkillCalcType[skill.skillCalcType];
         var baseStat = executor.getStat(basedOnStatType);
 
-        for (var i = 0; i < targets.length; i++) {
+        var target;
+        while (target = skill.getTarget(executor)) {
             for (var j = 0; j < statusToBuff.length; j++) {
-                var target = targets[i];
                 var statusType = statusToBuff[j];
 
                 switch (statusType) {
@@ -8684,7 +9006,6 @@ var BuffSkillLogic = (function (_super) {
                 }
 
                 target.changeStatus(statusType, buffAmount, false, maxValue);
-                var description = target.name + "'s " + ENUM.StatusType[statusType] + " increased by " + buffAmount;
 
                 this.logger.addMinorEvent({
                     executorId: executor.id,
@@ -8694,7 +9015,7 @@ var BuffSkillLogic = (function (_super) {
                         type: statusType,
                         isAllUp: skill.skillFuncArg2 == 9 /* ALL_STATUS */
                     },
-                    description: description,
+                    description: target.name + "'s " + ENUM.StatusType[statusType] + " increased by " + buffAmount,
                     amount: buffAmount,
                     skillId: skill.id
                 });
@@ -8712,11 +9033,11 @@ var DebuffSkillLogic = (function (_super) {
     DebuffSkillLogic.prototype.execute = function (data) {
         var skill = data.skill;
         var executor = data.executor;
+        skill.getReady(executor);
 
-        var targets = skill.range.getTargets(executor);
-
-        for (var i = 0; i < targets.length; i++) {
-            this.battleModel.processDebuff(executor, targets[i], skill);
+        var target;
+        while (target = skill.getTarget(executor)) {
+            this.battleModel.processDebuff(executor, target, skill);
         }
     };
     return DebuffSkillLogic;
@@ -8732,40 +9053,34 @@ var ClearStatusSkillLogic = (function (_super) {
         this.isDispelled = false;
     }
     ClearStatusSkillLogic.prototype.willBeExecuted = function (data) {
-        var targets = this.getValidTargets(data);
-        return _super.prototype.willBeExecuted.call(this, data) && (targets.length > 0);
+        var hasValidTarget = data.skill.range.hasValidTarget(data.executor, this.getCondFunc());
+        return _super.prototype.willBeExecuted.call(this, data) && hasValidTarget;
     };
 
-    ClearStatusSkillLogic.prototype.getValidTargets = function (data) {
-        var rangeTargets = data.skill.getTargets(data.executor);
-        var validTargets = [];
-
-        for (var i = 0; i < rangeTargets.length; i++) {
-            if (rangeTargets[i].hasStatus(this.condFunc)) {
-                validTargets.push(rangeTargets[i]);
-            }
-        }
-
-        return validTargets;
+    ClearStatusSkillLogic.prototype.getCondFunc = function () {
+        var _this = this;
+        return function (card) {
+            return card.hasStatus(_this.condFunc);
+        };
     };
 
     ClearStatusSkillLogic.prototype.execute = function (data) {
-        var targets = this.getValidTargets(data);
+        data.skill.getReady(data.executor);
+        var target;
 
-        for (var i = 0; i < targets.length; i++) {
-            targets[i].clearAllStatus(this.condFunc);
+        while (target = data.skill.getTarget(data.executor)) {
+            target.clearAllStatus(this.condFunc);
 
-            var desc = targets[i].name + (this.isDispelled ? " is dispelled." : " is cleared of debuffs.");
             this.logger.addMinorEvent({
                 executorId: data.executor.id,
-                targetId: targets[i].id,
+                targetId: target.id,
                 type: 2 /* STATUS */,
                 status: {
                     type: 0,
                     isDispelled: this.isDispelled,
                     isClearDebuff: !this.isDispelled
                 },
-                description: desc,
+                description: target.name + (this.isDispelled ? " is dispelled." : " is cleared of debuffs."),
                 skillId: data.skill.id
             });
         }
@@ -8803,10 +9118,11 @@ var AfflictionSkillLogic = (function (_super) {
         _super.apply(this, arguments);
     }
     AfflictionSkillLogic.prototype.execute = function (data) {
-        var targets = data.skill.range.getTargets(data.executor);
+        data.skill.getReady(data.executor);
 
-        for (var i = 0; i < targets.length; i++) {
-            this.battleModel.processAffliction(data.executor, targets[i], data.skill);
+        var target;
+        while (target = data.skill.getTarget(data.executor)) {
+            this.battleModel.processAffliction(data.executor, target, data.skill);
         }
     };
     return AfflictionSkillLogic;
@@ -8818,36 +9134,32 @@ var AttackSkillLogic = (function (_super) {
         _super.apply(this, arguments);
     }
     AttackSkillLogic.prototype.willBeExecuted = function (data) {
-        var targets = data.skill.getTargets(data.executor);
-        return _super.prototype.willBeExecuted.call(this, data) && targets && (targets.length > 0);
+        var hasTarget = data.skill.range.hasValidTarget(data.executor);
+        return _super.prototype.willBeExecuted.call(this, data) && hasTarget;
     };
 
     AttackSkillLogic.prototype.execute = function (data) {
-        if (RangeFactory.isEnemyRandomRange(data.skill.skillRange)) {
-            this.executeRandomAttackSkill(data);
+        if (!RangeFactory.isEnemyRandomRange(data.skill.skillRange) && data.skill.isIndirectSkill()) {
+            this.executeAoeAttack(data);
         } else {
-            this.executeAttackSkillWithRangeTargets(data);
+            this.executeNonAoeAttack(data);
         }
     };
 
-    AttackSkillLogic.prototype.executeRandomAttackSkill = function (data) {
-        var numTarget = data.skill.range.numTarget;
-
-        for (var i = 0; i < numTarget && !data.executor.isDead; i++) {
-            var targetCard = this.cardManager.getValidSingleTarget(this.battleModel.oppositePlayerMainCards);
-
-            if (!targetCard) {
-                return;
-            }
-
-            this.processAttackAgainstSingleTarget(data.executor, targetCard, data.skill);
+    AttackSkillLogic.prototype.executeNonAoeAttack = function (data) {
+        data.skill.getReady(data.executor);
+        var target;
+        while ((target = data.skill.getTarget(data.executor)) && !data.executor.isDead) {
+            this.processAttackAgainstSingleTarget(data.executor, target, data.skill);
         }
     };
 
-    AttackSkillLogic.prototype.executeAttackSkillWithRangeTargets = function (data) {
+    AttackSkillLogic.prototype.executeAoeAttack = function (data) {
         var skill = data.skill;
         var executor = data.executor;
-        var targets = skill.range.getTargets(executor);
+        skill.getReady(executor);
+
+        var targets = skill.range.targets;
 
         if (RangeFactory.isEnemyScaledRange(skill.skillRange)) {
             var scaledRatio = RangeFactory.getScaledRatio(skill.skillRange, targets.length);
@@ -8916,16 +9228,6 @@ var AttackSkillLogic = (function (_super) {
 
                 this.clearAllCardsDamagePhaseData();
             }
-        } else {
-            for (i = 0; i < targets.length && !executor.isDead; i++) {
-                targetCard = targets[i];
-
-                if (targetCard.isDead) {
-                    continue;
-                }
-
-                this.processAttackAgainstSingleTarget(data.executor, targetCard, data.skill, scaledRatio);
-            }
         }
     };
 
@@ -8972,23 +9274,19 @@ var AttackSkillLogic = (function (_super) {
 
     AttackSkillLogic.prototype.processDrainPhase = function (executor, skill) {
         var healRange = RangeFactory.getRange(skill.skillFuncArg4);
-        var initialHealTargets = healRange.getTargets(executor);
-        var healTargets = [];
+        healRange.getReady(executor, function (card) {
+            return !card.isFullHealth();
+        });
 
-        for (var i = 0; i < initialHealTargets.length; i++) {
-            var tmpCard = initialHealTargets[i];
-            if (!tmpCard.isFullHealth()) {
-                healTargets.push(tmpCard);
-            }
-        }
-
-        if (healTargets.length == 0) {
+        console.assert(!(healRange instanceof RandomRange), "can't do this with random ranges!");
+        if (healRange.targets.length == 0) {
             return;
         }
 
-        var healAmount = Math.floor((executor.lastBattleDamageDealt * skill.skillFuncArg2) / healTargets.length);
-        for (i = 0; i < healTargets.length; i++) {
-            this.battleModel.damageToTargetDirectly(healTargets[i], -1 * healAmount, " healing");
+        var healAmount = Math.floor((executor.lastBattleDamageDealt * skill.skillFuncArg2) / healRange.targets.length);
+        var target;
+        while (target = healRange.getTarget(executor)) {
+            this.battleModel.damageToTargetDirectly(target, -1 * healAmount, " healing");
         }
     };
     return AttackSkillLogic;
@@ -9001,13 +9299,14 @@ var ProtectSkillLogic = (function (_super) {
         this.counter = false;
     }
     ProtectSkillLogic.prototype.willBeExecuted = function (data) {
-        var targets = data.skill.getTargets(data.executor);
+        data.skill.getReady(data.executor);
 
         if (this.cardManager.isSameCard(data.targetCard, data.executor) && data.skill.skillRange != 21 /* MYSELF */) {
             return false;
         }
 
-        return _super.prototype.willBeExecuted.call(this, data) && this.cardManager.isCardInList(data.targetCard, targets);
+        console.assert(!(data.skill.range instanceof RandomRange), "can't do this with random ranges!");
+        return _super.prototype.willBeExecuted.call(this, data) && this.cardManager.isCardInList(data.targetCard, data.skill.range.targets);
     };
 
     ProtectSkillLogic.prototype.execute = function (data) {
@@ -9035,12 +9334,21 @@ var ProtectSkillLogic = (function (_super) {
             });
         }
 
+        if (protectSkill.skillFunc === 28 /* PROTECT_REFLECT */) {
+            var dmgRatio = protectSkill.skillFuncArg5;
+        }
+
         this.battleModel.processDamagePhase({
             attacker: data.attacker,
             target: protector,
             skill: attackSkill,
-            scaledRatio: data.scaledRatio
+            scaledRatio: data.scaledRatio,
+            dmgRatio: dmgRatio
         });
+
+        if (protectSkill.skillFunc === 28 /* PROTECT_REFLECT */) {
+            toReturn.dmgTaken = protector.lastBattleDamageTaken;
+        }
 
         if (!data.attacker.justMissed && !protector.isDead) {
             if (attackSkill.skillFunc === 3 /* ATTACK */ || attackSkill.skillFunc === 4 /* MAGIC */) {
@@ -9069,15 +9377,17 @@ var EvadeSkillLogic = (function (_super) {
         _super.apply(this, arguments);
     }
     EvadeSkillLogic.prototype.willBeExecuted = function (data) {
-        var targets = data.skill.getTargets(data.executor);
+        var skill = data.skill;
+        skill.getReady(data.executor);
 
-        if (this.cardManager.isSameCard(data.targetCard, data.executor) && data.skill.skillRange != 21 /* MYSELF */) {
+        if (this.cardManager.isSameCard(data.targetCard, data.executor) && skill.skillRange != 21 /* MYSELF */) {
             return false;
         }
 
-        var canEvade = Skill.canProtectFromCalcType(data.skill.skillFuncArg2, data.attackSkill) && Skill.canEvadeFromSkill(data.attackSkill);
+        var canEvade = Skill.canProtectFromCalcType(skill.skillFuncArg2, data.attackSkill) && Skill.canProtectFromAttackType(skill.skillFuncArg1, data.attackSkill);
 
-        return _super.prototype.willBeExecuted.call(this, data) && this.cardManager.isCardInList(data.targetCard, targets) && canEvade;
+        console.assert(!(skill.range instanceof RandomRange), "can't do this with random ranges!");
+        return _super.prototype.willBeExecuted.call(this, data) && this.cardManager.isCardInList(data.targetCard, skill.range.targets) && canEvade;
     };
 
     EvadeSkillLogic.prototype.execute = function (data) {
@@ -9133,6 +9443,54 @@ var ProtectCounterSkillLogic = (function (_super) {
     return ProtectCounterSkillLogic;
 })(ProtectSkillLogic);
 
+var ProtectReflectSkillLogic = (function (_super) {
+    __extends(ProtectReflectSkillLogic, _super);
+    function ProtectReflectSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    ProtectReflectSkillLogic.prototype.willBeExecuted = function (data) {
+        var skill = data.skill;
+
+        var canProtect = Skill.canProtectFromCalcType(skill.skillFuncArg2, data.attackSkill) && Skill.canProtectFromAttackType(skill.skillFuncArg4, data.attackSkill);
+
+        return _super.prototype.willBeExecuted.call(this, data) && canProtect;
+    };
+
+    ProtectReflectSkillLogic.prototype.execute = function (data) {
+        var toReturn = this.executeProtectPhase(data);
+
+        if (data.executor.isDead || !data.executor.canUseSkill()) {
+            return toReturn;
+        }
+
+        var range = RangeFactory.getRange(data.skill.skillFuncArg3);
+        range.getReady(data.executor);
+        var target;
+
+        while (target = range.getTarget(data.executor)) {
+            this.battleModel.processDamagePhase({
+                attacker: data.executor,
+                target: target,
+                skill: data.skill,
+                scaledRatio: data.scaledRatio,
+                oriAttacker: data.attacker,
+                oriAtkSkill: data.attackSkill,
+                oriDmg: toReturn.dmgTaken / data.skill.skillFuncArg5
+            });
+
+            if (data.attackSkill.skillFunc === 3 /* ATTACK */ || data.attackSkill.skillFunc === 4 /* MAGIC */) {
+                this.battleModel.processAffliction(data.executor, target, data.attackSkill, ProtectReflectSkillLogic.REFLECT_AFFLICTION_PROBABILITY);
+            }
+
+            this.clearAllCardsDamagePhaseData();
+        }
+
+        return toReturn;
+    };
+    ProtectReflectSkillLogic.REFLECT_AFFLICTION_PROBABILITY = 0.2;
+    return ProtectReflectSkillLogic;
+})(ProtectSkillLogic);
+
 var CounterSkillLogic = (function (_super) {
     __extends(CounterSkillLogic, _super);
     function CounterSkillLogic() {
@@ -9152,6 +9510,10 @@ var CounterSkillLogic = (function (_super) {
             skill: data.skill,
             additionalDescription: data.executor.name + " counters " + data.attacker.name + "! "
         });
+
+        if (!data.executor.justMissed && !data.attacker.justEvaded && !data.attacker.isDead) {
+            this.battleModel.processAffliction(data.executor, data.attacker, data.skill);
+        }
     };
     return CounterSkillLogic;
 })(SkillLogic);
@@ -9165,22 +9527,16 @@ var CounterDispellSkillLogic = (function (_super) {
         };
     }
     CounterDispellSkillLogic.prototype.willBeExecuted = function (data) {
-        var targets = this.getValidTargets(data);
-        return _super.prototype.willBeExecuted.call(this, data) && (targets.length > 0);
+        var range = RangeFactory.getRange(data.skill.skillFuncArg3);
+        var hasValidtarget = range.hasValidTarget(data.executor, this.getCondFunc());
+        return _super.prototype.willBeExecuted.call(this, data) && hasValidtarget;
     };
 
-    CounterDispellSkillLogic.prototype.getValidTargets = function (data) {
-        var range = RangeFactory.getRange(data.skill.skillFuncArg3);
-        var rangeTargets = range.getTargets(data.executor);
-        var validTargets = [];
-
-        for (var i = 0; i < rangeTargets.length; i++) {
-            if (rangeTargets[i].hasStatus(this.condFunc)) {
-                validTargets.push(rangeTargets[i]);
-            }
-        }
-
-        return validTargets;
+    CounterDispellSkillLogic.prototype.getCondFunc = function () {
+        var _this = this;
+        return function (card) {
+            return card.hasStatus(_this.condFunc);
+        };
     };
 
     CounterDispellSkillLogic.prototype.execute = function (data) {
@@ -9197,21 +9553,22 @@ var CounterDispellSkillLogic = (function (_super) {
             skillId: data.skill.id
         });
 
-        var targets = this.getValidTargets(data);
+        var range = RangeFactory.getRange(data.skill.skillFuncArg3);
+        range.getReady(data.executor, this.getCondFunc());
+        var target;
 
-        for (var i = 0; i < targets.length; i++) {
-            targets[i].clearAllStatus(this.condFunc);
+        while (target = range.getTarget(data.executor)) {
+            target.clearAllStatus(this.condFunc);
 
-            var desc = targets[i].name + " is dispelled.";
             this.logger.addMinorEvent({
                 executorId: data.executor.id,
-                targetId: targets[i].id,
+                targetId: target.id,
                 type: 2 /* STATUS */,
                 status: {
                     type: 0,
                     isDispelled: true
                 },
-                description: desc,
+                description: target.name + " is dispelled.",
                 skillId: data.skill.id
             });
         }
@@ -9228,7 +9585,7 @@ var OnHitDebuffSkillLogic = (function (_super) {
         this.executionLeft = OnHitDebuffSkillLogic.UNINITIALIZED_VALUE;
     }
     OnHitDebuffSkillLogic.prototype.willBeExecuted = function (data) {
-        var targets = data.skill.getTargets(data.executor);
+        var hasTarget = data.skill.range.hasValidTarget(data.executor);
 
         if (this.executionLeft == OnHitDebuffSkillLogic.UNINITIALIZED_VALUE) {
             this.executionLeft = data.skill.skillFuncArg5;
@@ -9237,7 +9594,7 @@ var OnHitDebuffSkillLogic = (function (_super) {
         if (this.executionLeft == 0)
             return false;
 
-        var success = _super.prototype.willBeExecuted.call(this, data) && targets && (targets.length > 0);
+        var success = _super.prototype.willBeExecuted.call(this, data) && hasTarget;
 
         if (success) {
             this.executionLeft--;
@@ -9247,6 +9604,9 @@ var OnHitDebuffSkillLogic = (function (_super) {
     };
 
     OnHitDebuffSkillLogic.prototype.execute = function (data) {
+        data.skill.getReady(data.executor);
+        var target;
+
         this.logger.addMinorEvent({
             executorId: data.executor.id,
             type: 5 /* DESCRIPTION */,
@@ -9254,9 +9614,8 @@ var OnHitDebuffSkillLogic = (function (_super) {
             skillId: data.skill.id
         });
 
-        var targets = data.skill.getTargets(data.executor);
-        for (var i = 0; i < targets.length; i++) {
-            this.battleModel.processDebuff(data.executor, targets[i], data.skill);
+        while (target = data.skill.getTarget(data.executor)) {
+            this.battleModel.processDebuff(data.executor, target, data.skill);
         }
     };
     OnHitDebuffSkillLogic.UNINITIALIZED_VALUE = -1234;
@@ -9269,38 +9628,33 @@ var DrainSkillLogic = (function (_super) {
         _super.apply(this, arguments);
     }
     DrainSkillLogic.prototype.willBeExecuted = function (data) {
-        var targets = this.getValidTargets(data);
-        return _super.prototype.willBeExecuted.call(this, data) && (targets.length > 0);
+        var hasValidTarget = data.skill.range.hasValidTarget(data.executor, this.getCondFunc());
+        return _super.prototype.willBeExecuted.call(this, data) && hasValidTarget;
     };
 
-    DrainSkillLogic.prototype.getValidTargets = function (data) {
-        var rangeTargets = data.skill.getTargets(data.executor);
-        var validTargets = [];
-
-        for (var i = 0; i < rangeTargets.length; i++) {
-            if (!rangeTargets[i].isFullHealth()) {
-                validTargets.push(rangeTargets[i]);
-            }
-        }
-
-        return validTargets;
+    DrainSkillLogic.prototype.getCondFunc = function () {
+        return function (card) {
+            return !card.isFullHealth();
+        };
     };
 
     DrainSkillLogic.prototype.execute = function (data) {
-        var targets = this.getValidTargets(data);
+        var skill = data.skill;
+        skill.range.getReady(data.executor, this.getCondFunc());
+        var target;
 
-        var desc = data.executor.name + " procs " + data.skill.name + ". ";
         this.logger.addMinorEvent({
             executorId: data.executor.id,
             type: 5 /* DESCRIPTION */,
-            description: desc,
-            skillId: data.skill.id
+            description: data.executor.name + " procs " + skill.name + ". ",
+            skillId: skill.id
         });
 
-        var eachTargetHealAmount = Math.floor(data.executor.lastBattleDamageTaken / targets.length);
+        console.assert(!(skill.range instanceof RandomRange), "can't do this with random ranges!");
+        var eachTargetHealAmount = Math.floor(data.executor.lastBattleDamageTaken / skill.range.targets.length);
 
-        for (var i = 0; i < targets.length; i++) {
-            this.battleModel.damageToTargetDirectly(targets[i], -1 * eachTargetHealAmount, " healing");
+        while (target = skill.getTarget(data.executor)) {
+            this.battleModel.damageToTargetDirectly(target, -1 * eachTargetHealAmount, " healing");
         }
     };
     return DrainSkillLogic;
@@ -9334,22 +9688,8 @@ var HealSkillLogic = (function (_super) {
         _super.apply(this, arguments);
     }
     HealSkillLogic.prototype.willBeExecuted = function (data) {
-        var targets = this.getValidTargets(data);
-        return _super.prototype.willBeExecuted.call(this, data) && (targets.length > 0);
-    };
-
-    HealSkillLogic.prototype.getValidTargets = function (data) {
-        var rangeTargets = data.skill.range.getAllPossibleTargets(data.executor);
-        var validTargets = [];
-        var cond = this.getCondFunc();
-
-        for (var i = 0; rangeTargets && i < rangeTargets.length; i++) {
-            if (cond(rangeTargets[i])) {
-                validTargets.push(rangeTargets[i]);
-            }
-        }
-
-        return validTargets;
+        var hasValidTarget = data.skill.range.hasValidTarget(data.executor, this.getCondFunc());
+        return _super.prototype.willBeExecuted.call(this, data) && hasValidTarget;
     };
 
     HealSkillLogic.prototype.getCondFunc = function () {
@@ -9359,19 +9699,20 @@ var HealSkillLogic = (function (_super) {
     };
 
     HealSkillLogic.prototype.execute = function (data) {
-        var targets = data.skill.range.getTargets(data.executor, this.getCondFunc());
+        data.skill.range.getReady(data.executor, this.getCondFunc());
 
         var baseHealAmount = getHealAmount(data.executor);
 
         var multiplier = data.skill.skillFuncArg1;
         var healAmount = Math.floor(multiplier * baseHealAmount);
 
-        for (var i = 0; i < targets.length; i++) {
+        var target;
+        while (target = data.skill.getTarget(data.executor)) {
             if (data.skill.skillFuncArg2 == 1) {
-                healAmount = multiplier * targets[i].getOriginalHP();
+                healAmount = multiplier * target.getOriginalHP();
             }
 
-            this.battleModel.damageToTargetDirectly(targets[i], -1 * healAmount, " healing");
+            this.battleModel.damageToTargetDirectly(target, -1 * healAmount, " healing");
         }
     };
     return HealSkillLogic;
@@ -9383,23 +9724,24 @@ var ReviveSkillLogic = (function (_super) {
         _super.apply(this, arguments);
     }
     ReviveSkillLogic.prototype.willBeExecuted = function (data) {
-        var targets = data.skill.range.getAllPossibleTargets(data.executor);
-        return _super.prototype.willBeExecuted.call(this, data) && targets && (targets.length > 0);
+        var hasValidTarget = data.skill.range.hasValidTarget(data.executor);
+        return _super.prototype.willBeExecuted.call(this, data) && hasValidTarget;
     };
 
     ReviveSkillLogic.prototype.execute = function (data) {
-        var targets = data.skill.getTargets(data.executor);
+        data.skill.getReady(data.executor);
         var hpRatio = data.skill.skillFuncArg1;
 
-        for (var i = 0; i < targets.length; i++) {
-            targets[i].revive(hpRatio);
+        var target;
+        while (target = data.skill.getTarget(data.executor)) {
+            target.revive(hpRatio);
 
             this.logger.addMinorEvent({
                 executorId: data.executor.id,
-                targetId: targets[i].id,
+                targetId: target.id,
                 type: 7 /* REVIVE */,
                 reviveHPRatio: hpRatio,
-                description: targets[i].name + " is revived with " + hpRatio * 100 + "% HP!",
+                description: target.name + " is revived with " + hpRatio * 100 + "% HP!",
                 skillId: data.skill.id
             });
         }
@@ -9687,10 +10029,6 @@ var BaseRange = (function () {
     function BaseRange(id) {
         this.id = id;
     }
-    BaseRange.prototype.getTargets = function (executor, skillCondFunc) {
-        throw new Error("Implement this");
-    };
-
     BaseRange.prototype.getBaseTargets = function (condFunc) {
         var allCards = CardManager.getInstance().getAllMainCardsInPlayerOrder();
         var baseTargets = [];
@@ -9702,8 +10040,26 @@ var BaseRange = (function () {
         return baseTargets;
     };
 
-    BaseRange.prototype.getAllPossibleTargets = function (executor) {
-        return this.getTargets(executor);
+    BaseRange.prototype.getReady = function (executor, skillCondFunc) {
+        throw new Error("Implement this");
+    };
+
+    BaseRange.prototype.hasValidTarget = function (executor, condFunc) {
+        this.getReady(executor, condFunc);
+
+        var hasValid = false;
+        if (condFunc) {
+            for (var i = 0; i < this.targets.length; i++) {
+                if (condFunc(this.targets[i])) {
+                    hasValid = true;
+                    break;
+                }
+            }
+        } else {
+            hasValid = this.targets.length > 0;
+        }
+
+        return hasValid;
     };
 
     BaseRange.prototype.getRandomCard = function (cards) {
@@ -9726,13 +10082,16 @@ var BaseRange = (function () {
             if (card.isDead || (card.getPlayerId() === executor.getPlayerId())) {
                 return false;
             }
-
             return true;
         };
     };
 
     BaseRange.prototype.satisfyDeadCondition = function (card, selectDead) {
         return (card.isDead && selectDead) || (!card.isDead && !selectDead);
+    };
+
+    BaseRange.prototype.getTarget = function (executor) {
+        return this.targets[this.currentIndex++];
     };
     return BaseRange;
 })();
@@ -9743,8 +10102,9 @@ var BothSidesRange = (function (_super) {
         _super.call(this, id);
         this.selectDead = selectDead;
     }
-    BothSidesRange.prototype.getTargets = function (executor) {
+    BothSidesRange.prototype.getReady = function (executor) {
         var targets = [];
+        this.currentIndex = 0;
 
         var leftCard = CardManager.getInstance().getLeftSideCard(executor);
         if (leftCard && this.satisfyDeadCondition(leftCard, this.selectDead)) {
@@ -9756,9 +10116,33 @@ var BothSidesRange = (function (_super) {
             targets.push(rightCard);
         }
 
-        return targets;
+        this.targets = targets;
     };
     return BothSidesRange;
+})(BaseRange);
+
+var RandomRange = (function (_super) {
+    __extends(RandomRange, _super);
+    function RandomRange() {
+        _super.apply(this, arguments);
+    }
+    RandomRange.prototype.hasValidTarget = function (executor, condFunc) {
+        var baseTargets = this.getBaseTargets(this.getCondFunc(executor));
+        var hasValid = false;
+        if (condFunc) {
+            for (var i = 0; i < baseTargets.length; i++) {
+                if (condFunc(baseTargets[i])) {
+                    hasValid = true;
+                    break;
+                }
+            }
+        } else {
+            hasValid = baseTargets.length > 0;
+        }
+
+        return hasValid;
+    };
+    return RandomRange;
 })(BaseRange);
 
 var EnemyRandomRange = (function (_super) {
@@ -9767,28 +10151,31 @@ var EnemyRandomRange = (function (_super) {
         _super.call(this, id);
         this.numTarget = numTarget;
     }
-    EnemyRandomRange.prototype.getTargets = function (executor) {
-        return this.getBaseTargets(this.getCondFunc(executor));
+    EnemyRandomRange.prototype.getReady = function (executor) {
+        this.numProcessed = 0;
     };
 
-    EnemyRandomRange.prototype.getAllPossibleTargets = function (executor) {
-        return this.getBaseTargets(this.getCondFunc(executor));
+    EnemyRandomRange.prototype.getTarget = function (executor) {
+        if (this.numProcessed < this.numTarget) {
+            this.numProcessed++;
+            return this.getRandomCard(this.getBaseTargets(this.getCondFunc(executor)));
+        } else {
+            return null;
+        }
     };
     return EnemyRandomRange;
-})(BaseRange);
+})(RandomRange);
 
 var EitherSideRange = (function (_super) {
     __extends(EitherSideRange, _super);
     function EitherSideRange() {
         _super.apply(this, arguments);
     }
-    EitherSideRange.prototype.getTargets = function (executor) {
-        var targets = _super.prototype.getTargets.call(this, executor);
+    EitherSideRange.prototype.getReady = function (executor) {
+        _super.prototype.getReady.call(this, executor);
 
-        if (targets.length === 0) {
-            return [];
-        } else {
-            return [getRandomElement(targets)];
+        if (this.targets.length != 0) {
+            this.targets = [getRandomElement(this.targets)];
         }
     };
     return EitherSideRange;
@@ -9799,8 +10186,9 @@ var RightRange = (function (_super) {
     function RightRange() {
         _super.apply(this, arguments);
     }
-    RightRange.prototype.getTargets = function (executor) {
+    RightRange.prototype.getReady = function (executor) {
         var targets = [];
+        this.currentIndex = 0;
         var partyCards = CardManager.getInstance().getPlayerCurrentMainCards(executor.player);
 
         for (var i = executor.formationColumn + 1; i < 5; i++) {
@@ -9809,7 +10197,7 @@ var RightRange = (function (_super) {
             }
         }
 
-        return targets;
+        this.targets = targets;
     };
     return RightRange;
 })(BaseRange);
@@ -9820,14 +10208,15 @@ var SelfRange = (function (_super) {
         _super.call(this, id);
         this.selectDead = selectDead;
     }
-    SelfRange.prototype.getTargets = function (executor) {
+    SelfRange.prototype.getReady = function (executor) {
         var targets = [];
+        this.currentIndex = 0;
 
         if (this.satisfyDeadCondition(executor, this.selectDead)) {
             targets.push(executor);
         }
 
-        return targets;
+        this.targets = targets;
     };
     return SelfRange;
 })(BaseRange);
@@ -9837,8 +10226,9 @@ var SelfBothSidesRange = (function (_super) {
     function SelfBothSidesRange() {
         _super.apply(this, arguments);
     }
-    SelfBothSidesRange.prototype.getTargets = function (executor) {
+    SelfBothSidesRange.prototype.getReady = function (executor) {
         var targets = [];
+        this.currentIndex = 0;
 
         var leftCard = CardManager.getInstance().getLeftSideCard(executor);
         if (leftCard && !leftCard.isDead) {
@@ -9854,7 +10244,7 @@ var SelfBothSidesRange = (function (_super) {
             targets.push(rightCard);
         }
 
-        return targets;
+        this.targets = targets;
     };
     return SelfBothSidesRange;
 })(BaseRange);
@@ -9864,8 +10254,9 @@ var AllRange = (function (_super) {
     function AllRange() {
         _super.apply(this, arguments);
     }
-    AllRange.prototype.getTargets = function (executor) {
+    AllRange.prototype.getReady = function (executor) {
         var targets = [];
+        this.currentIndex = 0;
         var partyCards = CardManager.getInstance().getPlayerCurrentMainCards(executor.player);
 
         for (var i = 0; i < partyCards.length; i++) {
@@ -9873,7 +10264,7 @@ var AllRange = (function (_super) {
                 targets.push(partyCards[i]);
             }
         }
-        return targets;
+        this.targets = targets;
     };
     return AllRange;
 })(BaseRange);
@@ -9885,11 +10276,14 @@ var EnemyNearRange = (function (_super) {
         this.numTarget = numTarget;
         this.maxDistance = EnemyNearRange.MAX_DISTANCE_FROM_CENTER[numTarget];
     }
-    EnemyNearRange.prototype.getTargets = function (executor) {
+    EnemyNearRange.prototype.getReady = function (executor) {
+        this.currentIndex = 0;
+
         var centerEnemy = CardManager.getInstance().getNearestSingleOpponentTarget(executor);
 
         if (!centerEnemy) {
-            return [];
+            this.targets = [];
+            return;
         }
 
         var enemyCards = CardManager.getInstance().getEnemyCurrentMainCards(executor.player);
@@ -9910,7 +10304,7 @@ var EnemyNearRange = (function (_super) {
             }
         }
 
-        return targets;
+        this.targets = targets;
     };
     EnemyNearRange.MAX_DISTANCE_FROM_CENTER = {
         1: 1,
@@ -9927,16 +10321,17 @@ var EnemyAllRange = (function (_super) {
     function EnemyAllRange() {
         _super.apply(this, arguments);
     }
-    EnemyAllRange.prototype.getTargets = function (executor) {
+    EnemyAllRange.prototype.getReady = function (executor) {
         var enemyCards = CardManager.getInstance().getEnemyCurrentMainCards(executor.player);
         var targets = [];
+        this.currentIndex = 0;
         for (var i = 0; i < enemyCards.length; i++) {
             var currentEnemyCard = enemyCards[i];
             if (currentEnemyCard && !currentEnemyCard.isDead) {
                 targets.push(currentEnemyCard);
             }
         }
-        return targets;
+        this.targets = targets;
     };
     return EnemyAllRange;
 })(BaseRange);
@@ -9950,9 +10345,10 @@ var FriendRandomRange = (function (_super) {
         this.isUnique = RangeFactory.FRIEND_RANDOM_RANGE_TARGET_NUM[id];
         this.includeSelf = RangeFactory.INCLUDE_SELF[id];
     }
-    FriendRandomRange.prototype.getTargets = function (executor, skillCondFunc) {
+    FriendRandomRange.prototype.getReady = function (executor, skillCondFunc) {
         var baseTargets = this.getBaseTargets(this.getCondFunc(executor, skillCondFunc));
         var targets = [];
+        this.currentIndex = 0;
 
         if (baseTargets.length) {
             if (this.isUnique) {
@@ -9963,11 +10359,7 @@ var FriendRandomRange = (function (_super) {
                 }
             }
         }
-        return targets;
-    };
-
-    FriendRandomRange.prototype.getAllPossibleTargets = function (executor) {
-        return this.getBaseTargets(this.getCondFunc(executor));
+        this.targets = targets;
     };
 
     FriendRandomRange.prototype.getCondFunc = function (executor, skillCondFunc) {
@@ -9991,7 +10383,7 @@ var FriendRandomRange = (function (_super) {
         };
     };
     return FriendRandomRange;
-})(BaseRange);
+})(RandomRange);
 
 var BaseRowRange = (function (_super) {
     __extends(BaseRowRange, _super);
@@ -10046,7 +10438,8 @@ var EnemyFrontMidAllRange = (function (_super) {
     function EnemyFrontMidAllRange() {
         _super.apply(this, arguments);
     }
-    EnemyFrontMidAllRange.prototype.getTargets = function (executor) {
+    EnemyFrontMidAllRange.prototype.getReady = function (executor) {
+        this.currentIndex = 0;
         var candidates = this.getBaseTargets(this.getCondFunc(executor));
         if (candidates.length) {
             var frontCards = this.getSameRowCards(candidates, 1 /* FRONT */);
@@ -10058,7 +10451,7 @@ var EnemyFrontMidAllRange = (function (_super) {
                 candidates = this.getSameRowCards(candidates, 3 /* REAR */);
             }
         }
-        return candidates;
+        this.targets = candidates;
     };
     return EnemyFrontMidAllRange;
 })(BaseRowRange);
@@ -10068,12 +10461,13 @@ var EnemyFrontAllRange = (function (_super) {
     function EnemyFrontAllRange() {
         _super.apply(this, arguments);
     }
-    EnemyFrontAllRange.prototype.getTargets = function (executor) {
+    EnemyFrontAllRange.prototype.getReady = function (executor) {
+        this.currentIndex = 0;
         var candidates = this.getBaseTargets(this.getCondFunc(executor));
         if (candidates.length) {
             candidates = this.getRowCandidates(candidates, 1 /* FRONT */, true);
         }
-        return candidates;
+        this.targets = candidates;
     };
     return EnemyFrontAllRange;
 })(BaseRowRange);
@@ -10083,12 +10477,13 @@ var EnemyRearAllRange = (function (_super) {
     function EnemyRearAllRange() {
         _super.apply(this, arguments);
     }
-    EnemyRearAllRange.prototype.getTargets = function (executor) {
+    EnemyRearAllRange.prototype.getReady = function (executor) {
+        this.currentIndex = 0;
         var candidates = this.getBaseTargets(this.getCondFunc(executor));
         if (candidates.length) {
             candidates = this.getRowCandidates(candidates, 3 /* REAR */, false);
         }
-        return candidates;
+        this.targets = candidates;
     };
     return EnemyRearAllRange;
 })(BaseRowRange);
@@ -10352,7 +10747,7 @@ var BattleModel = (function () {
 
     BattleModel.prototype.processDamagePhase = function (data) {
         var target = data.target;
-        var damage = this.getWouldBeDamage(data.attacker, target, data.skill, { scaledRatio: data.scaledRatio });
+        var damage = this.getWouldBeDamage(data);
 
         var isMissed = data.attacker.willMiss();
         if (isMissed) {
@@ -10408,8 +10803,12 @@ var BattleModel = (function () {
             data.additionalDescription = "";
         }
 
-        if (target.hasWardOfType(data.skill.ward)) {
-            var wardUsed = data.skill.ward;
+        if (data.skill.skillFunc == 28 /* PROTECT_REFLECT */) {
+            if (target.hasWardOfType(data.oriAtkSkill.ward)) {
+                var wardUsed = data.oriAtkSkill.ward;
+            }
+        } else if (target.hasWardOfType(data.skill.ward)) {
+            wardUsed = data.skill.ward;
         }
 
         if (isMissed) {
@@ -10441,9 +10840,17 @@ var BattleModel = (function () {
         }
     };
 
-    BattleModel.prototype.getWouldBeDamage = function (attacker, target, skill, opt) {
+    BattleModel.prototype.getWouldBeDamage = function (data) {
+        var attacker = data.attacker;
+        var target = data.target;
+        var skill = data.skill;
         var skillMod = skill.skillFuncArg1;
-        var ignorePosition = Skill.isPositionIndependentAttackSkill(skill.id);
+
+        if (skill.skillFunc != 28 /* PROTECT_REFLECT */) {
+            var ignorePosition = Skill.isPositionIndependentAttackSkill(skill.id);
+        } else {
+            ignorePosition = Skill.isPositionIndependentAttackSkill(data.oriAtkSkill.id);
+        }
 
         var baseDamage;
 
@@ -10458,16 +10865,24 @@ var BattleModel = (function () {
             case (3 /* AGI */):
                 baseDamage = getDamageCalculatedByAGI(attacker, target, ignorePosition);
                 break;
+            case 7 /* REFLECT */:
+                baseDamage = getReflectAmount(data.oriAttacker, data.oriAtkSkill, data.attacker, target, ignorePosition, data.oriDmg);
+                break;
             default:
                 throw new Error("Invalid calcType!");
         }
 
         var damage = skillMod * baseDamage;
 
-        if (opt && opt.scaledRatio) {
-            damage *= opt.scaledRatio;
-        }
+        if (data.scaledRatio)
+            damage *= data.scaledRatio;
 
+        if (data.dmgRatio)
+            damage *= data.dmgRatio;
+
+        if (skill.skillFunc == 28 /* PROTECT_REFLECT */) {
+            skill = data.oriAtkSkill;
+        }
         switch (skill.ward) {
             case 1 /* PHYSICAL */:
                 damage = Math.round(damage * (1 - target.status.attackResistance));
@@ -10508,9 +10923,9 @@ var BattleModel = (function () {
         }
     };
 
-    BattleModel.prototype.processAffliction = function (executor, target, skill) {
+    BattleModel.prototype.processAffliction = function (executor, target, skill, fixedProb) {
         var type = skill.skillFuncArg2;
-        var prob = skill.skillFuncArg3;
+        var prob = fixedProb ? fixedProb : skill.skillFuncArg3;
 
         if (!type) {
             return;
@@ -10521,8 +10936,10 @@ var BattleModel = (function () {
         if (skill.skillFuncArg4) {
             if (type == 1 /* POISON */) {
                 option.percent = skill.skillFuncArg4;
-            } else {
+            } else if (type == 5 /* SILENT */ || type == 7 /* BLIND */) {
                 option.turnNum = skill.skillFuncArg4;
+            } else if (type == 8 /* BURN */) {
+                option.damage = skill.skillFuncArg4;
             }
         }
 
@@ -10532,7 +10949,6 @@ var BattleModel = (function () {
 
         if (Math.random() <= prob) {
             target.setAffliction(type, option);
-            var description = target.name + " is now " + ENUM.AfflictionType[type];
 
             if (type == 1 /* POISON */) {
                 var percent = target.getPoisonPercent();
@@ -10548,7 +10964,7 @@ var BattleModel = (function () {
                     percent: percent,
                     missProb: option.missProb
                 },
-                description: description
+                description: target.name + " is now " + ENUM.AfflictionType[type]
             });
         }
     };
@@ -10704,7 +11120,9 @@ var BattleModel = (function () {
                 }
 
                 if (!currentCard.isDead) {
-                    var cured = currentCard.updateAffliction();
+                    if (currentCard.getAfflictionType() != 8 /* BURN */) {
+                        var cured = currentCard.updateAffliction();
+                    }
 
                     if (!currentCard.affliction && cured) {
                         var desc = currentCard.name + " is cured of affliction!";
@@ -10761,6 +11179,17 @@ var BattleModel = (function () {
     };
 
     BattleModel.prototype.processActivePhase = function (currentCard, nth) {
+        if (currentCard.getAfflictionType() == 8 /* BURN */) {
+            this.logger.addMajorEvent({
+                description: currentCard.name + "'s turn"
+            });
+            currentCard.updateAffliction();
+            this.checkFinish();
+            if (currentCard.isDead || this.isFinished) {
+                return;
+            }
+        }
+
         var activeSkill = currentCard.getRandomActiveSkill();
 
         if (nth === "FIRST" && currentCard.isMounted) {
@@ -10795,7 +11224,7 @@ var BattleModel = (function () {
         if (this.isFinished) {
             return;
         } else if (nth === "FIRST" && currentCard.isMounted && !currentCard.isDead) {
-            return this.processActivePhase(currentCard, "SECOND");
+            this.processActivePhase(currentCard, "SECOND");
         }
     };
 
@@ -10903,7 +11332,7 @@ var BattleModel = (function () {
     };
 
     BattleModel.prototype.executeNormalAttack = function (attacker) {
-        if (!attacker.canAttack()) {
+        if (!attacker.canAttack() || attacker.isDead) {
             return;
         }
 
@@ -11007,3 +11436,107 @@ var BattleModel = (function () {
 })();
 
 
+
+var CsRandom = (function () {
+    function CsRandom(seed) {
+        this.seedArray = [];
+        var ii;
+        var mj, mk;
+
+        var subtraction = (seed == -2147483648) ? 2147483647 : Math.abs(seed);
+        mj = CsRandom.MSEED - subtraction;
+        this.seedArray[55] = mj;
+        mk = 1;
+        for (var i = 1; i < 55; i++) {
+            ii = (21 * i) % 55;
+            this.seedArray[ii] = mk;
+            mk = mj - mk;
+            if (mk < 0)
+                mk += CsRandom.MBIG;
+            mj = this.seedArray[ii];
+        }
+        for (var k = 1; k < 5; k++) {
+            for (i = 1; i < 56; i++) {
+                this.seedArray[i] -= this.seedArray[1 + (i + 30) % 55];
+                if (this.seedArray[i] < 0)
+                    this.seedArray[i] += CsRandom.MBIG;
+            }
+        }
+        this.inext = 0;
+        this.inextp = 21;
+        seed = 1;
+    }
+    CsRandom.prototype.sample = function () {
+        return (this.internalSample() * (1.0 / CsRandom.MBIG));
+    };
+
+    CsRandom.prototype.internalSample = function () {
+        var retVal;
+        var locINext = this.inext;
+        var locINextp = this.inextp;
+
+        if (++locINext >= 56)
+            locINext = 1;
+        if (++locINextp >= 56)
+            locINextp = 1;
+
+        retVal = this.seedArray[locINext] - this.seedArray[locINextp];
+
+        if (retVal == CsRandom.MBIG)
+            retVal--;
+        if (retVal < 0)
+            retVal += CsRandom.MBIG;
+
+        this.seedArray[locINext] = retVal;
+
+        this.inext = locINext;
+        this.inextp = locINextp;
+
+        return retVal;
+    };
+
+    CsRandom.prototype.next = function () {
+        return this.internalSample();
+    };
+
+    CsRandom.prototype.getSampleForLargeRange = function () {
+        var result = this.internalSample();
+
+        var negative = (this.internalSample() % 2 == 0) ? true : false;
+        if (negative) {
+            result = -result;
+        }
+        var d = result;
+        d += (2147483647 - 1);
+        d /= 2 * 2147483647 - 1;
+        return d;
+    };
+
+    CsRandom.prototype.nextInRange = function (minValue, maxValue) {
+        if (minValue > maxValue) {
+            throw new Error("max less than min");
+        }
+
+        var range = maxValue - minValue;
+        if (range <= 2147483647) {
+            return (Math.floor(this.sample() * range) + minValue);
+        } else {
+            return Math.floor(Math.floor(this.getSampleForLargeRange() * range) + minValue);
+        }
+    };
+
+    CsRandom.prototype.nextLessThan = function (maxValue) {
+        if (maxValue < 0) {
+            throw new Error("Max value less than 0");
+        }
+        return Math.floor(this.sample() * maxValue);
+    };
+
+    CsRandom.prototype.nextDouble = function () {
+        return this.sample();
+    };
+    CsRandom.MBIG = 2147483647;
+    CsRandom.MSEED = 161803398;
+    CsRandom.MZ = 0;
+    return CsRandom;
+})();

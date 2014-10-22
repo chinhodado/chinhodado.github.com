@@ -7,7 +7,9 @@
     <link href='http://fonts.googleapis.com/css?family=Alegreya+Sans:900' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/dialog.css">
     <link rel="stylesheet" href="css/game.css">
-
+    <link rel="stylesheet" type="text/css" href="css/sweet-alert.css">
+    
+    <script src="lib/sweet-alert.min.js"></script>
     <script src="lib/svg.min.js"></script>
     <script src="lib/svg.filter.min.js"></script>
     <script src="compiled.js"></script>
@@ -113,6 +115,7 @@
     </div>
 
     <script type="text/javascript">
+        prepareRandom();
 
         function playGame() {
             BattleGraphic.PLAY_MODE = 'AUTO';
@@ -151,15 +154,18 @@
                     document.getElementById("progressBar").setAttribute("value", event.data.progress);
                 }
                 else if (event.data.status == "done") {
+                    var endTime = performance.now();
                     document.getElementById("progressBar").setAttribute("value", 10000);
                     document.getElementById("simResultDiv").innerHTML += ("Player 2 won: " + event.data.p2WinCount +
                         "<br> Player 1 won: " + event.data.p1WinCount +
+                        "<br><br> Time: " + ((endTime - startTime)/1000).toFixed(2) + "s" +
                         "<br><a href=setting.html>Go back to main page </a>");
                     worker.terminate();
                 }
             };
             // start the worker. Need to pass the tierList information in since the worker 
             // can't access sessionStorage
+            var startTime = performance.now();
             worker.postMessage([data, option, sessionStorage.tierList]);
         }
 
