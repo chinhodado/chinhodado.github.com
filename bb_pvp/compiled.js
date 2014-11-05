@@ -313,21 +313,23 @@ var BattleGraphic = (function () {
         }
         playerFormations[2] = temp;
 
-        var draw = SVG('svg').size(400, 600).attr('id', 'mainSvg').attr('class', 'svg');
+        var wr = BattleGraphic.wr;
+        var hr = BattleGraphic.hr;
+        var draw = SVG('svg').size(wr * 400, hr * 600).attr('id', 'mainSvg').attr('class', 'svg');
 
         for (var player = 1; player <= 2; player++) {
             if (player == 2) {
-                var skillImg = draw.image('img/skillBg.png', 300, 29).move(55, 5).attr('id', 'p2SkillBg');
-                var text = draw.text('placeholder').font({ size: 14 }).fill({ color: '#fff' }).attr('id', 'p2SkillText');
+                var skillImg = draw.image('img/skillBg.png', wr * 300, hr * 29).move(wr * 55, hr * 5).attr('id', 'p2SkillBg');
+                var text = draw.text('placeholder').font({ size: wr * 14 }).fill({ color: '#fff' }).attr('id', 'p2SkillText');
                 draw.group().attr('id', 'p2SkillBgTextGroup').add(skillImg).add(text).opacity(0);
             } else if (player == 1) {
-                skillImg = draw.image('img/skillBg.png', 300, 29).move(55, 270).attr('id', 'p1SkillBg');
-                text = draw.text('placeholder').font({ size: 14 }).fill({ color: '#fff' }).attr('id', 'p1SkillText');
-                draw.group().attr('id', 'p1SkillBgTextGroup').add(skillImg).add(text).opacity(0).move(0, 300);
+                skillImg = draw.image('img/skillBg.png', wr * 300, hr * 29).move(wr * 55, hr * 270).attr('id', 'p1SkillBg');
+                text = draw.text('placeholder').font({ size: wr * 14 }).fill({ color: '#fff' }).attr('id', 'p1SkillText');
+                draw.group().attr('id', 'p1SkillBgTextGroup').add(skillImg).add(text).opacity(0).move(0, hr * 300);
             }
 
-            var PLAYER_GROUP_WIDTH = 350;
-            var PLAYER_GROUP_HEIGHT = 80;
+            var PLAYER_GROUP_WIDTH = wr * 350;
+            var PLAYER_GROUP_HEIGHT = hr * 80;
 
             var horizontalStep = PLAYER_GROUP_WIDTH / 10;
             var verticalStep = PLAYER_GROUP_HEIGHT / 2;
@@ -341,9 +343,9 @@ var BattleGraphic = (function () {
             }
 
             if (player == 1) {
-                groupPlayer.move(30, 400);
+                groupPlayer.move(wr * 30, wr * 400);
             } else if (player == 2) {
-                groupPlayer.move(30, 100);
+                groupPlayer.move(wr * 30, wr * 100);
             }
 
             for (i = 0; i < 5; i++) {
@@ -383,9 +385,9 @@ var BattleGraphic = (function () {
                     this.size(BattleGraphic.IMAGE_WIDTH);
                 });
 
-                var damageText = draw.text('0').font({ size: 22, family: BattleGraphic.FONT }).attr({ fill: '#fff', stroke: '#000', 'stroke-width': '2px' }).center(coordArray[i][0], coordArray[i][1]).attr('id', 'p' + player + 'f' + i + 'damageText').opacity(0);
+                var damageText = draw.text('0').font({ size: wr * 22, family: BattleGraphic.FONT }).attr({ fill: '#fff', stroke: '#000', 'stroke-width': hr * 2 + 'px' }).center(coordArray[i][0], coordArray[i][1]).attr('id', 'p' + player + 'f' + i + 'damageText').opacity(0);
 
-                var explosion = draw.image('img/explosion.png', 70, 70).move(image_x_coord, image_y_coord).attr('id', 'p' + player + 'f' + i + 'explosion').opacity(0);
+                var explosion = draw.image('img/explosion.png', wr * 70, wr * 70).move(image_x_coord, image_y_coord).attr('id', 'p' + player + 'f' + i + 'explosion').opacity(0);
 
                 var group = draw.group().attr('id', 'p' + player + 'f' + i + 'group');
                 group.add(image);
@@ -445,7 +447,7 @@ var BattleGraphic = (function () {
         var ystart = image_y_coord + BattleGraphic.IMAGE_WIDTH * 1.5;
 
         var width = BattleGraphic.IMAGE_WIDTH;
-        var height = 5;
+        var height = BattleGraphic.hr * 5;
 
         if (percent < 0) {
             percent = 0;
@@ -455,7 +457,7 @@ var BattleGraphic = (function () {
         var hpbar = SVG.get(hpbarId);
 
         if (!hpbar) {
-            hpbar = draw.rect(width, height).style({ 'stroke-width': 1, 'stroke': '#000000' }).attr('id', hpbarId).move(xstart, ystart);
+            hpbar = draw.rect(width, height).style({ 'stroke-width': BattleGraphic.wr * 1, 'stroke': '#000000' }).attr('id', hpbarId).move(xstart, ystart);
             var groupId = 'p' + player + 'f' + index + 'group';
 
             var group = SVG.get(groupId);
@@ -514,7 +516,7 @@ var BattleGraphic = (function () {
         }
 
         var damageText = SVG.get('p' + playerId + 'f' + famIndex + 'damageText');
-        damageText.text(txt).font({ size: 22 }).attr({ fill: txtColor }).center(center_x, center_y).opacity(1).front();
+        damageText.text(txt).font({ size: BattleGraphic.wr * 22 }).attr({ fill: txtColor }).center(center_x, center_y).opacity(1).front();
         damageText.animate({ duration: '2s' }).opacity(0);
 
         this.displayHP(stats.hp / originalStats.hp * 100, playerId, famIndex);
@@ -686,11 +688,11 @@ var BattleGraphic = (function () {
         var groupSkillBg = SVG.get('p' + executor.getPlayerId() + 'SkillBgTextGroup');
         var svgText = SVG.get('p' + executor.getPlayerId() + 'SkillText');
 
-        var yText = executor.getPlayerId() == 1 ? 272 : 8;
+        var yText = BattleGraphic.hr * (executor.getPlayerId() == 1 ? 272 : 8);
 
         var skillName = SkillDatabase[skillId].name;
 
-        svgText.text(skillName).move(55 + 150 - svgText.bbox().width / 2, yText);
+        svgText.text(skillName).move(BattleGraphic.wr * (55 + 150) - svgText.bbox().width / 2, yText);
 
         groupSkillBg.animate({ duration: '0.5s' }).opacity(1).after(function () {
             this.animate({ duration: '0.5s', delay: '1.5s' }).opacity(0);
@@ -756,7 +758,7 @@ var BattleGraphic = (function () {
         var minorLog = this.logger.minorEventLog;
         var data = minorLog[majorIndex][minorIndex];
         if (minorIndex < minorLog[majorIndex].length) {
-            this.getMainBattleEffect().text(data.battleDesc).center(200, 300).opacity(1).animate({ duration: '3s' }).opacity(0);
+            this.getMainBattleEffect().text(data.battleDesc).center(BattleGraphic.wr * 200, BattleGraphic.hr * 300).opacity(1).animate({ duration: '3s' }).opacity(0);
             this.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
         }
     };
@@ -774,7 +776,7 @@ var BattleGraphic = (function () {
                 var ward = this.getWard(target.getPlayerId(), target.formationColumn, data.status.type);
                 ward.opacity(1).animate({ delay: '0.5s' }).opacity(0);
             } else {
-                var fontSize = 18;
+                var fontSize = BattleGraphic.wr * 18;
 
                 if (data.status.isDispelled) {
                     var displayText = "dispelled";
@@ -782,7 +784,7 @@ var BattleGraphic = (function () {
                     displayText = "cleared";
                 } else if (data.status.isAllUp) {
                     displayText = "All Stats Up";
-                    fontSize = 15;
+                    fontSize = BattleGraphic.wr * 15;
                 } else if (data.status.type == 18 /* WILL_ATTACK_AGAIN */) {
                     displayText = "EXTRA ACT";
                 } else if (data.status.type == 16 /* ACTION_ON_DEATH */) {
@@ -828,7 +830,7 @@ var BattleGraphic = (function () {
             var center_y = this.coordArray[playerId][index][1];
 
             var damageText = SVG.get('p' + playerId + 'f' + index + 'damageText');
-            damageText.text("REVIVED").center(center_x, center_y).font({ size: 18 }).opacity(1).animate({ delay: '0.5s' }).opacity(0);
+            damageText.text("REVIVED").center(center_x, center_y).font({ size: BattleGraphic.wr * 18 }).opacity(1).animate({ delay: '0.5s' }).opacity(0);
             this.displayHP(data.reviveHPRatio * 100, playerId, index);
             this.getAfflictionText(playerId, index).hide();
 
@@ -985,7 +987,7 @@ var BattleGraphic = (function () {
                 var center_y = this.coordArray[target.getPlayerId()][target.formationColumn][1];
 
                 var damageText = SVG.get('p' + target.getPlayerId() + 'f' + target.formationColumn + 'damageText');
-                damageText.text("+10%").center(center_x, center_y).font({ size: 25 }).opacity(1).animate({ delay: '2s' }).opacity(0);
+                damageText.text("+10%").center(center_x, center_y).font({ size: BattleGraphic.wr * 25 }).opacity(1).animate({ delay: '2s' }).opacity(0);
             }
 
             this.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
@@ -1162,7 +1164,7 @@ var BattleGraphic = (function () {
         var ward = SVG.get('p' + playerId + 'f' + famIndex + wardTxt);
 
         if (!ward) {
-            ward = SVG.get('mainSvg').image('img/' + wardFileName, 70, 70).center(this.coordArray[playerId][famIndex][0], this.coordArray[playerId][famIndex][1]).attr('id', 'p' + playerId + 'f' + famIndex + wardTxt).opacity(0);
+            ward = SVG.get('mainSvg').image('img/' + wardFileName, BattleGraphic.wr * 70, BattleGraphic.wr * 70).center(this.coordArray[playerId][famIndex][0], this.coordArray[playerId][famIndex][1]).attr('id', 'p' + playerId + 'f' + famIndex + wardTxt).opacity(0);
             SVG.get('p' + playerId + 'f' + famIndex + 'group').add(ward);
         }
 
@@ -1173,7 +1175,7 @@ var BattleGraphic = (function () {
         var txt = SVG.get('p' + playerId + 'f' + famIndex + 'afflictText');
 
         if (!txt) {
-            txt = SVG.get('mainSvg').text('Paralyzed').font({ size: 14, family: BattleGraphic.FONT }).attr({ fill: '#fff', stroke: '#000', 'stroke-width': BattleGraphic.AFFLICTION_TEXT_STROKE_WIDTH }).center(this.coordArray[playerId][famIndex][0], this.coordArray[playerId][famIndex][1] + BattleGraphic.IMAGE_WIDTH * 1.5 / 2 + 20).attr('id', 'p' + playerId + 'f' + famIndex + 'afflictText').hide();
+            txt = SVG.get('mainSvg').text('Paralyzed').font({ size: BattleGraphic.wr * 14, family: BattleGraphic.FONT }).attr({ fill: '#fff', stroke: '#000', 'stroke-width': BattleGraphic.AFFLICTION_TEXT_STROKE_WIDTH }).center(this.coordArray[playerId][famIndex][0], this.coordArray[playerId][famIndex][1] + BattleGraphic.IMAGE_WIDTH * 1.5 / 2 + BattleGraphic.hr * 20).attr('id', 'p' + playerId + 'f' + famIndex + 'afflictText').hide();
             SVG.get('p' + playerId + 'f' + famIndex + 'group').add(txt);
         }
 
@@ -1183,7 +1185,7 @@ var BattleGraphic = (function () {
     BattleGraphic.prototype.getProcEffect = function (playerId, famIndex, type) {
         var file = type == "spellCircle" ? "circle_blue.png" : "lineSpark.png";
 
-        var effect = SVG.get('mainSvg').image('img/' + file, 150, 150).center(this.coordArray[playerId][famIndex][0], this.coordArray[playerId][famIndex][1]).attr('id', 'p' + playerId + 'f' + famIndex + 'spellCircle').opacity(0);
+        var effect = SVG.get('mainSvg').image('img/' + file, BattleGraphic.wr * 150, BattleGraphic.wr * 150).center(this.coordArray[playerId][famIndex][0], this.coordArray[playerId][famIndex][1]).attr('id', 'p' + playerId + 'f' + famIndex + 'spellCircle').opacity(0);
         SVG.get('p' + playerId + 'f' + famIndex + 'group').add(effect);
 
         return effect;
@@ -1193,7 +1195,7 @@ var BattleGraphic = (function () {
         var txt = SVG.get('battleText');
 
         if (!txt) {
-            txt = SVG.get('mainSvg').text('0').font({ size: 24, family: BattleGraphic.FONT }).attr({ fill: '#fff', stroke: '#000', 'stroke-width': BattleGraphic.AFFLICTION_TEXT_STROKE_WIDTH }).center(200, 300).attr('id', 'battleText').opacity(0);
+            txt = SVG.get('mainSvg').text('0').font({ size: BattleGraphic.wr * 24, family: BattleGraphic.FONT }).attr({ fill: '#fff', stroke: '#000', 'stroke-width': BattleGraphic.AFFLICTION_TEXT_STROKE_WIDTH }).center(BattleGraphic.wr * 200, BattleGraphic.hr * 300).attr('id', 'battleText').opacity(0);
         }
 
         return txt;
@@ -1203,11 +1205,15 @@ var BattleGraphic = (function () {
     BattleGraphic.GRAPHIC_DISABLED = false;
 
     BattleGraphic.SHOW_FORMATION_LINE = false;
-    BattleGraphic.IMAGE_WIDTH = 70;
-    BattleGraphic.IMAGE_WIDTH_BIG = 120;
+
+    BattleGraphic.wr = (0 /* IS_MOBILE */ && typeof window !== 'undefined') ? window.innerWidth / 400 : 1;
+    BattleGraphic.hr = (0 /* IS_MOBILE */ && typeof window !== 'undefined') ? window.innerHeight / 600 : 1;
+
+    BattleGraphic.IMAGE_WIDTH = Math.floor(BattleGraphic.wr * 70);
+    BattleGraphic.IMAGE_WIDTH_BIG = Math.floor(BattleGraphic.wr * 120);
     BattleGraphic.PLAY_MODE = 'MANUAL';
     BattleGraphic.FONT = 'Alegreya Sans, Cooper Black';
-    BattleGraphic.AFFLICTION_TEXT_STROKE_WIDTH = '1px';
+    BattleGraphic.AFFLICTION_TEXT_STROKE_WIDTH = BattleGraphic.wr + 'px';
 
     BattleGraphic._instance = null;
     return BattleGraphic;
@@ -1671,7 +1677,7 @@ var BrigGenerator = (function () {
         var availableSkills = Skill.getAvailableSkillsForSelect();
 
         if (!tierListString) {
-            tierListString = sessionStorage["tierList"];
+            tierListString = localStorage["tierList"];
         }
 
         if (option.p1RandomMode) {
@@ -1755,6 +1761,11 @@ var BrigGenerator = (function () {
 })();
 var ENUM;
 (function (ENUM) {
+    (function (Setting) {
+        Setting[Setting["IS_MOBILE"] = 0] = "IS_MOBILE";
+    })(ENUM.Setting || (ENUM.Setting = {}));
+    var Setting = ENUM.Setting;
+
     (function (SkillType) {
         SkillType[SkillType["OPENING"] = 1] = "OPENING";
         SkillType[SkillType["ACTIVE"] = 2] = "ACTIVE";
@@ -2875,6 +2886,109 @@ var CardManager = (function () {
     CardManager._instance = null;
     return CardManager;
 })();
+var CsRandom = (function () {
+    function CsRandom(seed) {
+        this.seedArray = [];
+        var ii;
+        var mj, mk;
+
+        var subtraction = (seed == -2147483648) ? 2147483647 : Math.abs(seed);
+        mj = CsRandom.MSEED - subtraction;
+        this.seedArray[55] = mj;
+        mk = 1;
+        for (var i = 1; i < 55; i++) {
+            ii = (21 * i) % 55;
+            this.seedArray[ii] = mk;
+            mk = mj - mk;
+            if (mk < 0)
+                mk += CsRandom.MBIG;
+            mj = this.seedArray[ii];
+        }
+        for (var k = 1; k < 5; k++) {
+            for (i = 1; i < 56; i++) {
+                this.seedArray[i] -= this.seedArray[1 + (i + 30) % 55];
+                if (this.seedArray[i] < 0)
+                    this.seedArray[i] += CsRandom.MBIG;
+            }
+        }
+        this.inext = 0;
+        this.inextp = 21;
+        seed = 1;
+    }
+    CsRandom.prototype.sample = function () {
+        return (this.internalSample() * (1.0 / CsRandom.MBIG));
+    };
+
+    CsRandom.prototype.internalSample = function () {
+        var retVal;
+        var locINext = this.inext;
+        var locINextp = this.inextp;
+
+        if (++locINext >= 56)
+            locINext = 1;
+        if (++locINextp >= 56)
+            locINextp = 1;
+
+        retVal = this.seedArray[locINext] - this.seedArray[locINextp];
+
+        if (retVal == CsRandom.MBIG)
+            retVal--;
+        if (retVal < 0)
+            retVal += CsRandom.MBIG;
+
+        this.seedArray[locINext] = retVal;
+
+        this.inext = locINext;
+        this.inextp = locINextp;
+
+        return retVal;
+    };
+
+    CsRandom.prototype.next = function () {
+        return this.internalSample();
+    };
+
+    CsRandom.prototype.getSampleForLargeRange = function () {
+        var result = this.internalSample();
+
+        var negative = (this.internalSample() % 2 == 0) ? true : false;
+        if (negative) {
+            result = -result;
+        }
+        var d = result;
+        d += (2147483647 - 1);
+        d /= 2 * 2147483647 - 1;
+        return d;
+    };
+
+    CsRandom.prototype.nextInRange = function (minValue, maxValue) {
+        if (minValue > maxValue) {
+            throw new Error("max less than min");
+        }
+
+        var range = maxValue - minValue;
+        if (range <= 2147483647) {
+            return (Math.floor(this.sample() * range) + minValue);
+        } else {
+            return Math.floor(Math.floor(this.getSampleForLargeRange() * range) + minValue);
+        }
+    };
+
+    CsRandom.prototype.nextLessThan = function (maxValue) {
+        if (maxValue < 0) {
+            throw new Error("Max value less than 0");
+        }
+        return Math.floor(this.sample() * maxValue);
+    };
+
+    CsRandom.prototype.nextDouble = function () {
+        return this.sample();
+    };
+    CsRandom.MBIG = 2147483647;
+    CsRandom.MSEED = 161803398;
+    CsRandom.MZ = 0;
+    return CsRandom;
+})();
 var famDatabase = {
     11261: {
         name: "Rahab", stats: [14073, 12597, 15498, 9004, 16754],
@@ -2968,6 +3082,13 @@ var famDatabase = {
         skills: [277],
         img: "20d",
         fullName: "Alp, Dynast of Darkness II"
+    },
+    11436: {
+        name: "Alyssa", stats: [17883, 8718, 16594, 20516, 17786],
+        skills: [616, 617],
+        autoAttack: 10007,
+        img: "41d",
+        fullName: "Alyssa, Black Cat Witch II"
     },
     10623: {
         name: "Warfist", stats: [10904, 11417, 10466, 10660, 11830],
@@ -3403,6 +3524,13 @@ var famDatabase = {
         img: "20f",
         fullName: "Circe, Fallen Heroine II"
     },
+    11437: {
+        name: "Pumpkin", stats: [16497, 7061, 12423, 17060, 15457],
+        skills: [618, 619],
+        autoAttack: 10007,
+        img: "46b",
+        fullName: "Clockwork Pumpkin II"
+    },
     11392: {
         name: "Viper", stats: [14999, 12999, 14999, 7808, 17133],
         skills: [574],
@@ -3621,6 +3749,12 @@ var famDatabase = {
         skills: [131],
         img: "10e",
         fullName: "Fiendish Bat Demon II"
+    },
+    11435: {
+        name: "Figgo", stats: [15509, 16377, 13451, 6051, 16534],
+        skills: [614],
+        img: "275",
+        fullName: "Figgo, Executioner II"
     },
     10849: {
         name: "Fimbul", stats: [12086, 13489, 12562, 16743, 12597],
@@ -4204,6 +4338,13 @@ var famDatabase = {
         skills: [313],
         img: "30b",
         fullName: "Linnorm, the Hailstorm II"
+    },
+    21433: {
+        name: "Liza", stats: [22491, 9517, 16542, 21861, 18011],
+        skills: [613],
+        autoAttack: 10045,
+        img: "4ff",
+        fullName: "Liza, Blood-Anointed"
     },
     21187: {
         name: "Loki", stats: [19202, 21231, 16192, 15119, 15806],
@@ -5208,6 +5349,13 @@ var famDatabase = {
         img: "297",
         fullName: "Void Yaksha II"
     },
+    11461: {
+        name: "Wang Yi", stats: [16024, 6577, 11855, 17000, 16816],
+        skills: [621, 622],
+        autoAttack: 10007,
+        img: "1b8",
+        fullName: "Wang Yi, Lady of Iron II"
+    },
     11046: {
         name: "Waheela", stats: [17006, 13008, 16204, 16692, 18100],
         skills: [19, 134],
@@ -5438,6 +5586,492 @@ var Formation = (function () {
     Formation.whyfoo = Formation.initialize();
     return Formation;
 })();
+function setPreviousChoices() {
+    if (localStorage.getItem("f0") && localStorage.getItem("f0") != "null") {
+        for (var i = 0; i < 10; i++) {
+            document.getElementById("f" + i).value = localStorage.getItem("f" + i);
+        }
+    }
+
+    if (localStorage.getItem("f10") && localStorage.getItem("f10") != "null") {
+        for (i = 0; i < 10; i++) {
+            document.getElementById("f" + (i + 10)).value = localStorage.getItem("f" + (i + 10));
+        }
+    }
+
+    if (localStorage.getItem("s10") && localStorage.getItem("s10") != "null") {
+        for (i = 0; i < 3; i++) {
+            document.getElementById("s1" + i).value = localStorage.getItem("s1" + i);
+        }
+    }
+
+    if (localStorage.getItem("s20") && localStorage.getItem("s20") != "null") {
+        for (i = 0; i < 3; i++) {
+            document.getElementById("s2" + i).value = localStorage.getItem("s2" + i);
+        }
+    }
+
+    if (localStorage.getItem("1f") && localStorage.getItem("1f") != "null") {
+        document.getElementById("1f").value = localStorage.getItem("1f");
+    }
+
+    if (localStorage.getItem("2f") && localStorage.getItem("2f") != "null") {
+        document.getElementById("2f").value = localStorage.getItem("2f");
+    }
+
+    if (localStorage.getItem("po") && localStorage.getItem("po") != "null") {
+        document.getElementById("po").value = localStorage.getItem("po");
+    }
+
+    if (localStorage.getItem("debug") == "true") {
+        document.getElementById("debug").checked = true;
+    }
+
+    var bt = localStorage.getItem("bt");
+    if (bt == 1 || bt == 2) {
+        document.getElementById("bt").value = bt;
+    }
+}
+
+function toogleDisable() {
+    for (var player = 1; player <= 2; player++) {
+        var isSelected = document.getElementById("r" + player).checked;
+
+        var elems = document.getElementsByClassName("p" + player);
+        for (var i = 0; i < elems.length; i++) {
+            if (isSelected) {
+                elems[i].disabled = true;
+            } else {
+                elems[i].disabled = false;
+            }
+        }
+
+        var randomSelect = document.getElementById(player + "r");
+        if (isSelected) {
+            randomSelect.disabled = false;
+        } else {
+            randomSelect.disabled = true;
+        }
+    }
+}
+
+function toogleReserve() {
+    for (var player = 1; player <= 2; player++) {
+        var isBloodclash = document.getElementById("bt").value == "1";
+
+        var elems = document.getElementsByClassName("reserve");
+        for (var i = 0; i < elems.length; i++) {
+            var elem = elems[i];
+            if (!isBloodclash) {
+                elem.disabled = true;
+                elem.style.display = 'none';
+            } else {
+                elem.disabled = false;
+                elem.style.display = 'inline';
+            }
+        }
+    }
+
+    toogleDisable();
+}
+
+function onFormLoad() {
+    toogleReserve();
+    toogleDisable();
+}
+
+function validateForm() {
+    return true;
+}
+
+function submitForm() {
+    var form = document.forms["mainForm"];
+    if (form["debug"].checked == true) {
+        form.action = "debug.html";
+    }
+    form.submit();
+}
+
+function setFamOptions() {
+    var famSelects = document.getElementsByClassName("famSelect");
+
+    var famIdArray = [];
+    for (var key in famDatabase) {
+        famIdArray.push(key);
+    }
+    famIdArray.sort(function (a, b) {
+        return famDatabase[a].fullName.localeCompare(famDatabase[b].fullName);
+    });
+
+    for (var i = 0; i < famSelects.length; i++) {
+        for (var index = 0; index < famIdArray.length; index++) {
+            key = famIdArray[index];
+            var option = document.createElement("option");
+            option.value = key;
+            option.text = famDatabase[key].fullName;
+            famSelects[i].add(option);
+        }
+    }
+    ;
+}
+
+function setSkillOptions() {
+    var skillSelects = document.getElementsByClassName("skillSelect");
+
+    var skillIdArray = Skill.getAvailableSkillsForSelect();
+    skillIdArray.sort(function (a, b) {
+        return SkillDatabase[a].name.localeCompare(SkillDatabase[b].name);
+    });
+
+    for (var i = 0; i < skillSelects.length; i++) {
+        for (var index = 0; index < skillIdArray.length; index++) {
+            var key = skillIdArray[index];
+            var option = document.createElement("option");
+            option.value = key + "";
+            option.text = SkillDatabase[key].name;
+            skillSelects[i].add(option);
+        }
+    }
+    ;
+}
+
+function getBattleDataOption() {
+    localStorage.setItem("debug", getURLParameter("debug"));
+
+    var data = {}, option = {};
+    option.procOrder = getURLParameter("po");
+    localStorage.setItem("po", option.procOrder);
+
+    var battleType = getURLParameter("bt");
+    localStorage.setItem("bt", battleType);
+    option.battleType = battleType;
+
+    option.p1RandomMode = getURLParameter("1r");
+    option.p2RandomMode = getURLParameter("2r");
+
+    data.p1_formation = getURLParameter("1f");
+    if (!option.p1RandomMode)
+        localStorage.setItem("1f", data.p1_formation);
+
+    data.p2_formation = getURLParameter("2f");
+    if (!option.p2RandomMode)
+        localStorage.setItem("2f", data.p2_formation);
+
+    data.p1_cardIds = [];
+    data.p2_cardIds = [];
+    data.p1_warlordSkillIds = [];
+    data.p2_warlordSkillIds = [];
+
+    for (var i = 0; i < 10; i++) {
+        var f1id = getURLParameter("f" + i);
+        var f2id = getURLParameter("f" + (i + 10));
+        data.p1_cardIds.push(f1id);
+        data.p2_cardIds.push(f2id);
+
+        if (!option.p1RandomMode)
+            localStorage.setItem("f" + i, f1id);
+        if (!option.p2RandomMode)
+            localStorage.setItem("f" + (i + 10), f2id);
+    }
+    for (i = 0; i < 3; i++) {
+        var w1s = getURLParameter("s1" + i);
+        var w2s = getURLParameter("s2" + i);
+        data.p1_warlordSkillIds.push(w1s);
+        data.p2_warlordSkillIds.push(w2s);
+
+        if (!option.p1RandomMode)
+            localStorage.setItem("s1" + i, w1s);
+        if (!option.p2RandomMode)
+            localStorage.setItem("s2" + i, w2s);
+    }
+
+    return [data, option];
+}
+
+function prepareRandom() {
+    var USE_CS_RND = false;
+    if (USE_CS_RND) {
+        var rnd = new CsRandom(1234);
+        Math.random = function () {
+            return rnd.nextDouble();
+        };
+    }
+}
+
+function onBattleFinished() {
+    var startButton = document.getElementById("startButton");
+    startButton.disabled = false;
+
+    if (0 /* IS_MOBILE */) {
+        startButton.style.display = "block";
+    } else {
+        showStarRequest();
+    }
+}
+
+function onSimulationFinished() {
+    if (!0 /* IS_MOBILE */) {
+        showStarRequest();
+    }
+}
+
+function showStarRequest() {
+    setTimeout(function () {
+        if (!localStorage.getItem("starRequestShown")) {
+            swal({
+                title: "Star this!",
+                text: "If you like this simulator, star the project on Github. It motivates me to improve it :)",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#5cb85c",
+                confirmButtonText: "Take me there",
+                closeOnConfirm: false
+            }, function () {
+                localStorage.setItem("starRequestShown", "true");
+                window.location.href = 'https://github.com/chinhodado/Blood-Brothers-PvP-Simulator';
+            });
+        }
+    }, 2000);
+}
+
+function getRandomBackground() {
+    var bg = [
+        "23b/Bamboo01", "34d/Bamboo02", "1c5/Carpet01", "141/Carpet02",
+        "283/Carpet03", "1f8/Carpet04", "193/Carpet05", "24d/Carpet06",
+        "17b/Carpet07", "3ff/Carpet08", "1e6/Carpet09", "3c3/Carpet10",
+        "3a3/Carpet11", "224/Carpet12", "4ad/Carpet13", "20c/Carpet14",
+        "29f/Carpet15", "21c/Carpet16", "385/Carpet17", "4f8/Carpet18",
+        "362/Carpet19", "387/Carpet20", "311/Carpet21", "352/Carpet22",
+        "392/Castle01", "2f9/Castle02", "3b4/Cave01", "266/Cave02",
+        "3bc/Cave03", "1ad/Cave04", "4d5/Cave05", "3bf/Desert01",
+        "4c9/Desert02", "3d9/Fog01", "30e/Fog02", "267/Forest01",
+        "2c5/Forest02", "247/Greatwall01", "450/Halloween01", "22e/Halloween02",
+        "28a/Halloween03", "11a/Jungle01", "268/Mountain01", "3fb/River01",
+        "451/River02", "49f/Road01", "270/Road02", "475/Road03",
+        "2a8/Road04", "40c/Road05", "2ff/Road06", "310/Road07",
+        "383/Road08", "41e/Road09", "289/Road10", "183/Road11",
+        "1d8/Road12", "2a7/Road13", "3cf/Road14", "3fb/Road15",
+        "1f4/Road16", "28f/Road17", "2a5/Road28", "102/Road29",
+        "4e9/Ruins01", "1f4/Sakura01", "336/Snow01", "49a/Swamp01",
+        "145/Swamp02", "144/Tints01", "1fb/Tree01", "33c/Tree02",
+        "329/81a5ccfd07ca41c238e124a5b6683b93", "1a0/Castle1", "39f/F459e81069786396191c375060d778a3",
+        "3b1/66fddb4d129fa8b494cf3d21a057e226", "45f/452d87b11eb533d33fba937073bb5668",
+        "4a5/48645b3ae0106d4f96fa0bf3ad6239b8"
+    ];
+
+    var shortenedLink = getRandomElement(bg);
+    var firstPart = "http://img" + shortenedLink.charAt(0) + ".wikia.nocookie.net/bloodbrothersgame/images/";
+    var link = firstPart + shortenedLink.charAt(1) + "/" + shortenedLink.substring(1) + ".png";
+    return link;
+}
+
+function prepareField() {
+    var rndBgLink = getRandomBackground();
+    var img = new Image();
+    var svgWrapper = document.getElementById("svgWrapper");
+    img.onload = function () {
+        svgWrapper.style.backgroundImage = "url('" + rndBgLink + "')";
+    };
+    img.onerror = function () {
+        console.log("Background not found: " + rndBgLink);
+        svgWrapper.style.backgroundImage = "url(img/bg01.png)";
+    };
+    img.src = rndBgLink;
+}
+
+function getTierList(whatToDoNext) {
+    if (whatToDoNext == "debug") {
+        var callback = "updateTierListThenDebug";
+    } else if (whatToDoNext == "play") {
+        callback = "updateTierListThenPlay";
+    } else if (whatToDoNext == "sim") {
+        callback = "updateTierListThenSim";
+    } else if (whatToDoNext == "test") {
+        callback = "updateTierListThenTest";
+    } else {
+        callback = "updateTierList";
+    }
+
+    if (!localStorage.getItem("tierList")) {
+        console.log("Fetching tier list...");
+        $.ajax({
+            "url": "https://www.kimonolabs.com/api/e67eckbg?apikey=ddafaf08128df7d12e4e0f8e044d2372&callback=" + callback,
+            "crossDomain": true,
+            "dataType": "jsonp"
+        });
+    } else {
+        if (whatToDoNext == "debug") {
+            playDebug();
+        } else if (whatToDoNext == "play") {
+            playGame();
+        } else if (whatToDoNext == "sim") {
+            playSim();
+        } else if (whatToDoNext == "test") {
+            startTest();
+        }
+    }
+}
+
+function updateTierList(data) {
+    localStorage.setItem("tierList", JSON.stringify(data.results));
+}
+
+function updateTierListThenPlay(data) {
+    updateTierList(data);
+    playGame();
+}
+function updateTierListThenDebug(data) {
+    updateTierList(data);
+    playDebug();
+}
+function updateTierListThenSim(data) {
+    updateTierList(data);
+    playSim();
+}
+function updateTierListThenTest(data) {
+    updateTierList(data);
+    startTest();
+}
+
+function playGame() {
+    prepareField();
+    BattleGraphic.PLAY_MODE = 'AUTO';
+    BattleLogger.IS_DEBUG_MODE = false;
+    document.getElementById('startButton').onclick = function () {
+        this.disabled = true;
+
+        if (0 /* IS_MOBILE */) {
+            this.style.display = "none";
+        }
+
+        BattleGraphic.getInstance().resetInitialField();
+        BattleGraphic.getInstance().displayMajorEventAnimation(0);
+    };
+    var dataOption = getBattleDataOption();
+    var data = dataOption[0], option = dataOption[1];
+    var newGame = new BattleModel(data, option);
+    newGame.startBattle();
+}
+
+function playSim() {
+    prepareField();
+    var dataOption = getBattleDataOption();
+    var data = dataOption[0], option = dataOption[1];
+
+    var NUM_BATTLE = 10000;
+    document.getElementById("numBattle").innerHTML = NUM_BATTLE.toString();
+    document.getElementById("progressBar").max = NUM_BATTLE;
+
+    if (option.p1RandomMode) {
+        BattleGraphic.HIDE_PLAYER1 = true;
+    }
+
+    if (option.p2RandomMode) {
+        BattleGraphic.HIDE_PLAYER2 = true;
+    }
+    BattleLogger.IS_DEBUG_MODE = false;
+    BattleModel.IS_MASS_SIMULATION = true;
+    if (!0 /* IS_MOBILE */) {
+        var newGame = new BattleModel(data, option);
+    }
+
+    document.getElementById("gameDiv").setAttribute("style", "display: none;");
+    document.getElementById("startButton").setAttribute("style", "display: none;");
+    document.getElementById("simDiv").setAttribute("style", "display: block;");
+
+    var totalProgress = 0;
+    var workerDone = 0;
+    var NUM_WORKER = 4;
+    var workerPool = [];
+    var workerDataReturned = [];
+
+    for (var w = 0; w < NUM_WORKER; w++) {
+        var worker = new Worker("js/worker.js");
+        worker.onmessage = function (event) {
+            if (event.data.status == "ongoing") {
+                totalProgress += 100;
+                document.getElementById("progressBar").setAttribute("value", totalProgress.toString());
+            } else if (event.data.status == "done") {
+                totalProgress += 100;
+                document.getElementById("progressBar").setAttribute("value", totalProgress.toString());
+                workerDataReturned[workerDone] = event.data;
+                workerDone++;
+                console.log(workerDone + " workers done.");
+                if (workerDone == NUM_WORKER) {
+                    var endTime = performance.now();
+
+                    var finalData = {
+                        p1WinCount: 0,
+                        p2WinCount: 0,
+                        winCountTable: []
+                    };
+                    for (var i = 0; i < NUM_WORKER; i++) {
+                        finalData.p1WinCount += workerDataReturned[i].p1WinCount;
+                        finalData.p2WinCount += workerDataReturned[i].p2WinCount;
+
+                        var workerTable = workerDataReturned[i].winCountTable;
+                        for (var key in workerTable) {
+                            if (finalData.winCountTable[key]) {
+                                finalData.winCountTable[key] += workerTable[key];
+                            } else {
+                                finalData.winCountTable[key] = workerTable[key];
+                            }
+                        }
+                    }
+
+                    var famIdArray = [];
+                    for (key in finalData.winCountTable) {
+                        famIdArray.push(key);
+                    }
+                    famIdArray.sort(function (a, b) {
+                        return finalData.winCountTable[b] - finalData.winCountTable[a];
+                    });
+
+                    var simResultDiv = document.getElementById("simResultDiv");
+                    simResultDiv.innerHTML += ("Player 2 won: " + finalData.p2WinCount + "<br> Player 1 won: " + finalData.p1WinCount + "<br><br> Time: " + ((endTime - startTime) / 1000).toFixed(2) + "s" + "<br><a href=setting.html>Go back to main page </a>");
+
+                    var detail1 = "<br><br><details><summary> Most frequent appearances in win team: </summary><br>";
+                    for (i = 0; i < famIdArray.length; i++) {
+                        var id = famIdArray[i];
+                        detail1 += (famDatabase[id].fullName + ": " + finalData.winCountTable[id] + "<br>");
+                    }
+                    detail1 += "</details>";
+                    simResultDiv.innerHTML += detail1;
+
+                    onSimulationFinished();
+
+                    workerPool.forEach(function (entry) {
+                        entry.terminate();
+                    });
+                }
+            }
+        };
+
+        workerPool[w] = worker;
+    }
+
+    worker = null;
+
+    var startTime = performance.now();
+
+    for (w = 0; w < workerPool.length; w++) {
+        workerPool[w].postMessage({
+            data: data,
+            option: option,
+            tierList: localStorage.getItem("tierList"),
+            numBattle: NUM_BATTLE / NUM_WORKER
+        });
+    }
+}
+
+function playDebug() {
+    prepareField();
+    var dataOption = getBattleDataOption();
+    var data = dataOption[0], option = dataOption[1];
+
+    var newGame = new BattleModel(data, option);
+    newGame.startBattle();
+}
 var Player = (function () {
     function Player(id, name, formation, multiplier) {
         this.id = id;
@@ -8761,6 +9395,60 @@ var SkillDatabase = {
         range: 18, prob: 30, ward: 3,
         desc: "Massive AGI-based damage to three random foes, ignoring position. Attacks rear foes first."
     },
+    613: {
+        name: "Icy Smile", type: 2, func: 4, calc: 2,
+        arg1: 1.95, arg2: 3, arg3: 0.5,
+        range: 16, prob: 30, ward: 2,
+        desc: "Deal heavy WIS-based damage and sometimes freeze three random foes, ignoring position."
+    },
+    614: {
+        name: "Following Orders", type: 2, func: 3, calc: 1,
+        arg1: 1.2, arg2: 5, arg3: 0.2, arg4: 2,
+        range: 8, prob: 30, ward: 1,
+        desc: "Deal ATK-based damage to all foes and sometimes silence foes for 2 turns."
+    },
+    616: {
+        name: "Cat Scratch", type: 2, func: 4, calc: 2,
+        arg1: 1.25,
+        range: 20, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage to five random foes, ignoring position."
+    },
+    617: {
+        name: "Tail Swish", type: 1, func: 1, calc: 0,
+        arg1: 0.2, arg2: 3,
+        range: 3, prob: 70,
+        desc: "Raise WIS of self and adjacent familiars, based on 20% of her WIS."
+    },
+    618: {
+        name: "Jack-O'-Boom", type: 2, func: 4, calc: 2,
+        arg1: 1.15,
+        range: 17, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage to six random foes, ignoring position."
+    },
+    619: {
+        name: "Pumpkin Bulwark", type: 1, func: 1, calc: 0,
+        arg1: 0.2, arg2: 6,
+        range: 4, prob: 70,
+        desc: "Reduce magic damage taken by all allies."
+    },
+    620: {
+        name: "Storm of Hooves", type: 2, func: 4, calc: 2,
+        arg1: 2,
+        range: 23, prob: 30, ward: 2,
+        desc: "Deal massive WIS-based damage to two random foes, ignoring position."
+    },
+    621: {
+        name: "Devoted Arrows", type: 2, func: 4, calc: 2,
+        arg1: 1.7,
+        range: 19, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage to four random foes, ignoring position."
+    },
+    622: {
+        name: "Deathbed Shot", type: 16, func: 4, calc: 2,
+        arg1: 0.35,
+        range: 208, prob: 70, ward: 2,
+        desc: "Deal WIS-based damage to all foes upon her death. Increased if fewer foes."
+    },
     10001: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
         arg1: 1,
@@ -9012,6 +9700,12 @@ var SkillDatabase = {
         arg1: 1.2,
         range: 5, prob: 100, ward: 1, isAutoAttack: true,
         desc: "ATK-based damage to one foe."
+    },
+    10045: {
+        name: "Standard Action", type: 2, func: 37, calc: 2,
+        arg1: 1, arg2: 0.3, arg3: 27, arg4: 21,
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "WIS-based damage and drain HP from target."
     }
 };
 var SkillLogicFactory = (function () {
@@ -9657,6 +10351,10 @@ var CounterSkillLogic = (function (_super) {
     function CounterSkillLogic() {
         _super.apply(this, arguments);
     }
+    CounterSkillLogic.prototype.willBeExecuted = function (data) {
+        return _super.prototype.willBeExecuted.call(this, data) && !data.attacker.isDead;
+    };
+
     CounterSkillLogic.prototype.execute = function (data) {
         this.logger.addMinorEvent({
             executorId: data.executor.id,
@@ -11531,106 +12229,3 @@ var BattleModel = (function () {
 
 
 
-var CsRandom = (function () {
-    function CsRandom(seed) {
-        this.seedArray = [];
-        var ii;
-        var mj, mk;
-
-        var subtraction = (seed == -2147483648) ? 2147483647 : Math.abs(seed);
-        mj = CsRandom.MSEED - subtraction;
-        this.seedArray[55] = mj;
-        mk = 1;
-        for (var i = 1; i < 55; i++) {
-            ii = (21 * i) % 55;
-            this.seedArray[ii] = mk;
-            mk = mj - mk;
-            if (mk < 0)
-                mk += CsRandom.MBIG;
-            mj = this.seedArray[ii];
-        }
-        for (var k = 1; k < 5; k++) {
-            for (i = 1; i < 56; i++) {
-                this.seedArray[i] -= this.seedArray[1 + (i + 30) % 55];
-                if (this.seedArray[i] < 0)
-                    this.seedArray[i] += CsRandom.MBIG;
-            }
-        }
-        this.inext = 0;
-        this.inextp = 21;
-        seed = 1;
-    }
-    CsRandom.prototype.sample = function () {
-        return (this.internalSample() * (1.0 / CsRandom.MBIG));
-    };
-
-    CsRandom.prototype.internalSample = function () {
-        var retVal;
-        var locINext = this.inext;
-        var locINextp = this.inextp;
-
-        if (++locINext >= 56)
-            locINext = 1;
-        if (++locINextp >= 56)
-            locINextp = 1;
-
-        retVal = this.seedArray[locINext] - this.seedArray[locINextp];
-
-        if (retVal == CsRandom.MBIG)
-            retVal--;
-        if (retVal < 0)
-            retVal += CsRandom.MBIG;
-
-        this.seedArray[locINext] = retVal;
-
-        this.inext = locINext;
-        this.inextp = locINextp;
-
-        return retVal;
-    };
-
-    CsRandom.prototype.next = function () {
-        return this.internalSample();
-    };
-
-    CsRandom.prototype.getSampleForLargeRange = function () {
-        var result = this.internalSample();
-
-        var negative = (this.internalSample() % 2 == 0) ? true : false;
-        if (negative) {
-            result = -result;
-        }
-        var d = result;
-        d += (2147483647 - 1);
-        d /= 2 * 2147483647 - 1;
-        return d;
-    };
-
-    CsRandom.prototype.nextInRange = function (minValue, maxValue) {
-        if (minValue > maxValue) {
-            throw new Error("max less than min");
-        }
-
-        var range = maxValue - minValue;
-        if (range <= 2147483647) {
-            return (Math.floor(this.sample() * range) + minValue);
-        } else {
-            return Math.floor(Math.floor(this.getSampleForLargeRange() * range) + minValue);
-        }
-    };
-
-    CsRandom.prototype.nextLessThan = function (maxValue) {
-        if (maxValue < 0) {
-            throw new Error("Max value less than 0");
-        }
-        return Math.floor(this.sample() * maxValue);
-    };
-
-    CsRandom.prototype.nextDouble = function () {
-        return this.sample();
-    };
-    CsRandom.MBIG = 2147483647;
-    CsRandom.MSEED = 161803398;
-    CsRandom.MZ = 0;
-    return CsRandom;
-})();
