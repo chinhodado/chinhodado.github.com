@@ -1435,15 +1435,18 @@ var BattleLogger = (function () {
     };
 
     BattleLogger.prototype.displayInfoText = function () {
+        if (BattleLogger.INFOTEXT_DISPLAYED) {
+            return;
+        }
         var cardManager = CardManager.getInstance();
         var battle = BattleModel.getInstance();
         var p1randTxt = this.getRandomModeText(+battle.p1RandomMode);
         var p2randTxt = this.getRandomModeText(+battle.p2RandomMode);
 
-        var infoDivP1 = document.getElementById("infoDivP1");
-        var infoDivP2 = document.getElementById("infoDivP2");
-        var infoDivP1Title = document.getElementById("infoDivP1Title");
-        var infoDivP2Title = document.getElementById("infoDivP2Title");
+        var infoDivP1 = 0 /* IS_MOBILE */ ? $("#infoDivP1mobile")[0] : $("#infoDivP1")[0];
+        var infoDivP2 = 0 /* IS_MOBILE */ ? $("#infoDivP2mobile")[0] : $("#infoDivP2")[0];
+        var infoDivP1Title = 0 /* IS_MOBILE */ ? $("#infoDivP1TitleMobile")[0] : $("#infoDivP1Title")[0];
+        var infoDivP2Title = 0 /* IS_MOBILE */ ? $("#infoDivP2TitleMobile")[0] : $("#infoDivP2Title")[0];
 
         if (!battle.p1RandomMode || !BattleModel.IS_MASS_SIMULATION) {
             infoDivP1.innerHTML = cardManager.getPlayerMainBrigString(battle.player1);
@@ -1465,9 +1468,14 @@ var BattleLogger = (function () {
 
         infoDivP1Title.innerHTML += p1randTxt;
         infoDivP2Title.innerHTML += p2randTxt;
+
+        BattleLogger.INFOTEXT_DISPLAYED = true;
     };
 
     BattleLogger.prototype.displayWarningText = function () {
+        if (BattleLogger.WARNINGTEXT_DISPLAYED) {
+            return;
+        }
         var needWarn = true;
         var cardManager = CardManager.getInstance();
         var battle = BattleModel.getInstance();
@@ -1505,6 +1513,8 @@ var BattleLogger = (function () {
             simDiv.innerHTML += warnTxt;
             gameDiv.innerHTML += warnTxt;
         }
+
+        BattleLogger.WARNINGTEXT_DISPLAYED = true;
     };
 
     BattleLogger.prototype.getRandomModeText = function (type) {
@@ -1639,6 +1649,8 @@ var BattleLogger = (function () {
         this.displayEventLogAtIndex(0);
     };
     BattleLogger.IS_DEBUG_MODE = true;
+    BattleLogger.INFOTEXT_DISPLAYED = false;
+    BattleLogger.WARNINGTEXT_DISPLAYED = false;
 
     BattleLogger._instance = null;
     return BattleLogger;
@@ -2816,19 +2828,32 @@ var CardManager = (function () {
 
     CardManager.prototype.getPlayerMainBrigString = function (player) {
         var cards = this.getPlayerCurrentMainCards(player);
-        return this.getBrigString(cards);
+        return 0 /* IS_MOBILE */ ? this.getPlainBrigString(cards) : this.getHtmlBrigString(cards);
     };
+
     CardManager.prototype.getPlayerReserveBrigString = function (player) {
         var cards = this.getPlayerOriginalReserveCards(player);
-        return this.getBrigString(cards);
+        return 0 /* IS_MOBILE */ ? this.getPlainBrigString(cards) : this.getHtmlBrigString(cards);
     };
-    CardManager.prototype.getBrigString = function (cards) {
+
+    CardManager.prototype.getHtmlBrigString = function (cards) {
         var brigStr = "";
 
         for (var i = 0; i < cards.length; i++) {
             var dash = (i == 0) ? "" : " - ";
             var cb = "showCardDetailDialogById(" + cards[i].id + ");";
             brigStr += (dash + "<a href='javascript:void(0)' onclick='" + cb + "'>" + cards[i].name) + "</a>";
+        }
+
+        return brigStr;
+    };
+
+    CardManager.prototype.getPlainBrigString = function (cards) {
+        var brigStr = "";
+
+        for (var i = 0; i < cards.length; i++) {
+            var dash = (i == 0) ? "" : " - ";
+            brigStr += (dash + cards[i].name);
         }
 
         return brigStr;
@@ -5954,12 +5979,14 @@ function playGame() {
 }
 
 function playSim() {
-    prepareField();
+    if (!0 /* IS_MOBILE */) {
+        prepareField();
+    }
     var dataOption = getBattleDataOption();
     var data = dataOption[0], option = dataOption[1];
 
     var NUM_BATTLE = 10000;
-    document.getElementById("numBattle").innerHTML = NUM_BATTLE.toString();
+    document.getElementById("numBattle").innerHTML = numberWithCommas(NUM_BATTLE);
     document.getElementById("progressBar").max = NUM_BATTLE;
 
     if (option.p1RandomMode) {
@@ -5979,6 +6006,80 @@ function playSim() {
     document.getElementById("startButton").setAttribute("style", "display: none;");
     document.getElementById("simDiv").setAttribute("style", "display: block;");
 
+    if (0 /* IS_MOBILE */) {
+        startSynchronousSim(data, option, NUM_BATTLE);
+    } else {
+        startWorkerSim(data, option, NUM_BATTLE);
+    }
+}
+
+function playDebug() {
+    prepareField();
+    var dataOption = getBattleDataOption();
+    var data = dataOption[0], option = dataOption[1];
+
+    var newGame = new BattleModel(data, option);
+    newGame.startBattle();
+}
+
+function startSynchronousSim(data, option, NUM_BATTLE) {
+    prepareRandom();
+    var p1WinCount = 0;
+    var p2WinCount = 0;
+    var winCountTable = {};
+    BattleModel.IS_MASS_SIMULATION = true;
+    BattleGraphic.GRAPHIC_DISABLED = true;
+    var tierList = localStorage.getItem("tierList");
+    var startTime = new Date().getTime();
+
+    var intervalCount = 0;
+    var NUM_CHUNK = 100;
+    var CHUNK_SIZE = NUM_BATTLE / NUM_CHUNK;
+    var interval = setInterval(function () {
+        for (var i = 0; i < CHUNK_SIZE; i++) {
+            var newGame = new BattleModel(data, option, tierList);
+            var resultBattle = newGame.startBattle();
+            BattleModel.resetAll();
+            if (resultBattle.playerWon.id == 1) {
+                p1WinCount++;
+            } else if (resultBattle.playerWon.id == 2) {
+                p2WinCount++;
+            }
+
+            var winTeam = resultBattle.cardManager.getPlayerOriginalMainCards(resultBattle.playerWon);
+            if (resultBattle.isBloodClash) {
+                winTeam = winTeam.concat(resultBattle.cardManager.getPlayerOriginalReserveCards(resultBattle.playerWon));
+            }
+            for (var j = 0; j < winTeam.length; j++) {
+                if (winCountTable[winTeam[j].dbId]) {
+                    winCountTable[winTeam[j].dbId]++;
+                } else {
+                    winCountTable[winTeam[j].dbId] = 1;
+                }
+            }
+
+            document.getElementById("progressPercent").innerHTML = intervalCount + 1 + "%";
+            document.getElementById("progressBar").setAttribute("value", (intervalCount * CHUNK_SIZE + i + 1) + "");
+        }
+
+        intervalCount++;
+        if (intervalCount >= NUM_CHUNK) {
+            clearInterval(interval);
+        }
+
+        if (intervalCount * CHUNK_SIZE >= NUM_BATTLE) {
+            var endTime = new Date().getTime();
+            var finalData = {
+                p1WinCount: p1WinCount,
+                p2WinCount: p2WinCount,
+                winCountTable: winCountTable
+            };
+            onSimulationResultObtained(finalData, startTime, endTime);
+        }
+    }, 0);
+}
+
+function startWorkerSim(data, option, NUM_BATTLE) {
     var totalProgress = 0;
     var workerDone = 0;
     var NUM_WORKER = 4;
@@ -6019,26 +6120,7 @@ function playSim() {
                         }
                     }
 
-                    var famIdArray = [];
-                    for (key in finalData.winCountTable) {
-                        famIdArray.push(key);
-                    }
-                    famIdArray.sort(function (a, b) {
-                        return finalData.winCountTable[b] - finalData.winCountTable[a];
-                    });
-
-                    var simResultDiv = document.getElementById("simResultDiv");
-                    simResultDiv.innerHTML += ("Player 2 won: " + finalData.p2WinCount + "<br> Player 1 won: " + finalData.p1WinCount + "<br><br> Time: " + ((endTime - startTime) / 1000).toFixed(2) + "s" + "<br><a href=setting.html>Go back to main page </a>");
-
-                    var detail1 = "<br><br><details><summary> Most frequent appearances in win team: </summary><br>";
-                    for (i = 0; i < famIdArray.length; i++) {
-                        var id = famIdArray[i];
-                        detail1 += (famDatabase[id].fullName + ": " + finalData.winCountTable[id] + "<br>");
-                    }
-                    detail1 += "</details>";
-                    simResultDiv.innerHTML += detail1;
-
-                    onSimulationFinished();
+                    onSimulationResultObtained(finalData, startTime, endTime);
 
                     workerPool.forEach(function (entry) {
                         entry.terminate();
@@ -6064,13 +6146,27 @@ function playSim() {
     }
 }
 
-function playDebug() {
-    prepareField();
-    var dataOption = getBattleDataOption();
-    var data = dataOption[0], option = dataOption[1];
+function onSimulationResultObtained(finalData, startTime, endTime) {
+    var famIdArray = [];
+    for (var key in finalData.winCountTable) {
+        famIdArray.push(key);
+    }
+    famIdArray.sort(function (a, b) {
+        return finalData.winCountTable[b] - finalData.winCountTable[a];
+    });
 
-    var newGame = new BattleModel(data, option);
-    newGame.startBattle();
+    var simResultDiv = document.getElementById("simResultDiv");
+    simResultDiv.innerHTML += ("Player 2 won: " + finalData.p2WinCount + "<br> Player 1 won: " + finalData.p1WinCount + "<br><br> Time: " + ((endTime - startTime) / 1000).toFixed(2) + "s" + "<br><a href=setting.html>Go back to main page </a>");
+
+    var detail1 = "<br><br><details><summary> Most frequent appearances in win team: </summary><br>";
+    for (var i = 0; i < famIdArray.length; i++) {
+        var id = famIdArray[i];
+        detail1 += (famDatabase[id].fullName + ": " + finalData.winCountTable[id] + "<br>");
+    }
+    detail1 += "</details>";
+    simResultDiv.innerHTML += detail1;
+
+    onSimulationFinished();
 }
 var Player = (function () {
     function Player(id, name, formation, multiplier) {
@@ -11445,6 +11541,10 @@ function isChrome() {
     } else {
         return false;
     }
+}
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 var BattleModel = (function () {
     function BattleModel(data, option, tierListString) {
