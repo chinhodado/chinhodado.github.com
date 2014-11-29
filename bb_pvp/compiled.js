@@ -3160,6 +3160,20 @@ var famDatabase = {
         img: "39e",
         fullName: "Belisama, Flame Goddess II"
     },
+    11454: {
+        name: "Bella",
+        stats: [16009, 16627, 13052, 5631, 17374],
+        skills: [643, 644],
+        img: "314",
+        fullName: "Bella, the Dazzling Flower II"
+    },
+    21459: {
+        name: "Benjamina",
+        stats: [21022, 16379, 20007, 13006, 18011],
+        skills: [640],
+        img: "46a",
+        fullName: "Benjamina, Wild Turkey"
+    },
     10684: {
         name: "Biast",
         stats: [13879, 12655, 10163, 13611, 9798],
@@ -3884,6 +3898,13 @@ var famDatabase = {
         img: "198",
         fullName: "Haokah, the Lightning Brave II"
     },
+    11428: {
+        name: "Hash",
+        stats: [15034, 13485, 12532, 10441, 17147],
+        skills: [641],
+        img: "112",
+        fullName: "Hash, Lizardman Cannoneer II"
+    },
     11451: {
         name: "Hatshepsut",
         stats: [17049, 16334, 13041, 6097, 16096],
@@ -4520,6 +4541,14 @@ var famDatabase = {
         img: "2e9",
         fullName: "Naberius II"
     },
+    10949: {
+        name: "Najeeba",
+        stats: [16230, 7539, 10660, 16681, 16803],
+        skills: [642],
+        autoAttack: 10003,
+        img: "48a",
+        fullName: "Najeeba, the Mapleblade II"
+    },
     11015: {
         name: "Narmer",
         stats: [15876, 12194, 15172, 8870, 15924],
@@ -4592,6 +4621,13 @@ var famDatabase = {
         isMounted: true,
         img: "365",
         fullName: "Odin, God of Victory II"
+    },
+    11458: {
+        name: "Odoa",
+        stats: [20364, 24600, 16009, 10040, 9520],
+        skills: [645, 646],
+        img: "1a6",
+        fullName: "Odoa, the Scarecrow II"
     },
     11446: {
         name: "Olan",
@@ -6898,7 +6934,7 @@ var SkillDatabase = {
         arg3: 0.3,
         range: 7,
         prob: 30,
-        ward: 3,
+        ward: 2,
         desc: "Deal damage and sometimes freeze up to three foes."
     },
     42: {
@@ -7108,7 +7144,7 @@ var SkillDatabase = {
         arg1: 3,
         range: 5,
         prob: 30,
-        ward: 3,
+        ward: 2,
         desc: "Deal heavy damage to one foe."
     },
     77: {
@@ -7546,7 +7582,7 @@ var SkillDatabase = {
         arg3: 0.3,
         range: 7,
         prob: 30,
-        ward: 3,
+        ward: 2,
         desc: "Deal heavy damage and sometimes freeze up to three foes."
     },
     129: {
@@ -12351,7 +12387,7 @@ var SkillDatabase = {
         range: 21,
         prob: 50,
         ward: 1,
-        desc: "Chance to unlease a burning counter attack when struck."
+        desc: "Chance to unleash a burning counter attack when struck."
     },
     629: {
         name: "Slice and Dice",
@@ -12451,7 +12487,7 @@ var SkillDatabase = {
         arg3: 0.25,
         range: 20,
         prob: 30,
-        ward: 3,
+        ward: 2,
         desc: "Deal WIS-based damage and sometimes freeze five random foes, ignoring position."
     },
     637: {
@@ -12486,6 +12522,94 @@ var SkillDatabase = {
         range: 3,
         prob: 70,
         desc: "Raise AGI of self and adjacent familiars, based on 25% of her WIS."
+    },
+    640: {
+        name: "Turkey Shoot",
+        type: 2,
+        func: 3,
+        calc: 3,
+        arg1: 1.2,
+        arg2: 7,
+        arg3: 0.2,
+        arg4: 1,
+        arg5: 0.9,
+        range: 20,
+        prob: 30,
+        ward: 1,
+        desc: "Deal AGI-based damage to five random foes and sometimes blind them for one turn."
+    },
+    641: {
+        name: "Cannonade",
+        type: 2,
+        func: 4,
+        calc: 3,
+        arg1: 1.25,
+        range: 20,
+        prob: 30,
+        ward: 2,
+        desc: "Deal AGI-based damage to five random foes, ignoring position."
+    },
+    642: {
+        name: "Poison Syrup",
+        type: 2,
+        func: 4,
+        calc: 2,
+        arg1: 1.95,
+        arg2: 2,
+        arg3: 0.3,
+        range: 313,
+        prob: 30,
+        ward: 2,
+        desc: "Heavy WIS-based damage, sometimes paralyze up to three foes. Increased if fewer foes."
+    },
+    643: {
+        name: "Fluttering Leaf",
+        type: 6,
+        func: 27,
+        calc: 0,
+        arg1: 2,
+        arg2: 1,
+        arg3: 78,
+        arg4: 79,
+        range: 21,
+        prob: 50,
+        desc: "Evade enemy ATK-based attack skills."
+    },
+    644: {
+        name: "Vine Lash",
+        type: 2,
+        func: 4,
+        calc: 1,
+        arg1: 1.4,
+        arg2: 1,
+        arg3: 0.5,
+        arg4: 10,
+        range: 20,
+        prob: 30,
+        ward: 1,
+        desc: "Deal ATK-based damage to five random foes and sometimes poison them, ignoring position."
+    },
+    645: {
+        name: "Dread",
+        type: 2,
+        func: 3,
+        calc: 1,
+        arg1: 1.1,
+        range: 314,
+        prob: 30,
+        ward: 1,
+        desc: "ATK-based damage to up to four foes. Increased if fewer foes."
+    },
+    646: {
+        name: "Initiative",
+        type: 1,
+        func: 31,
+        calc: 0,
+        arg1: 1,
+        arg2: 2,
+        range: 4,
+        prob: 70,
+        desc: "Order of attack is determined by ATK during the next two turns."
     },
     10001: {
         name: "Standard Action",
