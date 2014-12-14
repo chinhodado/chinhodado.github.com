@@ -1,3 +1,104 @@
+var BattleBackground = (function () {
+    function BattleBackground() {
+    }
+    BattleBackground.getRandomBackgroundLink = function () {
+        var shortenedLink = getRandomElement(BattleBackground.bgList);
+        return BattleBackground.getLinkFromShortenedLink(shortenedLink);
+    };
+    BattleBackground.getLinkFromShortenedLink = function (shortenedLink) {
+        var firstPart = "http://img" + shortenedLink.charAt(0) + ".wikia.nocookie.net/bloodbrothersgame/images/";
+        var link = firstPart + shortenedLink.charAt(1) + "/" + shortenedLink.substring(1) + ".png";
+        return link;
+    };
+    BattleBackground.bgList = [
+        "23b/Bamboo01",
+        "34d/Bamboo02",
+        "1c5/Carpet01",
+        "141/Carpet02",
+        "283/Carpet03",
+        "1f8/Carpet04",
+        "193/Carpet05",
+        "24d/Carpet06",
+        "17b/Carpet07",
+        "3ff/Carpet08",
+        "1e6/Carpet09",
+        "3c3/Carpet10",
+        "3a3/Carpet11",
+        "224/Carpet12",
+        "4ad/Carpet13",
+        "20c/Carpet14",
+        "29f/Carpet15",
+        "21c/Carpet16",
+        "385/Carpet17",
+        "4f8/Carpet18",
+        "362/Carpet19",
+        "387/Carpet20",
+        "311/Carpet21",
+        "352/Carpet22",
+        "347/Carpet23",
+        "111/Carpet24",
+        "117/Carpet25",
+        "3c8/Carpet26",
+        "392/Castle01",
+        "2f9/Castle02",
+        "3b4/Cave01",
+        "266/Cave02",
+        "3bc/Cave03",
+        "1ad/Cave04",
+        "4d5/Cave05",
+        "3bf/Desert01",
+        "4c9/Desert02",
+        "3d9/Fog01",
+        "30e/Fog02",
+        "267/Forest01",
+        "2c5/Forest02",
+        "247/Greatwall01",
+        "450/Halloween01",
+        "22e/Halloween02",
+        "28a/Halloween03",
+        "4c2/Halloween04",
+        "3c7/Halloween05",
+        "11a/Jungle01",
+        "268/Mountain01",
+        "3fb/River01",
+        "451/River02",
+        "49f/Road01",
+        "270/Road02",
+        "475/Road03",
+        "2a8/Road04",
+        "40c/Road05",
+        "2ff/Road06",
+        "310/Road07",
+        "383/Road08",
+        "41e/Road09",
+        "289/Road10",
+        "183/Road11",
+        "1d8/Road12",
+        "2a7/Road13",
+        "3cf/Road14",
+        "3fb/Road15",
+        "1f4/Road16",
+        "28f/Road17",
+        "2a5/Road28",
+        "102/Road29",
+        "4e9/Ruins01",
+        "1f4/Sakura01",
+        "336/Snow01",
+        "3c3/Snow03",
+        "49a/Swamp01",
+        "145/Swamp02",
+        "144/Tints01",
+        "1fb/Tree01",
+        "33c/Tree02",
+        "329/81a5ccfd07ca41c238e124a5b6683b93",
+        "1a0/Castle1",
+        "39f/F459e81069786396191c375060d778a3",
+        "3b1/66fddb4d129fa8b494cf3d21a057e226",
+        "45f/452d87b11eb533d33fba937073bb5668",
+        "4a5/48645b3ae0106d4f96fa0bf3ad6239b8"
+    ];
+    return BattleBackground;
+})();
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -225,6 +326,228 @@ var BurnAffliction = (function (_super) {
     BurnAffliction.STACK_NUM = 3;
     return BurnAffliction;
 })(Affliction);
+var BattleDebugger = (function () {
+    function BattleDebugger() {
+        if (BattleDebugger._instance) {
+            throw new Error("Error: Instantiation failed: Use getInstance() instead of new.");
+        }
+        BattleDebugger._instance = this;
+    }
+    BattleDebugger.getInstance = function () {
+        if (BattleDebugger._instance === null) {
+            BattleDebugger._instance = new BattleDebugger();
+        }
+        return BattleDebugger._instance;
+    };
+    BattleDebugger.prototype.displayDebugger = function () {
+        this.displayEventLogAtIndex(0);
+        var minorLog = BattleLogger.getInstance().minorEventLog;
+        var majorLog = BattleLogger.getInstance().majorEventLog;
+        var currentTurn = -10;
+        for (var i = 0; i < majorLog.length; i++) {
+            if (majorLog[i].turn != currentTurn) {
+                currentTurn = majorLog[i].turn;
+                this.displayTurn(currentTurn);
+            }
+            this.displayMajorEvent(i);
+            for (var j = 0; minorLog[i] && j < minorLog[i].length; j++) {
+                this.displayMinorEvent(i, j);
+            }
+        }
+    };
+    BattleDebugger.prototype.displayMajorEvent = function (index) {
+        if (!BattleDebugger.IS_DEBUG_MODE) {
+            return;
+        }
+        var data = BattleLogger.getInstance().majorEventLog[index];
+        var id = "turn" + data.turn + "events";
+        var battleEventDiv = document.getElementById("battleEventDiv");
+        var turnEventList = document.getElementById(id);
+        if (!turnEventList) {
+            turnEventList = document.createElement("ul");
+            turnEventList.setAttribute("id", id);
+            battleEventDiv.appendChild(turnEventList);
+        }
+        var newEvent = document.createElement("li");
+        newEvent.innerHTML = "<a>" + data.description + "</a>";
+        newEvent.setAttribute("tabindex", index + "");
+        newEvent.setAttribute("id", index + "");
+        newEvent.onclick = function () {
+            BattleDebugger.getInstance().displayEventLogAtIndex(this.id);
+        };
+        turnEventList.appendChild(newEvent);
+    };
+    BattleDebugger.prototype.displayMinorEvent = function (majorIndex, minorIndex) {
+        if (BattleModel.IS_MASS_SIMULATION || !BattleDebugger.IS_DEBUG_MODE) {
+            return;
+        }
+        var currentTurn = BattleLogger.getInstance().majorEventLog[majorIndex].turn;
+        var id = "turn" + currentTurn + "events";
+        var description = BattleLogger.getInstance().minorEventLog[majorIndex][minorIndex].description;
+        var turnEventList = document.getElementById(id);
+        var lastEvent = turnEventList.lastChild;
+        var subEventList = lastEvent.getElementsByTagName("ul")[0];
+        if (!subEventList) {
+            subEventList = document.createElement("ul");
+            lastEvent.appendChild(subEventList);
+        }
+        var newEvent = document.createElement("li");
+        newEvent.innerHTML = description;
+        subEventList.appendChild(newEvent);
+    };
+    BattleDebugger.prototype.displayTurn = function (turnNum) {
+        if (BattleModel.IS_MASS_SIMULATION || !BattleDebugger.IS_DEBUG_MODE) {
+            return;
+        }
+        var battleEventDiv = document.getElementById("battleEventDiv");
+        var newEvent = document.createElement("p");
+        newEvent.innerHTML = "Turn " + turnNum;
+        battleEventDiv.appendChild(newEvent);
+    };
+    BattleDebugger.prototype.displayEventLogAtIndex = function (majorIndex) {
+        if (!BattleDebugger.IS_DEBUG_MODE) {
+            return;
+        }
+        var graphic = BattleGraphic.getInstance();
+        var logger = BattleLogger.getInstance();
+        var lastEventIndex = (majorIndex == 0) ? 0 : majorIndex - 1;
+        var lastEventField = logger.getFieldAtMajorIndex(lastEventIndex);
+        var field = logger.getFieldAtMajorIndex(majorIndex);
+        for (var p = 1; p <= 2; p++) {
+            var playerCards = field["player" + p + "Cards"];
+            for (var f = 0; f < 5; f++) {
+                var stats = playerCards[f].stats;
+                var originalStats = playerCards[f].originalStats;
+                var status = playerCards[f].status;
+                var afflict = playerCards[f].affliction;
+                var htmlelem = document.getElementById("player" + p + "Fam" + f);
+                var addedATK = this.getAdjustedStat(originalStats.atk, status.atk, status.isNewLogic[1 /* ATK */]);
+                var addedDEF = this.getAdjustedStat(originalStats.def, status.def, status.isNewLogic[2 /* DEF */]);
+                var addedWIS = this.getAdjustedStat(originalStats.wis, status.wis, status.isNewLogic[3 /* WIS */]);
+                var addedAGI = this.getAdjustedStat(originalStats.agi, status.agi, status.isNewLogic[4 /* AGI */]);
+                var infoText = {
+                    name: playerCards[f].name,
+                    hp: "HP: " + stats.hp,
+                    atk: "ATK: " + addedATK,
+                    def: "DEF: " + addedDEF,
+                    wis: "WIS: " + addedWIS,
+                    agi: "AGI: " + addedAGI,
+                };
+                if (status.attackResistance != 0) {
+                    infoText.physicalResist = "PW: " + status.attackResistance;
+                }
+                if (status.magicResistance != 0) {
+                    infoText.magicalResist = "MW: " + status.magicResistance;
+                }
+                if (status.breathResistance != 0) {
+                    infoText.breathResist = "BW: " + status.breathResistance;
+                }
+                if (status.willAttackAgain != 0) {
+                    infoText.willAttackAgain = "Extra action: Yes";
+                }
+                if (status.skillProbability != 0) {
+                    infoText.skillProbability = "Extra prob.: " + status.skillProbability;
+                }
+                if (status.hpShield != 0) {
+                    infoText.hpShield = "HP Shld.: " + status.hpShield;
+                }
+                if (afflict) {
+                    infoText.affliction = "Affliction: " + Affliction.getAfflictionAdjective(afflict.type);
+                    if (afflict.type === 5 /* SILENT */) {
+                        infoText.affliction += (" (" + afflict.validTurnNum + " turn)");
+                    }
+                    else if (afflict.type === 1 /* POISON */) {
+                        infoText.affliction += (" (" + afflict.percent + " %)");
+                    }
+                    else if (afflict.type === 8 /* BURN */) {
+                        infoText.affliction += (" (" + afflict.damage + ")");
+                    }
+                    else {
+                        infoText.affliction += " (1 turn)";
+                    }
+                }
+                for (var j = 0; logger.minorEventLog[majorIndex] && j < logger.minorEventLog[majorIndex].length; j++) {
+                    var tempEvent = logger.minorEventLog[majorIndex][j];
+                    if (tempEvent.targetId == playerCards[f].id) {
+                        if (tempEvent.type == 1 /* HP */) {
+                            infoText.hp = this.decorateText(infoText.hp, tempEvent.amount < 0);
+                        }
+                        else if (tempEvent.type == 2 /* STATUS */) {
+                            if (tempEvent.status.type == 1 /* ATK */) {
+                                infoText.atk = this.decorateText(infoText.atk, tempEvent.amount < 0);
+                            }
+                            else if (tempEvent.status.type == 2 /* DEF */) {
+                                infoText.def = this.decorateText(infoText.def, tempEvent.amount < 0);
+                            }
+                            else if (tempEvent.status.type == 3 /* WIS */) {
+                                infoText.wis = this.decorateText(infoText.wis, tempEvent.amount < 0);
+                            }
+                            else if (tempEvent.status.type == 4 /* AGI */) {
+                                infoText.agi = this.decorateText(infoText.agi, tempEvent.amount < 0);
+                            }
+                            else if (tempEvent.status.type == 5 /* ATTACK_RESISTANCE */) {
+                                infoText.physicalResist = this.decorateText(infoText.physicalResist, false);
+                            }
+                            else if (tempEvent.status.type == 6 /* MAGIC_RESISTANCE */) {
+                                infoText.magicalResist = this.decorateText(infoText.magicalResist, false);
+                            }
+                            else if (tempEvent.status.type == 7 /* BREATH_RESISTANCE */) {
+                                infoText.breathResist = this.decorateText(infoText.breathResist, false);
+                            }
+                            else if (tempEvent.status.type == 18 /* WILL_ATTACK_AGAIN */) {
+                                infoText.willAttackAgain = this.decorateText(infoText.willAttackAgain, false);
+                            }
+                            else if (tempEvent.status.type == 8 /* SKILL_PROBABILITY */) {
+                                infoText.skillProbability = this.decorateText(infoText.skillProbability, false);
+                            }
+                            else if (tempEvent.status.type == 17 /* HP_SHIELD */) {
+                                infoText.hpShield = this.decorateText(infoText.hpShield, false);
+                            }
+                        }
+                        else if (tempEvent.type == 3 /* AFFLICTION */) {
+                            if (!tempEvent.affliction.isFinished) {
+                                infoText.affliction = this.decorateText(infoText.affliction, false);
+                            }
+                        }
+                    }
+                }
+                if (logger.minorEventLog[majorIndex] && logger.minorEventLog[majorIndex][0].executorId == playerCards[f].id) {
+                    infoText.name = "<b>" + infoText.name + "</b>";
+                }
+                htmlelem.innerHTML = infoText.name + "<br>" + infoText.hp + "<br>" + infoText.atk + "<br>" + infoText.def + "<br>" + infoText.wis + "<br>" + infoText.agi + (infoText.physicalResist ? ("<br>" + infoText.physicalResist) : "") + (infoText.magicalResist ? ("<br>" + infoText.magicalResist) : "") + (infoText.breathResist ? ("<br>" + infoText.breathResist) : "") + (infoText.willAttackAgain ? ("<br>" + infoText.willAttackAgain) : "") + (infoText.skillProbability ? ("<br>" + infoText.skillProbability) : "") + (infoText.hpShield ? ("<br>" + infoText.hpShield) : "") + (infoText.affliction ? ("<br>" + infoText.affliction) : "");
+                var lastEventCard = lastEventField["player" + p + "Cards"][f];
+                graphic.displayHP(lastEventCard.stats.hp / lastEventCard.originalStats.hp * 100, p, f, 0);
+            }
+        }
+        graphic.displayAllCardImages(majorIndex);
+        graphic.displayAllAfflictionText(lastEventIndex);
+        graphic.displayMajorEventAnimation(majorIndex);
+    };
+    BattleDebugger.prototype.getAdjustedStat = function (original, statusAmount, isNewLogic) {
+        var value = original + statusAmount;
+        if (value < 0) {
+            value = 0;
+        }
+        if (isNewLogic) {
+            var lowerLimit = original * Card.NEW_DEBUFF_LOW_LIMIT_FACTOR;
+            value = (value > lowerLimit) ? value : lowerLimit;
+        }
+        return value;
+    };
+    BattleDebugger.prototype.decorateText = function (text, isNegative) {
+        var openTag;
+        if (isNegative) {
+            openTag = "<span style='color:red'><b>";
+        }
+        else {
+            openTag = "<span style='color:green'><b>";
+        }
+        return openTag + text + "</b></span>";
+    };
+    BattleDebugger.IS_DEBUG_MODE = true;
+    BattleDebugger._instance = null;
+    return BattleDebugger;
+})();
 var BattleGraphic = (function () {
     function BattleGraphic() {
         this.coordArray = {
@@ -1076,177 +1399,26 @@ var BattleLogger = (function () {
     BattleLogger.removeInstance = function () {
         BattleLogger._instance = null;
     };
-    BattleLogger.prototype.displayMajorEvent = function (index) {
-        if (!BattleLogger.IS_DEBUG_MODE) {
-            return;
-        }
-        var data = this.majorEventLog[index];
-        var id = "turn" + this.currentTurn + "events";
-        var battleEventDiv = document.getElementById("battleEventDiv");
-        var turnEventList = document.getElementById(id);
-        if (!turnEventList) {
-            turnEventList = document.createElement("ul");
-            turnEventList.setAttribute("id", id);
-            battleEventDiv.appendChild(turnEventList);
-        }
-        var newEvent = document.createElement("li");
-        newEvent.innerHTML = "<a>" + data.description + "</a>";
-        newEvent.setAttribute("tabindex", index + "");
-        newEvent.setAttribute("id", index + "");
-        newEvent.onclick = function () {
-            BattleLogger.getInstance().displayEventLogAtIndex(this.id);
-        };
-        turnEventList.appendChild(newEvent);
-    };
-    BattleLogger.prototype.addMajorEvent = function (data) {
+    BattleLogger.prototype.addMajorEvent = function (event) {
         if (BattleModel.IS_MASS_SIMULATION) {
             return;
         }
-        this.majorEventLog.push(data);
-        this.displayMajorEvent(this.majorEventLog.length - 1);
+        event.turn = this.currentTurn;
+        this.majorEventLog.push(event);
     };
-    BattleLogger.prototype.bblogTurn = function (data) {
-        if (BattleModel.IS_MASS_SIMULATION || !BattleLogger.IS_DEBUG_MODE) {
+    BattleLogger.prototype.addMinorEvent = function (event) {
+        if (BattleModel.IS_MASS_SIMULATION) {
             return;
         }
-        var battleEventDiv = document.getElementById("battleEventDiv");
-        var newEvent = document.createElement("p");
-        newEvent.innerHTML = data;
-        battleEventDiv.appendChild(newEvent);
-    };
-    BattleLogger.prototype.displayMinorEvent = function (data) {
-        if (BattleModel.IS_MASS_SIMULATION || !BattleLogger.IS_DEBUG_MODE) {
-            return;
+        var index = this.majorEventLog.length - 1;
+        if (!this.minorEventLog[index]) {
+            this.minorEventLog[index] = [];
         }
-        var id = "turn" + this.currentTurn + "events";
-        var turnEventList = document.getElementById(id);
-        var lastEvent = turnEventList.lastChild;
-        var subEventList = lastEvent.getElementsByClassName("ul")[0];
-        if (!subEventList) {
-            subEventList = document.createElement("ul");
-            lastEvent.appendChild(subEventList);
+        this.minorEventLog[index].push(event);
+        if (!this.minorEventFields[index]) {
+            this.minorEventFields[index] = [];
         }
-        var newEvent = document.createElement("li");
-        newEvent.innerHTML = "<a>" + data + "</a>";
-        subEventList.appendChild(newEvent);
-    };
-    BattleLogger.prototype.displayEventLogAtIndex = function (majorIndex) {
-        if (!BattleLogger.IS_DEBUG_MODE) {
-            return;
-        }
-        var graphic = BattleGraphic.getInstance();
-        var lastEventIndex = (majorIndex == 0) ? 0 : majorIndex - 1;
-        var lastEventField = this.getFieldAtMajorIndex(lastEventIndex);
-        var field = this.getFieldAtMajorIndex(majorIndex);
-        for (var p = 1; p <= 2; p++) {
-            var playerCards = field["player" + p + "Cards"];
-            for (var f = 0; f < 5; f++) {
-                var stats = playerCards[f].stats;
-                var originalStats = playerCards[f].originalStats;
-                var status = playerCards[f].status;
-                var afflict = playerCards[f].affliction;
-                var htmlelem = document.getElementById("player" + p + "Fam" + f);
-                var addedATK = this.getAdjustedStat(originalStats.atk, status.atk, status.isNewLogic[1 /* ATK */]);
-                var addedDEF = this.getAdjustedStat(originalStats.def, status.def, status.isNewLogic[2 /* DEF */]);
-                var addedWIS = this.getAdjustedStat(originalStats.wis, status.wis, status.isNewLogic[3 /* WIS */]);
-                var addedAGI = this.getAdjustedStat(originalStats.agi, status.agi, status.isNewLogic[4 /* AGI */]);
-                var infoText = {
-                    name: playerCards[f].name,
-                    hp: "HP: " + stats.hp,
-                    atk: "ATK: " + addedATK,
-                    def: "DEF: " + addedDEF,
-                    wis: "WIS: " + addedWIS,
-                    agi: "AGI: " + addedAGI,
-                };
-                if (status.attackResistance != 0) {
-                    infoText.physicalResist = "PW: " + status.attackResistance;
-                }
-                if (status.magicResistance != 0) {
-                    infoText.magicalResist = "MW: " + status.magicResistance;
-                }
-                if (status.breathResistance != 0) {
-                    infoText.breathResist = "BW: " + status.breathResistance;
-                }
-                if (status.willAttackAgain != 0) {
-                    infoText.willAttackAgain = "Extra action: Yes";
-                }
-                if (status.skillProbability != 0) {
-                    infoText.skillProbability = "Extra prob.: " + status.skillProbability;
-                }
-                if (status.hpShield != 0) {
-                    infoText.hpShield = "HP Shld.: " + status.hpShield;
-                }
-                if (afflict) {
-                    infoText.affliction = "Affliction: " + Affliction.getAfflictionAdjective(afflict.type);
-                    if (afflict.type === 5 /* SILENT */) {
-                        infoText.affliction += (" (" + afflict.validTurnNum + " turn)");
-                    }
-                    else if (afflict.type === 1 /* POISON */) {
-                        infoText.affliction += (" (" + afflict.percent + " %)");
-                    }
-                    else if (afflict.type === 8 /* BURN */) {
-                        infoText.affliction += (" (" + afflict.damage + ")");
-                    }
-                    else {
-                        infoText.affliction += " (1 turn)";
-                    }
-                }
-                for (var j = 0; this.minorEventLog[majorIndex] && j < this.minorEventLog[majorIndex].length; j++) {
-                    var tempEvent = this.minorEventLog[majorIndex][j];
-                    if (tempEvent.targetId == playerCards[f].id) {
-                        if (tempEvent.type == 1 /* HP */) {
-                            infoText.hp = this.decorateText(infoText.hp, tempEvent.amount < 0);
-                        }
-                        else if (tempEvent.type == 2 /* STATUS */) {
-                            if (tempEvent.status.type == 1 /* ATK */) {
-                                infoText.atk = this.decorateText(infoText.atk, tempEvent.amount < 0);
-                            }
-                            else if (tempEvent.status.type == 2 /* DEF */) {
-                                infoText.def = this.decorateText(infoText.def, tempEvent.amount < 0);
-                            }
-                            else if (tempEvent.status.type == 3 /* WIS */) {
-                                infoText.wis = this.decorateText(infoText.wis, tempEvent.amount < 0);
-                            }
-                            else if (tempEvent.status.type == 4 /* AGI */) {
-                                infoText.agi = this.decorateText(infoText.agi, tempEvent.amount < 0);
-                            }
-                            else if (tempEvent.status.type == 5 /* ATTACK_RESISTANCE */) {
-                                infoText.physicalResist = this.decorateText(infoText.physicalResist, false);
-                            }
-                            else if (tempEvent.status.type == 6 /* MAGIC_RESISTANCE */) {
-                                infoText.magicalResist = this.decorateText(infoText.magicalResist, false);
-                            }
-                            else if (tempEvent.status.type == 7 /* BREATH_RESISTANCE */) {
-                                infoText.breathResist = this.decorateText(infoText.breathResist, false);
-                            }
-                            else if (tempEvent.status.type == 18 /* WILL_ATTACK_AGAIN */) {
-                                infoText.willAttackAgain = this.decorateText(infoText.willAttackAgain, false);
-                            }
-                            else if (tempEvent.status.type == 8 /* SKILL_PROBABILITY */) {
-                                infoText.skillProbability = this.decorateText(infoText.skillProbability, false);
-                            }
-                            else if (tempEvent.status.type == 17 /* HP_SHIELD */) {
-                                infoText.hpShield = this.decorateText(infoText.hpShield, false);
-                            }
-                        }
-                        else if (tempEvent.type == 3 /* AFFLICTION */) {
-                            if (!tempEvent.affliction.isFinished) {
-                                infoText.affliction = this.decorateText(infoText.affliction, false);
-                            }
-                        }
-                    }
-                }
-                if (this.minorEventLog[majorIndex] && this.minorEventLog[majorIndex][0].executorId == playerCards[f].id) {
-                    infoText.name = "<b>" + infoText.name + "</b>";
-                }
-                htmlelem.innerHTML = infoText.name + "<br>" + infoText.hp + "<br>" + infoText.atk + "<br>" + infoText.def + "<br>" + infoText.wis + "<br>" + infoText.agi + (infoText.physicalResist ? ("<br>" + infoText.physicalResist) : "") + (infoText.magicalResist ? ("<br>" + infoText.magicalResist) : "") + (infoText.breathResist ? ("<br>" + infoText.breathResist) : "") + (infoText.willAttackAgain ? ("<br>" + infoText.willAttackAgain) : "") + (infoText.skillProbability ? ("<br>" + infoText.skillProbability) : "") + (infoText.hpShield ? ("<br>" + infoText.hpShield) : "") + (infoText.affliction ? ("<br>" + infoText.affliction) : "");
-                var lastEventCard = lastEventField["player" + p + "Cards"][f];
-                graphic.displayHP(lastEventCard.stats.hp / lastEventCard.originalStats.hp * 100, p, f, 0);
-            }
-        }
-        graphic.displayAllCardImages(majorIndex);
-        graphic.displayAllAfflictionText(lastEventIndex);
-        graphic.displayMajorEventAnimation(majorIndex);
+        this.minorEventFields[index].push(this.getCurrentFieldJSON());
     };
     BattleLogger.prototype.displayInfoText = function () {
         if (BattleLogger.INFOTEXT_DISPLAYED) {
@@ -1335,17 +1507,6 @@ var BattleLogger = (function () {
                 return "";
         }
     };
-    BattleLogger.prototype.getAdjustedStat = function (original, statusAmount, isNewLogic) {
-        var value = original + statusAmount;
-        if (value < 0) {
-            value = 0;
-        }
-        if (isNewLogic) {
-            var lowerLimit = original * Card.NEW_DEBUFF_LOW_LIMIT_FACTOR;
-            value = (value > lowerLimit) ? value : lowerLimit;
-        }
-        return value;
-    };
     BattleLogger.prototype.getFieldAtMajorIndex = function (majorIndex) {
         if (!this.minorEventLog[majorIndex]) {
             return this.getFieldAtMajorIndex(majorIndex - 1);
@@ -1359,31 +1520,6 @@ var BattleLogger = (function () {
     };
     BattleLogger.prototype.getFieldAtMinorIndex = function (majorIndex, minorIndex) {
         return JSON.parse(this.minorEventFields[majorIndex][minorIndex]);
-    };
-    BattleLogger.prototype.decorateText = function (text, isNegative) {
-        var openTag;
-        if (isNegative) {
-            openTag = "<span style='color:red'><b>";
-        }
-        else {
-            openTag = "<span style='color:green'><b>";
-        }
-        return openTag + text + "</b></span>";
-    };
-    BattleLogger.prototype.addMinorEvent = function (event) {
-        if (BattleModel.IS_MASS_SIMULATION) {
-            return;
-        }
-        var index = this.majorEventLog.length - 1;
-        if (!this.minorEventLog[index]) {
-            this.minorEventLog[index] = [];
-        }
-        this.minorEventLog[index].push(event);
-        if (!this.minorEventFields[index]) {
-            this.minorEventFields[index] = [];
-        }
-        this.minorEventFields[index].push(this.getCurrentFieldJSON());
-        this.displayMinorEvent(event.description);
     };
     BattleLogger.prototype.getCurrentFieldJSON = function () {
         var toSerialize = {
@@ -1425,9 +1561,7 @@ var BattleLogger = (function () {
             type: 6 /* TEXT */,
             description: "Everything ready"
         });
-        this.displayEventLogAtIndex(0);
     };
-    BattleLogger.IS_DEBUG_MODE = true;
     BattleLogger.INFOTEXT_DISPLAYED = false;
     BattleLogger.WARNINGTEXT_DISPLAYED = false;
     BattleLogger._instance = null;
@@ -5941,6 +6075,18 @@ function toogleReserve() {
 function onFormLoad() {
     toogleReserve();
     toogleDisable();
+    if (localStorage.getItem("lastTierUpdateTime")) {
+        var a = new Date(+localStorage.getItem("lastTierUpdateTime"));
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        var year = a.getFullYear();
+        var month = months[a.getMonth()];
+        var date = a.getDate();
+        var hour = a.getHours();
+        var min = a.getMinutes();
+        var sec = a.getSeconds();
+        var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+        $("#lastTierUpdate").text("Last tier list update: " + time);
+    }
 }
 function validateForm() {
     return true;
@@ -6067,94 +6213,8 @@ function showStarRequest() {
         }
     }, 2000);
 }
-function getRandomBackground() {
-    var bg = [
-        "23b/Bamboo01",
-        "34d/Bamboo02",
-        "1c5/Carpet01",
-        "141/Carpet02",
-        "283/Carpet03",
-        "1f8/Carpet04",
-        "193/Carpet05",
-        "24d/Carpet06",
-        "17b/Carpet07",
-        "3ff/Carpet08",
-        "1e6/Carpet09",
-        "3c3/Carpet10",
-        "3a3/Carpet11",
-        "224/Carpet12",
-        "4ad/Carpet13",
-        "20c/Carpet14",
-        "29f/Carpet15",
-        "21c/Carpet16",
-        "385/Carpet17",
-        "4f8/Carpet18",
-        "362/Carpet19",
-        "387/Carpet20",
-        "311/Carpet21",
-        "352/Carpet22",
-        "392/Castle01",
-        "2f9/Castle02",
-        "3b4/Cave01",
-        "266/Cave02",
-        "3bc/Cave03",
-        "1ad/Cave04",
-        "4d5/Cave05",
-        "3bf/Desert01",
-        "4c9/Desert02",
-        "3d9/Fog01",
-        "30e/Fog02",
-        "267/Forest01",
-        "2c5/Forest02",
-        "247/Greatwall01",
-        "450/Halloween01",
-        "22e/Halloween02",
-        "28a/Halloween03",
-        "11a/Jungle01",
-        "268/Mountain01",
-        "3fb/River01",
-        "451/River02",
-        "49f/Road01",
-        "270/Road02",
-        "475/Road03",
-        "2a8/Road04",
-        "40c/Road05",
-        "2ff/Road06",
-        "310/Road07",
-        "383/Road08",
-        "41e/Road09",
-        "289/Road10",
-        "183/Road11",
-        "1d8/Road12",
-        "2a7/Road13",
-        "3cf/Road14",
-        "3fb/Road15",
-        "1f4/Road16",
-        "28f/Road17",
-        "2a5/Road28",
-        "102/Road29",
-        "4e9/Ruins01",
-        "1f4/Sakura01",
-        "336/Snow01",
-        "49a/Swamp01",
-        "145/Swamp02",
-        "144/Tints01",
-        "1fb/Tree01",
-        "33c/Tree02",
-        "329/81a5ccfd07ca41c238e124a5b6683b93",
-        "1a0/Castle1",
-        "39f/F459e81069786396191c375060d778a3",
-        "3b1/66fddb4d129fa8b494cf3d21a057e226",
-        "45f/452d87b11eb533d33fba937073bb5668",
-        "4a5/48645b3ae0106d4f96fa0bf3ad6239b8"
-    ];
-    var shortenedLink = getRandomElement(bg);
-    var firstPart = "http://img" + shortenedLink.charAt(0) + ".wikia.nocookie.net/bloodbrothersgame/images/";
-    var link = firstPart + shortenedLink.charAt(1) + "/" + shortenedLink.substring(1) + ".png";
-    return link;
-}
 function prepareField() {
-    var rndBgLink = getRandomBackground();
+    var rndBgLink = BattleBackground.getRandomBackgroundLink();
     var img = new Image();
     var svgWrapper = document.getElementById("svgWrapper");
     img.onload = function () {
@@ -6238,7 +6298,7 @@ function updateTierListThenTest(data) {
 function playGame() {
     prepareField();
     BattleGraphic.PLAY_MODE = 'AUTO';
-    BattleLogger.IS_DEBUG_MODE = false;
+    BattleDebugger.IS_DEBUG_MODE = false;
     document.getElementById('startButton').onclick = function () {
         this.disabled = true;
         if (0 /* IS_MOBILE */) {
@@ -6267,7 +6327,7 @@ function playSim() {
     if (option.p2RandomMode) {
         BattleGraphic.HIDE_PLAYER2 = true;
     }
-    BattleLogger.IS_DEBUG_MODE = false;
+    BattleDebugger.IS_DEBUG_MODE = false;
     BattleModel.IS_MASS_SIMULATION = true;
     if (!0 /* IS_MOBILE */) {
         var newGame = new BattleModel(data, option);
@@ -14837,7 +14897,7 @@ var BattleModel = (function () {
         BrigGenerator.initializeBrigs(data, option, tierListString);
         this.cardManager.sortAllCurrentMainCards();
         graphic.displayFormationAndFamOnCanvas();
-        if (!BattleLogger.IS_DEBUG_MODE) {
+        if (!BattleDebugger.IS_DEBUG_MODE) {
             this.logger.displayInfoText();
             this.logger.displayWarningText();
         }
@@ -14963,7 +15023,10 @@ var BattleModel = (function () {
             isKilled: isKilled
         });
         if (target.isDead) {
-            this.logger.displayMinorEvent(target.name + " is dead");
+            this.logger.addMinorEvent({
+                description: target.name + " is dead",
+                type: 6 /* TEXT */
+            });
             this.addOnDeathCard(target);
         }
     };
@@ -15035,7 +15098,10 @@ var BattleModel = (function () {
             description: description,
         });
         if (target.isDead) {
-            this.logger.displayMinorEvent(target.name + " is dead");
+            this.logger.addMinorEvent({
+                description: target.name + " is dead",
+                type: 6 /* TEXT */
+            });
             this.addOnDeathCard(target);
         }
     };
@@ -15142,7 +15208,6 @@ var BattleModel = (function () {
         this.performOpeningSkills();
         while (!this.isFinished) {
             this.logger.currentTurn++;
-            this.logger.bblogTurn("Turn " + this.logger.currentTurn);
             if (this.turnOrderChangeEffectiveTurns == 0) {
                 this.turnOrderBase = 0 /* AGI */;
             }
@@ -15236,6 +15301,9 @@ var BattleModel = (function () {
             if (!this.isFinished) {
                 this.processEndTurn();
             }
+        }
+        if (BattleDebugger.IS_DEBUG_MODE) {
+            BattleDebugger.getInstance().displayDebugger();
         }
         return this;
     };
