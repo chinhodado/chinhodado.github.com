@@ -1,104 +1,3 @@
-var BattleBackground = (function () {
-    function BattleBackground() {
-    }
-    BattleBackground.getRandomBackgroundLink = function () {
-        var shortenedLink = getRandomElement(BattleBackground.bgList);
-        return BattleBackground.getLinkFromShortenedLink(shortenedLink);
-    };
-    BattleBackground.getLinkFromShortenedLink = function (shortenedLink) {
-        var firstPart = "http://img" + shortenedLink.charAt(0) + ".wikia.nocookie.net/bloodbrothersgame/images/";
-        var link = firstPart + shortenedLink.charAt(1) + "/" + shortenedLink.substring(1) + ".png";
-        return link;
-    };
-    BattleBackground.bgList = [
-        "23b/Bamboo01",
-        "34d/Bamboo02",
-        "1c5/Carpet01",
-        "141/Carpet02",
-        "283/Carpet03",
-        "1f8/Carpet04",
-        "193/Carpet05",
-        "24d/Carpet06",
-        "17b/Carpet07",
-        "3ff/Carpet08",
-        "1e6/Carpet09",
-        "3c3/Carpet10",
-        "3a3/Carpet11",
-        "224/Carpet12",
-        "4ad/Carpet13",
-        "20c/Carpet14",
-        "29f/Carpet15",
-        "21c/Carpet16",
-        "385/Carpet17",
-        "4f8/Carpet18",
-        "362/Carpet19",
-        "387/Carpet20",
-        "311/Carpet21",
-        "352/Carpet22",
-        "347/Carpet23",
-        "111/Carpet24",
-        "117/Carpet25",
-        "3c8/Carpet26",
-        "392/Castle01",
-        "2f9/Castle02",
-        "3b4/Cave01",
-        "266/Cave02",
-        "3bc/Cave03",
-        "1ad/Cave04",
-        "4d5/Cave05",
-        "3bf/Desert01",
-        "4c9/Desert02",
-        "3d9/Fog01",
-        "30e/Fog02",
-        "267/Forest01",
-        "2c5/Forest02",
-        "247/Greatwall01",
-        "450/Halloween01",
-        "22e/Halloween02",
-        "28a/Halloween03",
-        "4c2/Halloween04",
-        "3c7/Halloween05",
-        "11a/Jungle01",
-        "268/Mountain01",
-        "3fb/River01",
-        "451/River02",
-        "49f/Road01",
-        "270/Road02",
-        "475/Road03",
-        "2a8/Road04",
-        "40c/Road05",
-        "2ff/Road06",
-        "310/Road07",
-        "383/Road08",
-        "41e/Road09",
-        "289/Road10",
-        "183/Road11",
-        "1d8/Road12",
-        "2a7/Road13",
-        "3cf/Road14",
-        "3fb/Road15",
-        "1f4/Road16",
-        "28f/Road17",
-        "2a5/Road28",
-        "102/Road29",
-        "4e9/Ruins01",
-        "1f4/Sakura01",
-        "336/Snow01",
-        "3c3/Snow03",
-        "49a/Swamp01",
-        "145/Swamp02",
-        "144/Tints01",
-        "1fb/Tree01",
-        "33c/Tree02",
-        "329/81a5ccfd07ca41c238e124a5b6683b93",
-        "1a0/Castle1",
-        "39f/F459e81069786396191c375060d778a3",
-        "3b1/66fddb4d129fa8b494cf3d21a057e226",
-        "45f/452d87b11eb533d33fba937073bb5668",
-        "4a5/48645b3ae0106d4f96fa0bf3ad6239b8"
-    ];
-    return BattleBackground;
-})();
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -326,6 +225,107 @@ var BurnAffliction = (function (_super) {
     BurnAffliction.STACK_NUM = 3;
     return BurnAffliction;
 })(Affliction);
+var BattleBackground = (function () {
+    function BattleBackground() {
+    }
+    BattleBackground.getRandomBackgroundLink = function () {
+        var shortenedLink = getRandomElement(BattleBackground.bgList);
+        return BattleBackground.getLinkFromShortenedLink(shortenedLink);
+    };
+    BattleBackground.getLinkFromShortenedLink = function (shortenedLink) {
+        var firstPart = "http://img" + shortenedLink.charAt(0) + ".wikia.nocookie.net/bloodbrothersgame/images/";
+        var link = firstPart + shortenedLink.charAt(1) + "/" + shortenedLink.substring(1) + ".png";
+        return link;
+    };
+    BattleBackground.bgList = [
+        "23b/Bamboo01",
+        "34d/Bamboo02",
+        "1c5/Carpet01",
+        "141/Carpet02",
+        "283/Carpet03",
+        "1f8/Carpet04",
+        "193/Carpet05",
+        "24d/Carpet06",
+        "17b/Carpet07",
+        "3ff/Carpet08",
+        "1e6/Carpet09",
+        "3c3/Carpet10",
+        "3a3/Carpet11",
+        "224/Carpet12",
+        "4ad/Carpet13",
+        "20c/Carpet14",
+        "29f/Carpet15",
+        "21c/Carpet16",
+        "385/Carpet17",
+        "4f8/Carpet18",
+        "362/Carpet19",
+        "387/Carpet20",
+        "311/Carpet21",
+        "352/Carpet22",
+        "347/Carpet23",
+        "111/Carpet24",
+        "117/Carpet25",
+        "3c8/Carpet26",
+        "392/Castle01",
+        "2f9/Castle02",
+        "3b4/Cave01",
+        "266/Cave02",
+        "3bc/Cave03",
+        "1ad/Cave04",
+        "4d5/Cave05",
+        "3bf/Desert01",
+        "4c9/Desert02",
+        "3d9/Fog01",
+        "30e/Fog02",
+        "267/Forest01",
+        "2c5/Forest02",
+        "247/Greatwall01",
+        "450/Halloween01",
+        "22e/Halloween02",
+        "28a/Halloween03",
+        "4c2/Halloween04",
+        "3c7/Halloween05",
+        "11a/Jungle01",
+        "268/Mountain01",
+        "3fb/River01",
+        "451/River02",
+        "49f/Road01",
+        "270/Road02",
+        "475/Road03",
+        "2a8/Road04",
+        "40c/Road05",
+        "2ff/Road06",
+        "310/Road07",
+        "383/Road08",
+        "41e/Road09",
+        "289/Road10",
+        "183/Road11",
+        "1d8/Road12",
+        "2a7/Road13",
+        "3cf/Road14",
+        "3fb/Road15",
+        "1f4/Road16",
+        "28f/Road17",
+        "2a5/Road28",
+        "102/Road29",
+        "4e9/Ruins01",
+        "1f4/Sakura01",
+        "336/Snow01",
+        "3c3/Snow03",
+        "49a/Swamp01",
+        "145/Swamp02",
+        "144/Tints01",
+        "1fb/Tree01",
+        "33c/Tree02",
+        "329/81a5ccfd07ca41c238e124a5b6683b93",
+        "1a0/Castle1",
+        "39f/F459e81069786396191c375060d778a3",
+        "3b1/66fddb4d129fa8b494cf3d21a057e226",
+        "45f/452d87b11eb533d33fba937073bb5668",
+        "4a5/48645b3ae0106d4f96fa0bf3ad6239b8"
+    ];
+    return BattleBackground;
+})();
 var BattleDebugger = (function () {
     function BattleDebugger() {
         if (BattleDebugger._instance) {
@@ -415,42 +415,45 @@ var BattleDebugger = (function () {
         var field = logger.getFieldAtMajorIndex(majorIndex);
         for (var p = 1; p <= 2; p++) {
             var playerCards = field["player" + p + "Cards"];
+            var lastPlayerCards = lastEventField["player" + p + "Cards"];
             for (var f = 0; f < 5; f++) {
                 var stats = playerCards[f].stats;
                 var originalStats = playerCards[f].originalStats;
                 var status = playerCards[f].status;
                 var afflict = playerCards[f].affliction;
-                var htmlelem = document.getElementById("player" + p + "Fam" + f);
-                var addedATK = this.getAdjustedStat(originalStats.atk, status.atk, status.isNewLogic[1 /* ATK */]);
-                var addedDEF = this.getAdjustedStat(originalStats.def, status.def, status.isNewLogic[2 /* DEF */]);
-                var addedWIS = this.getAdjustedStat(originalStats.wis, status.wis, status.isNewLogic[3 /* WIS */]);
-                var addedAGI = this.getAdjustedStat(originalStats.agi, status.agi, status.isNewLogic[4 /* AGI */]);
+                var hpRatio = stats.hp / originalStats.hp;
+                var finalAtk = this.getFinalStat(originalStats.atk, status.atk, status.isNewLogic[1 /* ATK */], status.remainHpAtkUp, hpRatio);
+                var finalDef = this.getFinalStat(originalStats.def, status.def, status.isNewLogic[2 /* DEF */], status.remainHpDefUp, hpRatio);
+                var finalWis = this.getFinalStat(originalStats.wis, status.wis, status.isNewLogic[3 /* WIS */], status.remainHpWisUp, hpRatio);
+                var finalAgi = this.getFinalStat(originalStats.agi, status.agi, status.isNewLogic[4 /* AGI */], status.remainHpAgiUp, hpRatio);
+                var lastStats = lastPlayerCards[f].stats;
+                var lastOriginalStats = lastPlayerCards[f].originalStats;
+                var lastStatus = lastPlayerCards[f].status;
+                var lastHpRatio = lastStats.hp / lastOriginalStats.hp;
+                var lastFinalAtk = this.getFinalStat(lastOriginalStats.atk, lastStatus.atk, lastStatus.isNewLogic[1 /* ATK */], lastStatus.remainHpAtkUp, lastHpRatio);
+                var lastFinalDef = this.getFinalStat(lastOriginalStats.def, lastStatus.def, lastStatus.isNewLogic[2 /* DEF */], lastStatus.remainHpDefUp, lastHpRatio);
+                var lastFinalWis = this.getFinalStat(lastOriginalStats.wis, lastStatus.wis, lastStatus.isNewLogic[3 /* WIS */], lastStatus.remainHpWisUp, lastHpRatio);
+                var lastFinalAgi = this.getFinalStat(lastOriginalStats.agi, lastStatus.agi, lastStatus.isNewLogic[4 /* AGI */], lastStatus.remainHpAgiUp, lastHpRatio);
                 var infoText = {
                     name: playerCards[f].name,
                     hp: "HP: " + stats.hp,
-                    atk: "ATK: " + addedATK,
-                    def: "DEF: " + addedDEF,
-                    wis: "WIS: " + addedWIS,
-                    agi: "AGI: " + addedAGI,
+                    atk: "ATK: " + finalAtk,
+                    def: "DEF: " + finalDef,
+                    wis: "WIS: " + finalWis,
+                    agi: "AGI: " + finalAgi,
                 };
-                if (status.attackResistance != 0) {
+                if (status.attackResistance != 0)
                     infoText.physicalResist = "PW: " + status.attackResistance;
-                }
-                if (status.magicResistance != 0) {
+                if (status.magicResistance != 0)
                     infoText.magicalResist = "MW: " + status.magicResistance;
-                }
-                if (status.breathResistance != 0) {
+                if (status.breathResistance != 0)
                     infoText.breathResist = "BW: " + status.breathResistance;
-                }
-                if (status.willAttackAgain != 0) {
+                if (status.willAttackAgain != 0)
                     infoText.willAttackAgain = "Extra action: Yes";
-                }
-                if (status.skillProbability != 0) {
+                if (status.skillProbability != 0)
                     infoText.skillProbability = "Extra prob.: " + status.skillProbability;
-                }
-                if (status.hpShield != 0) {
+                if (status.hpShield != 0)
                     infoText.hpShield = "HP Shld.: " + status.hpShield;
-                }
                 if (afflict) {
                     infoText.affliction = "Affliction: " + Affliction.getAfflictionAdjective(afflict.type);
                     if (afflict.type === 5 /* SILENT */) {
@@ -466,26 +469,21 @@ var BattleDebugger = (function () {
                         infoText.affliction += " (1 turn)";
                     }
                 }
+                if (stats.hp != lastStats.hp)
+                    infoText.hp = this.decorateText(infoText.hp, stats.hp < lastStats.hp);
+                if (finalAtk != lastFinalAtk)
+                    infoText.atk = this.decorateText(infoText.atk, finalAtk < lastFinalAtk);
+                if (finalDef != lastFinalDef)
+                    infoText.def = this.decorateText(infoText.def, finalDef < lastFinalDef);
+                if (finalWis != lastFinalWis)
+                    infoText.wis = this.decorateText(infoText.wis, finalWis < lastFinalWis);
+                if (finalAgi != lastFinalAgi)
+                    infoText.agi = this.decorateText(infoText.agi, finalAgi < lastFinalAgi);
                 for (var j = 0; logger.minorEventLog[majorIndex] && j < logger.minorEventLog[majorIndex].length; j++) {
                     var tempEvent = logger.minorEventLog[majorIndex][j];
                     if (tempEvent.targetId == playerCards[f].id) {
-                        if (tempEvent.type == 1 /* HP */) {
-                            infoText.hp = this.decorateText(infoText.hp, tempEvent.amount < 0);
-                        }
-                        else if (tempEvent.type == 2 /* STATUS */) {
-                            if (tempEvent.status.type == 1 /* ATK */) {
-                                infoText.atk = this.decorateText(infoText.atk, tempEvent.amount < 0);
-                            }
-                            else if (tempEvent.status.type == 2 /* DEF */) {
-                                infoText.def = this.decorateText(infoText.def, tempEvent.amount < 0);
-                            }
-                            else if (tempEvent.status.type == 3 /* WIS */) {
-                                infoText.wis = this.decorateText(infoText.wis, tempEvent.amount < 0);
-                            }
-                            else if (tempEvent.status.type == 4 /* AGI */) {
-                                infoText.agi = this.decorateText(infoText.agi, tempEvent.amount < 0);
-                            }
-                            else if (tempEvent.status.type == 5 /* ATTACK_RESISTANCE */) {
+                        if (tempEvent.type == 2 /* STATUS */) {
+                            if (tempEvent.status.type == 5 /* ATTACK_RESISTANCE */) {
                                 infoText.physicalResist = this.decorateText(infoText.physicalResist, false);
                             }
                             else if (tempEvent.status.type == 6 /* MAGIC_RESISTANCE */) {
@@ -514,6 +512,7 @@ var BattleDebugger = (function () {
                 if (logger.minorEventLog[majorIndex] && logger.minorEventLog[majorIndex][0].executorId == playerCards[f].id) {
                     infoText.name = "<b>" + infoText.name + "</b>";
                 }
+                var htmlelem = document.getElementById("player" + p + "Fam" + f);
                 htmlelem.innerHTML = infoText.name + "<br>" + infoText.hp + "<br>" + infoText.atk + "<br>" + infoText.def + "<br>" + infoText.wis + "<br>" + infoText.agi + (infoText.physicalResist ? ("<br>" + infoText.physicalResist) : "") + (infoText.magicalResist ? ("<br>" + infoText.magicalResist) : "") + (infoText.breathResist ? ("<br>" + infoText.breathResist) : "") + (infoText.willAttackAgain ? ("<br>" + infoText.willAttackAgain) : "") + (infoText.skillProbability ? ("<br>" + infoText.skillProbability) : "") + (infoText.hpShield ? ("<br>" + infoText.hpShield) : "") + (infoText.affliction ? ("<br>" + infoText.affliction) : "");
                 var lastEventCard = lastEventField["player" + p + "Cards"][f];
                 graphic.displayHP(lastEventCard.stats.hp / lastEventCard.originalStats.hp * 100, p, f, 0);
@@ -523,8 +522,12 @@ var BattleDebugger = (function () {
         graphic.displayAllAfflictionText(lastEventIndex);
         graphic.displayMajorEventAnimation(majorIndex);
     };
-    BattleDebugger.prototype.getAdjustedStat = function (original, statusAmount, isNewLogic) {
-        var value = original + statusAmount;
+    BattleDebugger.prototype.getFinalStat = function (original, statusAmount, isNewLogic, remainHpPwrUp, hpRatio) {
+        var value = original;
+        if (remainHpPwrUp > 1) {
+            value += Math.round(value * (1 - hpRatio) * (remainHpPwrUp - 1));
+        }
+        value += statusAmount;
         if (value < 0) {
             value = 0;
         }
@@ -1026,6 +1029,18 @@ var BattleGraphic = (function () {
                 }
                 else if (data.status.type == 17 /* HP_SHIELD */) {
                     displayText = "HP Up";
+                }
+                else if (data.status.type == 11 /* REMAIN_HP_ATK_UP */) {
+                    displayText = "HP/ATK";
+                }
+                else if (data.status.type == 12 /* REMAIN_HP_DEF_UP */) {
+                    displayText = "HP/DEF";
+                }
+                else if (data.status.type == 13 /* REMAIN_HP_WIS_UP */) {
+                    displayText = "HP/WIS";
+                }
+                else if (data.status.type == 14 /* REMAIN_HP_AGI_UP */) {
+                    displayText = "HP/AGI";
                 }
                 else {
                     var upDownText = data.amount < 0 ? " Down" : " Up";
@@ -1718,6 +1733,8 @@ var ENUM;
         SkillFunc[SkillFunc["CLEAR_DEBUFF"] = 40] = "CLEAR_DEBUFF";
         SkillFunc[SkillFunc["COUNTER_INDIRECT"] = 41] = "COUNTER_INDIRECT";
         SkillFunc[SkillFunc["MULTI_BUFF"] = 44] = "MULTI_BUFF";
+        SkillFunc[SkillFunc["MULTI_DEBUFF"] = 45] = "MULTI_DEBUFF";
+        SkillFunc[SkillFunc["DEBUFF_AFFLICTION"] = 46] = "DEBUFF_AFFLICTION";
     })(ENUM.SkillFunc || (ENUM.SkillFunc = {}));
     var SkillFunc = ENUM.SkillFunc;
     (function (SkillCalcType) {
@@ -1760,9 +1777,24 @@ var ENUM;
         StatusType[StatusType["BREATH_RESISTANCE"] = 7] = "BREATH_RESISTANCE";
         StatusType[StatusType["SKILL_PROBABILITY"] = 8] = "SKILL_PROBABILITY";
         StatusType[StatusType["ALL_STATUS"] = 9] = "ALL_STATUS";
+        StatusType[StatusType["REMAIN_HP_ATK_UP"] = 11] = "REMAIN_HP_ATK_UP";
+        StatusType[StatusType["REMAIN_HP_DEF_UP"] = 12] = "REMAIN_HP_DEF_UP";
+        StatusType[StatusType["REMAIN_HP_WIS_UP"] = 13] = "REMAIN_HP_WIS_UP";
+        StatusType[StatusType["REMAIN_HP_AGI_UP"] = 14] = "REMAIN_HP_AGI_UP";
+        StatusType[StatusType["REMAIN_HP_ALL_STATUS_UP"] = 15] = "REMAIN_HP_ALL_STATUS_UP";
         StatusType[StatusType["ACTION_ON_DEATH"] = 16] = "ACTION_ON_DEATH";
         StatusType[StatusType["HP_SHIELD"] = 17] = "HP_SHIELD";
         StatusType[StatusType["WILL_ATTACK_AGAIN"] = 18] = "WILL_ATTACK_AGAIN";
+        StatusType[StatusType["REMAIN_HP_ATK_DEF_UP"] = 20] = "REMAIN_HP_ATK_DEF_UP";
+        StatusType[StatusType["REMAIN_HP_ATK_WIS_UP"] = 21] = "REMAIN_HP_ATK_WIS_UP";
+        StatusType[StatusType["REMAIN_HP_ATK_AGI_UP"] = 22] = "REMAIN_HP_ATK_AGI_UP";
+        StatusType[StatusType["REMAIN_HP_DEF_WIS_UP"] = 23] = "REMAIN_HP_DEF_WIS_UP";
+        StatusType[StatusType["REMAIN_HP_DEF_AGI_UP"] = 24] = "REMAIN_HP_DEF_AGI_UP";
+        StatusType[StatusType["REMAIN_HP_WIS_AGI_UP"] = 25] = "REMAIN_HP_WIS_AGI_UP";
+        StatusType[StatusType["REMAIN_HP_ATK_DEF_WIS_UP"] = 26] = "REMAIN_HP_ATK_DEF_WIS_UP";
+        StatusType[StatusType["REMAIN_HP_ATK_DEF_AGI_UP"] = 27] = "REMAIN_HP_ATK_DEF_AGI_UP";
+        StatusType[StatusType["REMAIN_HP_DEF_WIS_AGI_UP"] = 28] = "REMAIN_HP_DEF_WIS_AGI_UP";
+        StatusType[StatusType["REMAIN_HP_ATK_WIS_AGI_UP"] = 29] = "REMAIN_HP_ATK_WIS_AGI_UP";
     })(ENUM.StatusType || (ENUM.StatusType = {}));
     var StatusType = ENUM.StatusType;
     (function (SkillRange) {
@@ -2212,52 +2244,66 @@ var Card = (function () {
         if (isNewLogic) {
             this.status.isNewLogic[statusType] = true;
         }
-        if (statusType === 1 /* ATK */) {
-            this.status.atk += amount;
-        }
-        else if (statusType === 2 /* DEF */) {
-            this.status.def += amount;
-        }
-        else if (statusType === 3 /* WIS */) {
-            this.status.wis += amount;
-        }
-        else if (statusType === 4 /* AGI */) {
-            this.status.agi += amount;
-        }
-        else if (statusType === 5 /* ATTACK_RESISTANCE */) {
-            if (this.status.attackResistance < amount) {
-                this.status.attackResistance = amount;
-            }
-        }
-        else if (statusType === 6 /* MAGIC_RESISTANCE */) {
-            if (this.status.magicResistance < amount) {
-                this.status.magicResistance = amount;
-            }
-        }
-        else if (statusType === 7 /* BREATH_RESISTANCE */) {
-            if (this.status.breathResistance < amount) {
-                this.status.breathResistance = amount;
-            }
-        }
-        else if (statusType === 8 /* SKILL_PROBABILITY */) {
-            this.status.skillProbability += amount;
-        }
-        else if (statusType === 18 /* WILL_ATTACK_AGAIN */) {
-            this.status.willAttackAgain = amount;
-        }
-        else if (statusType === 16 /* ACTION_ON_DEATH */) {
-            var skill = new Skill(amount);
-            this.ondeathSkills[0] = skill;
-            this.status.actionOnDeath = amount;
-        }
-        else if (statusType === 17 /* HP_SHIELD */) {
-            this.status.hpShield += amount;
-            if (maxAmount && this.status.hpShield > maxAmount) {
-                this.status.hpShield = maxAmount;
-            }
-        }
-        else {
-            throw new Error("Invalid status type");
+        switch (statusType) {
+            case 1 /* ATK */:
+                this.status.atk += amount;
+                break;
+            case 2 /* DEF */:
+                this.status.def += amount;
+                break;
+            case 3 /* WIS */:
+                this.status.wis += amount;
+                break;
+            case 4 /* AGI */:
+                this.status.agi += amount;
+                break;
+            case 5 /* ATTACK_RESISTANCE */:
+                if (this.status.attackResistance < amount)
+                    this.status.attackResistance = amount;
+                break;
+            case 6 /* MAGIC_RESISTANCE */:
+                if (this.status.magicResistance < amount)
+                    this.status.magicResistance = amount;
+                break;
+            case 7 /* BREATH_RESISTANCE */:
+                if (this.status.breathResistance < amount)
+                    this.status.breathResistance = amount;
+                break;
+            case 8 /* SKILL_PROBABILITY */:
+                this.status.skillProbability += amount;
+                break;
+            case 11 /* REMAIN_HP_ATK_UP */:
+                if (this.status.remainHpAtkUp < amount)
+                    this.status.remainHpAtkUp = amount;
+                break;
+            case 12 /* REMAIN_HP_DEF_UP */:
+                if (this.status.remainHpDefUp < amount)
+                    this.status.remainHpDefUp = amount;
+                break;
+            case 13 /* REMAIN_HP_WIS_UP */:
+                if (this.status.remainHpWisUp < amount)
+                    this.status.remainHpWisUp = amount;
+                break;
+            case 14 /* REMAIN_HP_AGI_UP */:
+                if (this.status.remainHpAgiUp < amount)
+                    this.status.remainHpAgiUp = amount;
+                break;
+            case 18 /* WILL_ATTACK_AGAIN */:
+                this.status.willAttackAgain = amount;
+                break;
+            case 16 /* ACTION_ON_DEATH */:
+                var skill = new Skill(amount);
+                this.ondeathSkills[0] = skill;
+                this.status.actionOnDeath = amount;
+                break;
+            case 17 /* HP_SHIELD */:
+                this.status.hpShield += amount;
+                if (maxAmount && this.status.hpShield > maxAmount) {
+                    this.status.hpShield = maxAmount;
+                }
+                break;
+            default:
+                throw new Error("Invalid status type");
         }
     };
     Card.prototype.clearAllStatus = function (condFunc) {
@@ -2303,7 +2349,7 @@ var Card = (function () {
     Card.prototype.isFullHealth = function () {
         return this.stats.hp == this.originalStats.hp;
     };
-    Card.prototype.getHPRatio = function () {
+    Card.prototype.getHpRatio = function () {
         return this.stats.hp / this.originalStats.hp;
     };
     Card.prototype.setDead = function () {
@@ -2320,7 +2366,12 @@ var Card = (function () {
         this.stats.hp = this.originalStats.hp * hpRatio;
     };
     Card.prototype.getATK = function () {
-        var value = this.stats.atk + this.status.atk;
+        var value = this.stats.atk;
+        if (this.status.remainHpAtkUp > 1) {
+            var hpRatio = this.getHpRatio();
+            value += Math.round(value * (1 - hpRatio) * (this.status.remainHpAtkUp - 1));
+        }
+        value += this.status.atk;
         if (value < 0) {
             value = 0;
         }
@@ -2328,7 +2379,12 @@ var Card = (function () {
         return value;
     };
     Card.prototype.getDEF = function () {
-        var value = this.stats.def + this.status.def;
+        var value = this.stats.def;
+        if (this.status.remainHpDefUp > 1) {
+            var hpRatio = this.getHpRatio();
+            value += Math.round(value * (1 - hpRatio) * (this.status.remainHpDefUp - 1));
+        }
+        value += this.status.def;
         if (value < 0) {
             value = 0;
         }
@@ -2336,7 +2392,12 @@ var Card = (function () {
         return value;
     };
     Card.prototype.getWIS = function () {
-        var value = this.stats.wis + this.status.wis;
+        var value = this.stats.wis;
+        if (this.status.remainHpWisUp > 1) {
+            var hpRatio = this.getHpRatio();
+            value += Math.round(value * (1 - hpRatio) * (this.status.remainHpWisUp - 1));
+        }
+        value += this.status.wis;
         if (value < 0) {
             value = 0;
         }
@@ -2344,7 +2405,12 @@ var Card = (function () {
         return value;
     };
     Card.prototype.getAGI = function () {
-        var value = this.stats.agi + this.status.agi;
+        var value = this.stats.agi;
+        if (this.status.remainHpAgiUp > 1) {
+            var hpRatio = this.getHpRatio();
+            value += Math.round(value * (1 - hpRatio) * (this.status.remainHpAgiUp - 1));
+        }
+        value += this.status.agi;
         if (value < 0) {
             value = 0;
         }
@@ -2399,6 +2465,10 @@ var Status = (function () {
         this.magicResistance = 0;
         this.breathResistance = 0;
         this.skillProbability = 0;
+        this.remainHpAtkUp = 0;
+        this.remainHpDefUp = 0;
+        this.remainHpWisUp = 0;
+        this.remainHpAgiUp = 0;
         this.actionOnDeath = 0;
         this.hpShield = 0;
         this.willAttackAgain = 0;
@@ -2984,6 +3054,14 @@ var famDatabase = {
         img: "1e0",
         fullName: "Ancient Beetle Soldier II"
     },
+    11483: {
+        name: "Tree Golem",
+        stats: [17998, 17106, 17998, 12001, 2907],
+        skills: [671],
+        autoAttack: 10056,
+        img: "14b",
+        fullName: "Ancient Tree Golem II"
+    },
     10464: {
         name: "Andorra",
         stats: [12538, 13621, 13510, 12134, 12342],
@@ -3467,6 +3545,14 @@ var famDatabase = {
         skills: [226],
         img: "214",
         fullName: "Cap'n Jolly, Sea Scourge II"
+    },
+    11479: {
+        name: "Jed",
+        stats: [24080, 25066, 20494, 14005, 18100],
+        skills: [667],
+        autoAttack: 10053,
+        img: "1b7",
+        fullName: "Captain Jed II"
     },
     11333: {
         name: "Kidd",
@@ -4104,6 +4190,14 @@ var famDatabase = {
         img: "112",
         fullName: "Hash, Lizardman Cannoneer II"
     },
+    11493: {
+        name: "Hati",
+        stats: [15002, 8144, 10777, 17721, 16995],
+        skills: [675],
+        autoAttack: 10059,
+        img: "230",
+        fullName: "Hati, Icetail Wolf II"
+    },
     11451: {
         name: "Hatshepsut",
         stats: [17049, 16334, 13041, 6097, 16096],
@@ -4111,6 +4205,13 @@ var famDatabase = {
         autoAttack: 10040,
         img: "2bd",
         fullName: "Hatshepsut, Mummy Queen II"
+    },
+    11478: {
+        name: "Hecatoncheir",
+        stats: [15509, 15158, 14024, 8759, 15706],
+        skills: [676],
+        img: "2e5",
+        fullName: "Hecatoncheir Rimetouch II"
     },
     10951: {
         name: "Hecatoncheir",
@@ -4288,6 +4389,14 @@ var famDatabase = {
         skills: [525],
         img: "20f",
         fullName: "Inhabited Ghost Ship II"
+    },
+    21475: {
+        name: "Uranus",
+        stats: [21943, 9529, 18525, 20649, 17742],
+        skills: [674],
+        autoAttack: 10058,
+        img: "3d5",
+        fullName: "Intrepid Hand of Uranus"
     },
     693: {
         name: "Ioskeha",
@@ -4545,6 +4654,14 @@ var famDatabase = {
         skills: [16],
         img: "197",
         fullName: "Lucia, Petal-Shears II"
+    },
+    11485: {
+        name: "Luot",
+        stats: [18013, 17992, 17006, 9997, 18035],
+        skills: [668],
+        autoAttack: 10054,
+        img: "2c3",
+        fullName: "Luot, Scout II"
     },
     10794: {
         name: "Ma-Gu",
@@ -4933,6 +5050,14 @@ var famDatabase = {
         img: "491",
         fullName: "Paladin of Leo II"
     },
+    11389: {
+        name: "Ophiuchus",
+        stats: [19508, 9000, 15002, 19541, 17504],
+        skills: [583, 584],
+        autoAttack: 10007,
+        img: "13d",
+        fullName: "Paladin of Ophiuchus II"
+    },
     11229: {
         name: "Pisces",
         stats: [13041, 8621, 14796, 17114, 14991],
@@ -5072,6 +5197,14 @@ var famDatabase = {
         img: "125",
         fullName: "Phoenix, the Metempsychosis II"
     },
+    21489: {
+        name: "Poliahu",
+        stats: [23572, 8648, 17482, 22365, 18202],
+        skills: [655, 656],
+        autoAttack: 10007,
+        img: "17d",
+        fullName: "Poliahu, the Mauna Kea"
+    },
     11237: {
         name: "Pollux",
         stats: [13290, 18631, 11654, 10311, 13756],
@@ -5121,6 +5254,14 @@ var famDatabase = {
         skills: [348],
         img: "1f6",
         fullName: "Queen of the Waspmen II"
+    },
+    11486: {
+        name: "Qing Nu",
+        stats: [19010, 8957, 15002, 19541, 17992],
+        skills: [677, 678],
+        autoAttack: 10007,
+        img: "14f",
+        fullName: "Qing Nu, Snowweaver II"
     },
     21340: {
         name: "Cetus",
@@ -5421,6 +5562,14 @@ var famDatabase = {
         skills: [457],
         img: "13c",
         fullName: "Slagh, Carnage Incarnate II"
+    },
+    11480: {
+        name: "Snegurochka",
+        stats: [20007, 7895, 16063, 22000, 18143],
+        skills: [672, 673],
+        autoAttack: 10057,
+        img: "306",
+        fullName: "Snegurochka II"
     },
     10450: {
         name: "Snow Queen",
@@ -6524,6 +6673,7 @@ var Skill = (function () {
             case 3 /* ATTACK */:
             case 4 /* MAGIC */:
             case 13 /* COUNTER */:
+            case 41 /* COUNTER_INDIRECT */:
             case 14 /* PROTECT_COUNTER */:
             case 21 /* DEBUFFATTACK */:
             case 22 /* DEBUFFINDIRECT */:
@@ -6578,7 +6728,7 @@ var Skill = (function () {
         if (skillInfo.calc == 2 /* WIS */) {
             isMagicSkill = true;
         }
-        if ([19 /* AFFLICTION */, 1 /* BUFF */, 2 /* DEBUFF */, 4 /* MAGIC */, 34 /* CASTER_BASED_DEBUFF_MAGIC */, 37 /* DRAIN_MAGIC */].indexOf(skillInfo.func) != -1) {
+        if ([19 /* AFFLICTION */, 1 /* BUFF */, 2 /* DEBUFF */, 44 /* MULTI_BUFF */, 45 /* MULTI_DEBUFF */, 46 /* DEBUFF_AFFLICTION */, 4 /* MAGIC */, 34 /* CASTER_BASED_DEBUFF_MAGIC */, 37 /* DRAIN_MAGIC */].indexOf(skillInfo.func) != -1) {
             isMagicSkill = true;
         }
         return isMagicSkill;
@@ -6647,6 +6797,7 @@ var Skill = (function () {
             case 22 /* DEBUFFINDIRECT */:
             case 33 /* CASTER_BASED_DEBUFF_ATTACK */:
             case 34 /* CASTER_BASED_DEBUFF_MAGIC */:
+            case 46 /* DEBUFF_AFFLICTION */:
                 statuses.push(skillInfo.args[1]);
                 break;
             case 32 /* CASTER_BASED_DEBUFF */:
@@ -11751,6 +11902,27 @@ var SkillDatabase = {
         ward: 2,
         desc: "Deal heavy WIS-based damage and sometimes burn five random foes, ignoring position."
     },
+    583: {
+        name: "Smoldering Serpent",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [2],
+        range: 16,
+        prob: 30,
+        ward: 2,
+        desc: "Deal massive WIS-based damage to three random foes, ignoring position."
+    },
+    584: {
+        name: "Eye of the Serpent",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [2, 23],
+        range: 3,
+        prob: 70,
+        desc: "Buff self and adjacent familiars. DEF/WIS of each affected ally increase as its HP decrease."
+    },
     585: {
         name: "Death's Call",
         type: 2,
@@ -12461,6 +12633,27 @@ var SkillDatabase = {
         ward: 2,
         desc: "Deal massive WIS-based damage to two random foes, ignoring position."
     },
+    655: {
+        name: "Wrath of Mauna Kea",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.05, 3, 0.3],
+        range: 17,
+        prob: 30,
+        ward: 2,
+        desc: "Deal WIS-based damage to and sometimes freeze six random foes, ignoring postion."
+    },
+    656: {
+        name: "Grace of Mauna Kea",
+        type: 1,
+        func: 44,
+        calc: 0,
+        args: [2, 13, 0, 0, 0, 0.4, 6, 7],
+        range: 3,
+        prob: 70,
+        desc: "WIS of self/adjacent allies go up when their HP go down, magic/breath dmg taken reduced."
+    },
     657: {
         name: "Hound's Bay",
         type: 2,
@@ -12568,6 +12761,114 @@ var SkillDatabase = {
         prob: 50,
         ward: 1,
         desc: "Chance to unleash a freezing massive counter attack when struck, ignoring position."
+    },
+    667: {
+        name: "Icy Gift",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1.1, 5, 0.3, 1],
+        range: 8,
+        prob: 30,
+        ward: 1,
+        desc: "Deal ATK-based damage to and sometimes silence all foes ."
+    },
+    668: {
+        name: "Hail Stiletto",
+        type: 2,
+        func: 3,
+        calc: 3,
+        args: [1.5],
+        range: 44,
+        prob: 30,
+        ward: 1,
+        desc: "Deal heavy AGI-based damage to four random foes. Attacks front foes first."
+    },
+    671: {
+        name: "Hardened Rime",
+        type: 5,
+        func: 14,
+        calc: 1,
+        args: [1.4],
+        range: 2,
+        prob: 50,
+        ward: 1,
+        desc: "Take damage in place of adjacent familiars and counter."
+    },
+    672: {
+        name: "Snow Blade",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.6],
+        range: 39,
+        prob: 30,
+        ward: 2,
+        desc: "Heavy WIS-based damage to four random foes, ignoring position. Attacks rear foes first."
+    },
+    673: {
+        name: "Leaching Blizzard",
+        type: 1,
+        func: 46,
+        calc: 0,
+        args: [0.2, 3, 0, 0, 0, 3, 0.3],
+        range: 7,
+        prob: 70,
+        desc: "Greatly lower WIS of up to three foes and sometimes freeze target."
+    },
+    674: {
+        name: "Meteor Shower",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.7, 4, 0.3],
+        range: 314,
+        prob: 30,
+        ward: 2,
+        desc: "Heavy WIS-based damage and sometimes disable up to four foes. Increased if fewer foes."
+    },
+    675: {
+        name: "Tail of Hail",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.65],
+        range: 32,
+        prob: 30,
+        ward: 2,
+        desc: "Deal heavy WIS-based damage to up to four foes, ignoring position."
+    },
+    676: {
+        name: "Icy Touch",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1.9, 5, 0.3],
+        range: 16,
+        prob: 30,
+        ward: 1,
+        desc: "Deal heavy ATK-based damage and sometimes silence three random foes."
+    },
+    677: {
+        name: "Dance of Snow",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.4],
+        range: 208,
+        prob: 30,
+        ward: 2,
+        desc: "WIS-based damage to all foes. Increased if fewer foes."
+    },
+    678: {
+        name: "Icy Tailwind",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.15, 8],
+        range: 3,
+        prob: 70,
+        desc: "Raise the skill trigger rate of self and adjacent familiars by 15%."
     },
     10001: {
         name: "Standard Action",
@@ -13169,6 +13470,78 @@ var SkillDatabase = {
         isAutoAttack: true,
         desc: "WIS-based damage to one foe."
     },
+    10053: {
+        name: "Standard Action",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1, 2, 0.25],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage and sometimes paralyze target."
+    },
+    10054: {
+        name: "Standard Action",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1, 5, 0.35, 1],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage and sometimes silence target."
+    },
+    10056: {
+        name: "Standard Action",
+        type: 2,
+        func: 33,
+        calc: 1,
+        args: [1, 4, 1, 0.1],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "Deal ATK-based damage to one foe and greatly lower AGI."
+    },
+    10057: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1, 3, 0.3],
+        range: 5,
+        prob: 100,
+        ward: 2,
+        isAutoAttack: true,
+        desc: "WIS-based damage and sometimes freeze target."
+    },
+    10058: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [0.5],
+        range: 7,
+        prob: 100,
+        ward: 2,
+        isAutoAttack: true,
+        desc: "WIS-based damage to up to three foes."
+    },
+    10059: {
+        name: "Standard Action",
+        type: 2,
+        func: 34,
+        calc: 2,
+        args: [1, 4, 0.3, 0.1],
+        range: 5,
+        prob: 100,
+        ward: 2,
+        isAutoAttack: true,
+        desc: "Deal WIS-based damage to one foe and sometimes greatly lower AGI."
+    },
 };
 var SkillLogicFactory = (function () {
     function SkillLogicFactory() {
@@ -13182,6 +13555,8 @@ var SkillLogicFactory = (function () {
             case 2 /* DEBUFF */:
             case 32 /* CASTER_BASED_DEBUFF */:
                 return new DebuffSkillLogic();
+            case 46 /* DEBUFF_AFFLICTION */:
+                return new DebuffAfflictionSkillLogic();
             case 39 /* ONHIT_BUFF */:
                 return new OnHitBuffSkillLogic();
             case 38 /* ONHIT_DEBUFF */:
@@ -13273,14 +13648,14 @@ var BuffSkillLogic = (function (_super) {
         var skill = data.skill;
         var executor = data.executor;
         skill.getReady(executor);
-        if (skill.skillFuncArg2 != 9 /* ALL_STATUS */) {
+        if (this.getComponentStatus(skill.skillFuncArg2) == null) {
             var statusToBuff = [skill.skillFuncArg2];
             if (skill.skillFuncArg3 != 0 && skill.skillFuncArg2 != 17 /* HP_SHIELD */) {
                 statusToBuff.push(skill.skillFuncArg3);
             }
         }
         else {
-            statusToBuff = [1 /* ATK */, 2 /* DEF */, 3 /* WIS */, 4 /* AGI */];
+            statusToBuff = this.getComponentStatus(skill.skillFuncArg2);
         }
         var basedOnStatType = ENUM.SkillCalcType[skill.skillCalcType];
         var baseStat = skill.skillFunc == 39 /* ONHIT_BUFF */ ? 0 : executor.getStat(basedOnStatType);
@@ -13313,6 +13688,10 @@ var BuffSkillLogic = (function (_super) {
                     case 8 /* SKILL_PROBABILITY */:
                     case 18 /* WILL_ATTACK_AGAIN */:
                     case 16 /* ACTION_ON_DEATH */:
+                    case 11 /* REMAIN_HP_ATK_UP */:
+                    case 12 /* REMAIN_HP_DEF_UP */:
+                    case 13 /* REMAIN_HP_WIS_UP */:
+                    case 14 /* REMAIN_HP_AGI_UP */:
                         buffAmount = skill.skillFuncArg1;
                         break;
                     case 17 /* HP_SHIELD */:
@@ -13337,6 +13716,36 @@ var BuffSkillLogic = (function (_super) {
                     skillId: skill.id
                 });
             }
+        }
+    };
+    BuffSkillLogic.prototype.getComponentStatus = function (type) {
+        switch (type) {
+            case 9 /* ALL_STATUS */:
+                return [1 /* ATK */, 2 /* DEF */, 3 /* WIS */, 4 /* AGI */];
+            case 15 /* REMAIN_HP_ALL_STATUS_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 20 /* REMAIN_HP_ATK_DEF_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */];
+            case 21 /* REMAIN_HP_ATK_WIS_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 13 /* REMAIN_HP_WIS_UP */];
+            case 22 /* REMAIN_HP_ATK_AGI_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 23 /* REMAIN_HP_DEF_WIS_UP */:
+                return [12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */];
+            case 24 /* REMAIN_HP_DEF_AGI_UP */:
+                return [12 /* REMAIN_HP_DEF_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 25 /* REMAIN_HP_WIS_AGI_UP */:
+                return [13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 26 /* REMAIN_HP_ATK_DEF_WIS_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */];
+            case 27 /* REMAIN_HP_ATK_DEF_AGI_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 28 /* REMAIN_HP_DEF_WIS_AGI_UP */:
+                return [12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 29 /* REMAIN_HP_ATK_WIS_AGI_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            default:
+                return null;
         }
     };
     return BuffSkillLogic;
@@ -13374,6 +13783,26 @@ var DebuffSkillLogic = (function (_super) {
         }
     };
     return DebuffSkillLogic;
+})(SkillLogic);
+var DebuffAfflictionSkillLogic = (function (_super) {
+    __extends(DebuffAfflictionSkillLogic, _super);
+    function DebuffAfflictionSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    DebuffAfflictionSkillLogic.prototype.execute = function (data) {
+        var tempDebuffSkillLogic = new DebuffSkillLogic();
+        tempDebuffSkillLogic.execute(data);
+        var tempSkill = new Skill(data.skill.id);
+        tempSkill.skillFuncArg1 = 0;
+        tempSkill.skillFuncArg2 = tempSkill.skillFuncArg6;
+        tempSkill.skillFuncArg3 = tempSkill.skillFuncArg7;
+        tempSkill.skillFuncArg4 = tempSkill.skillFuncArg8;
+        tempSkill.skillFuncArg5 = tempSkill.skillFuncArg9;
+        var tempAfflictionSkillLogic = new AfflictionSkillLogic();
+        data.skill = tempSkill;
+        tempAfflictionSkillLogic.execute(data);
+    };
+    return DebuffAfflictionSkillLogic;
 })(SkillLogic);
 var ClearStatusSkillLogic = (function (_super) {
     __extends(ClearStatusSkillLogic, _super);
@@ -13469,7 +13898,7 @@ var AttackSkillLogic = (function (_super) {
     AttackSkillLogic.prototype.executeNonAoeAttack = function (data) {
         var target;
         var attackCount = 0;
-        while ((target = data.skill.getTarget(data.executor)) && !data.executor.isDead) {
+        while ((target = data.skill.getTarget(data.executor)) && !data.executor.isDead && data.executor.canAttack()) {
             if (RangeFactory.isEnemyVaryingRange(data.skill.skillRange)) {
                 var varyingRatio = RangeFactory.getVaryingRatio(data.skill.skillRange, attackCount);
             }
@@ -13929,7 +14358,7 @@ var SurviveSkillLogic = (function (_super) {
         _super.apply(this, arguments);
     }
     SurviveSkillLogic.prototype.willBeExecuted = function (data) {
-        var hpRatio = data.executor.getHPRatio();
+        var hpRatio = data.executor.getHpRatio();
         return _super.prototype.willBeExecuted.call(this, data) && (hpRatio > data.skill.skillFuncArg1) && (data.wouldBeDamage >= data.executor.getHP());
     };
     SurviveSkillLogic.prototype.execute = function (data) {
@@ -15029,6 +15458,9 @@ var BattleModel = (function () {
             });
             this.addOnDeathCard(target);
         }
+        else {
+            this.processRemainHpBuff(target, false);
+        }
     };
     BattleModel.prototype.getWouldBeDamage = function (data) {
         var attacker = data.attacker;
@@ -15104,6 +15536,27 @@ var BattleModel = (function () {
             });
             this.addOnDeathCard(target);
         }
+        else {
+            this.processRemainHpBuff(target, damage < 0);
+        }
+    };
+    BattleModel.prototype.processRemainHpBuff = function (target, isPositiveChange) {
+        var types = [];
+        if (target.status.remainHpAtkUp > 0)
+            types.push(1 /* ATK */);
+        if (target.status.remainHpDefUp > 0)
+            types.push(2 /* DEF */);
+        if (target.status.remainHpWisUp > 0)
+            types.push(3 /* WIS */);
+        if (target.status.remainHpAgiUp > 0)
+            types.push(4 /* AGI */);
+        var verb = isPositiveChange ? "decreased" : "increased";
+        for (var i = 0; i < types.length; i++) {
+            this.logger.addMinorEvent({
+                type: 6 /* TEXT */,
+                description: target.name + "'s " + ENUM.StatusType[types[i]] + " " + verb + " because of remain HP buff.",
+            });
+        }
     };
     BattleModel.prototype.processAffliction = function (executor, target, skill, fixedProb) {
         var type = skill.skillFuncArg2;
@@ -15156,7 +15609,7 @@ var BattleModel = (function () {
             status = skill.skillFuncArg2;
             multi = skill.skillFuncArg1;
         }
-        else if (skill.skillFunc === 32 /* CASTER_BASED_DEBUFF */) {
+        else if (skill.skillFunc === 32 /* CASTER_BASED_DEBUFF */ || skill.skillFunc === 46 /* DEBUFF_AFFLICTION */) {
             status = skill.skillFuncArg2;
             multi = skill.skillFuncArg1;
             isNewLogic = true;
