@@ -13668,18 +13668,20 @@ var BuffSkillLogic = (function (_super) {
                     case 2 /* DEF */:
                     case 3 /* WIS */:
                     case 4 /* AGI */:
-                        if (skill.skillFuncArg2 != 9 /* ALL_STATUS */) {
-                            baseStat = executor.getStat(basedOnStatType);
-                        }
                         var skillMod = skill.skillFuncArg1;
-                        var buffAmount = Math.round(skillMod * baseStat);
                         if (skill.skillFunc == 39 /* ONHIT_BUFF */) {
                             if (skill.skillFuncArg4 == 0) {
                                 throw new Error("Not sure what needs to happen here when arg4 = 0 for onhit buff. Check the manual.");
                             }
                             else {
-                                buffAmount = Math.round(skillMod * skill.skillFuncArg4 * 100);
+                                var buffAmount = Math.round(skillMod * skill.skillFuncArg4 * 100);
                             }
+                        }
+                        else {
+                            if (skill.skillFuncArg2 != 9 /* ALL_STATUS */) {
+                                baseStat = executor.getStat(basedOnStatType);
+                            }
+                            buffAmount = Math.round(skillMod * baseStat);
                         }
                         break;
                     case 5 /* ATTACK_RESISTANCE */:
