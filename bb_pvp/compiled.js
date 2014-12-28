@@ -3557,7 +3557,7 @@ var famDatabase = {
     11333: {
         name: "Kidd",
         stats: [18403, 18046, 12781, 14395, 16085],
-        skills: [157, 518],
+        skills: [518, 157],
         img: "442",
         fullName: "Captain Kidd II"
     },
@@ -4452,7 +4452,7 @@ var famDatabase = {
     11009: {
         name: "Jabberwock",
         stats: [13994, 16193, 13008, 19508, 18024],
-        skills: [270, 271],
+        skills: [271, 270],
         img: "41f",
         fullName: "Jabberwock, Phantom Dragon II"
     },
@@ -4761,7 +4761,7 @@ var famDatabase = {
     11013: {
         name: "Marraco",
         stats: [18716, 15876, 17254, 7381, 8809],
-        skills: [61, 167],
+        skills: [167, 61],
         img: "47b",
         fullName: "Marraco, Crusted Wyrm II"
     },
@@ -4992,7 +4992,7 @@ var famDatabase = {
     11088: {
         name: "Ovinnik",
         stats: [19010, 11210, 20592, 16627, 12315],
-        skills: [342, 356],
+        skills: [356, 342],
         autoAttack: 10007,
         img: "3c1",
         fullName: "Ovinnik, Hex Beast II"
@@ -5545,7 +5545,7 @@ var famDatabase = {
     11074: {
         name: "Skoll",
         stats: [15002, 13160, 15153, 9000, 16302],
-        skills: [301, 367],
+        skills: [367, 301],
         img: "3e8",
         fullName: "Skoll, Dark Wolf II"
     },
@@ -5887,7 +5887,7 @@ var famDatabase = {
     11021: {
         name: "Vlad",
         stats: [16323, 19508, 13680, 14709, 16529],
-        skills: [295, 296],
+        skills: [296, 295],
         img: "356",
         fullName: "Vlad the Impaler II"
     },
@@ -8372,7 +8372,7 @@ var SkillDatabase = {
         range: 5,
         prob: 30,
         ward: 1,
-        desc: "Deal a heavy blow to one foe, sometimes lowering DEF."
+        desc: "Deal a heavy blow to one foe,sometimes lowering DEF."
     },
     193: {
         name: "Angler",
@@ -8458,7 +8458,7 @@ var SkillDatabase = {
         range: 6,
         prob: 30,
         ward: 3,
-        desc: "Deal massive WIS-based water damage to up to two foes."
+        desc: "Deal massive WIS-based damage to up to two foes, and sometimes freeze target."
     },
     204: {
         name: "Frozen Spear",
@@ -9242,8 +9242,8 @@ var SkillDatabase = {
         args: [1.35, 3, 0.3],
         range: 8,
         prob: 30,
-        ward: 2,
-        desc: "Deal WIS-based damage to all foes and sometimes freeze them, ignoring position."
+        ward: 3,
+        desc: "Deal WIS-based damage to all foes  and sometimes freeze them, ignoring position."
     },
     299: {
         name: "Crazed Axe",
@@ -9792,7 +9792,7 @@ var SkillDatabase = {
         args: [1],
         range: 20,
         prob: 30,
-        ward: 2,
+        ward: 1,
         desc: "Deal ATK-based damage to five random foes."
     },
     362: {
@@ -10059,7 +10059,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
-        desc: "Deal heavy ATK-based damage to three random foes."
+        desc: "Deal heavy ATK-based damage to three random foes"
     },
     391: {
         name: "Scatter Arrow",
@@ -10271,7 +10271,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 2,
-        desc: "Deal WIS-based damage to and sometimes poison five random foes, ignoring position."
+        desc: "Deal WIS-based damage to and sometimes poison five random foes, ignoring position. "
     },
     415: {
         name: "Sigiled Sanctuary",
@@ -10388,7 +10388,7 @@ var SkillDatabase = {
         args: [2],
         range: 21,
         prob: 50,
-        desc: "Restore HP to self."
+        desc: "Restore of HP to self."
     },
     427: {
         name: "Funerary Rush",
@@ -11102,7 +11102,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
-        desc: "Deal heavy ATK-based damage to five random foes, ignoring position."
+        desc: "Deal heavy ATK-based damage to five random foes, ignoring position"
     },
     500: {
         name: "Spiny Carapace",
@@ -11123,7 +11123,7 @@ var SkillDatabase = {
         args: [1.65, 2, 0.3, 0.3],
         range: 19,
         prob: 30,
-        ward: 2,
+        ward: 1,
         desc: "Heavy ATK-based damage to four random foes and sometimes lower DEF, ignoring position."
     },
     502: {
@@ -12759,7 +12759,7 @@ var SkillDatabase = {
         args: [2, 3, 0.3],
         range: 21,
         prob: 50,
-        ward: 1,
+        ward: 2,
         desc: "Chance to unleash a freezing massive counter attack when struck, ignoring position."
     },
     667: {
@@ -13668,7 +13668,7 @@ var BuffSkillLogic = (function (_super) {
                     case 2 /* DEF */:
                     case 3 /* WIS */:
                     case 4 /* AGI */:
-                        if (skill.skillRange == 3 /* SELF_BOTH_SIDES */) {
+                        if (skill.skillFuncArg2 != 9 /* ALL_STATUS */) {
                             baseStat = executor.getStat(basedOnStatType);
                         }
                         var skillMod = skill.skillFuncArg1;
