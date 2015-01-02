@@ -2944,6 +2944,22 @@ var famDatabase = {
         img: "4a1",
         fullName: "Afanc, Beast of the Deep II"
     },
+    21501: {
+        name: "Agathos",
+        stats: [12163, 8220, 10224, 13095, 12315],
+        skills: [683],
+        autoAttack: 10007,
+        img: "188",
+        fullName: "Agathos, the Ruinous II"
+    },
+    11501: {
+        name: "Agathos",
+        stats: [15265, 7478, 11442, 16803, 16913],
+        skills: [682],
+        autoAttack: 10036,
+        img: "38e",
+        fullName: "Agathos, Wyrm of the Harvest II"
+    },
     21404: {
         name: "Ah Puch",
         stats: [22515, 9134, 18258, 20999, 17486],
@@ -3437,6 +3453,21 @@ var famDatabase = {
         img: "46a",
         fullName: "Benjamina, Wild Turkey"
     },
+    11494: {
+        name: "Bergel",
+        stats: [16529, 7321, 10538, 17797, 16811],
+        skills: [679, 680],
+        autoAttack: 10007,
+        img: "297",
+        fullName: "Bergel, Frost Magus II"
+    },
+    11505: {
+        name: "Bert",
+        stats: [14107, 14000, 11828, 6577, 9453],
+        skills: [688],
+        img: "404",
+        fullName: "Bert, Foe Sweep II"
+    },
     10684: {
         name: "Biast",
         stats: [13879, 12655, 10163, 13611, 9798],
@@ -3874,6 +3905,14 @@ var famDatabase = {
         img: "2bf",
         fullName: "Evil Eye II"
     },
+    11503: {
+        name: "Fenghuang",
+        stats: [15218, 7494, 12261, 17190, 16345],
+        skills: [686, 687],
+        autoAttack: 10019,
+        img: "1ce",
+        fullName: "Fenghuang, Bird Divine II"
+    },
     10674: {
         name: "Fenrir",
         stats: [15099, 16865, 22498, 13008, 11167],
@@ -3924,6 +3963,13 @@ var famDatabase = {
         img: "252",
         fullName: "Flesh Collector Golem II"
     },
+    10606: {
+        name: "Fomor",
+        stats: [13052, 14645, 11928, 9967, 9781],
+        skills: [138],
+        img: "143",
+        fullName: "Fomor the Savage II"
+    },
     11191: {
         name: "Freyja",
         stats: [14709, 17125, 14027, 10213, 12380],
@@ -3944,13 +3990,6 @@ var famDatabase = {
         skills: [385, 386],
         img: "151",
         fullName: "Freyr, God of the Harvest II"
-    },
-    10606: {
-        name: "Fomor",
-        stats: [13052, 14645, 11928, 9967, 9781],
-        skills: [138],
-        img: "143",
-        fullName: "Fomor the Savage II"
     },
     11115: {
         name: "Bearwolf",
@@ -4552,6 +4591,14 @@ var famDatabase = {
         skills: [449],
         img: "16e",
         fullName: "Kobold Guard Captain II"
+    },
+    11502: {
+        name: "Kokopelli",
+        stats: [19584, 18858, 13799, 11102, 18187],
+        skills: [684, 685],
+        isMounted: true,
+        img: "210",
+        fullName: "Kokopelli Mana II"
     },
     11314: {
         name: "Kua Fu",
@@ -5813,6 +5860,14 @@ var famDatabase = {
         img: "3ee",
         fullName: "Two-Headed Stormwyrm II"
     },
+    21499: {
+        name: "Tyche",
+        stats: [22409, 9752, 17534, 20836, 17942],
+        skills: [681],
+        autoAttack: 10052,
+        img: "1b7",
+        fullName: "Tyche, Goddess of Glory"
+    },
     10735: {
         name: "Typhon",
         stats: [14677, 13355, 14341, 17959, 13626],
@@ -5963,6 +6018,14 @@ var famDatabase = {
         autoAttack: 10020,
         img: "325",
         fullName: "Xuan Wu II"
+    },
+    11526: {
+        name: "Yae",
+        stats: [15317, 7271, 13258, 15365, 17133],
+        skills: [699, 700],
+        autoAttack: 10007,
+        img: "2a6",
+        fullName: "Yae, the Night Flower II"
     },
     10995: {
         name: "Ymir",
@@ -6666,10 +6729,10 @@ var Skill = (function () {
         }
         this.range = RangeFactory.getRange(this.skillRange, selectDead);
     }
-    Skill.isAttackSkill = function (skillId) {
-        var isAttackSkill = false;
-        var skillInfo = SkillDatabase[skillId];
-        switch (skillInfo.func) {
+    Skill.isAttackSkill = function (skillId, srcSkillData) {
+        var skillInfo = srcSkillData ? srcSkillData : SkillDatabase[skillId];
+        var func = srcSkillData ? srcSkillData.skillFunc : skillInfo.func;
+        switch (func) {
             case 3 /* ATTACK */:
             case 4 /* MAGIC */:
             case 13 /* COUNTER */:
@@ -6682,17 +6745,15 @@ var Skill = (function () {
             case 36 /* DRAIN_ATTACK */:
             case 37 /* DRAIN_MAGIC */:
             case 7 /* KILL */:
-                isAttackSkill = true;
-                break;
+                return true;
             default:
-                break;
+                return false;
         }
-        return isAttackSkill;
     };
-    Skill.isIndirectSkill = function (skillId) {
-        var isIndirect = true;
-        var skillInfo = SkillDatabase[skillId];
-        switch (skillInfo.func) {
+    Skill.isIndirectSkill = function (skillId, srcSkillData) {
+        var skillInfo = srcSkillData ? srcSkillData : SkillDatabase[skillId];
+        var func = srcSkillData ? srcSkillData.skillFunc : skillInfo.func;
+        switch (func) {
             case 3 /* ATTACK */:
             case 13 /* COUNTER */:
             case 14 /* PROTECT_COUNTER */:
@@ -6700,16 +6761,40 @@ var Skill = (function () {
             case 21 /* DEBUFFATTACK */:
             case 33 /* CASTER_BASED_DEBUFF_ATTACK */:
             case 36 /* DRAIN_ATTACK */:
-                isIndirect = false;
-                break;
+                return false;
             default:
-                break;
+                return true;
         }
-        return isIndirect;
     };
-    Skill.isPositionIndependentAttackSkill = function (skillId) {
-        var skillInfo = SkillDatabase[skillId];
-        return this.isIndirectSkill(skillId) && skillInfo.func != 7 /* KILL */;
+    Skill.isPositionIndependentAttackSkill = function (skillId, srcSkillData) {
+        var skillInfo = srcSkillData ? srcSkillData : SkillDatabase[skillId];
+        var func = srcSkillData ? srcSkillData.skillFunc : skillInfo.func;
+        return this.isIndirectSkill(skillId, srcSkillData) && func != 7 /* KILL */;
+    };
+    Skill.getWardType = function (srcSkillData) {
+        var wardType = undefined;
+        if (Skill.isAttackSkill(null, srcSkillData)) {
+            if (Skill.isPositionIndependentAttackSkill(null, srcSkillData)) {
+                var isCalcAtk = srcSkillData.skillCalcType === 1 /* ATK */;
+                var isCalcWisOrAgi = srcSkillData.skillCalcType === 2 /* WIS */ || srcSkillData.skillCalcType === 3 /* AGI */;
+                if (isCalcAtk) {
+                    wardType = 1 /* PHYSICAL */;
+                }
+                else if (isCalcWisOrAgi) {
+                    var isEffectBreath = [17, 18, 19].indexOf(srcSkillData.casterEffectId) != -1;
+                    if (isEffectBreath) {
+                        wardType = 3 /* BREATH */;
+                    }
+                    else {
+                        wardType = 2 /* MAGICAL */;
+                    }
+                }
+            }
+            else {
+                wardType = 1 /* PHYSICAL */;
+            }
+        }
+        return wardType;
     };
     Skill.isWisAutoAttack = function (skillId) {
         var skillInfo = SkillDatabase[skillId];
@@ -12869,6 +12954,136 @@ var SkillDatabase = {
         range: 3,
         prob: 70,
         desc: "Raise the skill trigger rate of self and adjacent familiars by 15%."
+    },
+    679: {
+        name: "Icicle Crush",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.95, 3, 0.4],
+        range: 43,
+        prob: 30,
+        ward: 2,
+        desc: "Heavy WIS-based damage to and may freeze three random foes. Attack front foes first."
+    },
+    680: {
+        name: "Ice-Crystal Mirror",
+        type: 5,
+        func: 28,
+        calc: 7,
+        args: [0.25, 2, 23, 3, 0.5],
+        range: 21,
+        prob: 50,
+        desc: "Reflect 50% of WIS-based damage back to two random foes."
+    },
+    681: {
+        name: "Trial by Luck",
+        type: 2,
+        func: 37,
+        calc: 2,
+        args: [1.35, 0.13, 27, 21],
+        range: 8,
+        prob: 30,
+        ward: 2,
+        desc: "Deal WIS-based damage and drain HP from all foes, ignoring position."
+    },
+    682: {
+        name: "Flames of Bounty",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.7],
+        range: 314,
+        prob: 30,
+        ward: 3,
+        desc: "Deal heavy WIS-based damage to up to four foes. Increased if fewer foes."
+    },
+    683: {
+        name: "Flames of Ruin",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.65],
+        range: 7,
+        prob: 30,
+        ward: 3,
+        desc: "Deal heavy WIS-based damage to up to three foes, ignoring position."
+    },
+    684: {
+        name: "Luckcall Axe",
+        type: 2,
+        func: 3,
+        calc: 3,
+        args: [1.75],
+        range: 23,
+        prob: 30,
+        ward: 1,
+        desc: "Deal heavy AGI-based damage to two random foes."
+    },
+    685: {
+        name: "Hexbreak Axe",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [2],
+        range: 23,
+        prob: 30,
+        ward: 1,
+        desc: "Deal massive ATK-based damage to two random foes."
+    },
+    686: {
+        name: "Blaze of Feathers",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.3, 8, 0.4, 2000],
+        range: 20,
+        prob: 30,
+        ward: 2,
+        desc: "Deal WIS-based damage and sometimes burn five random foes, ignoring position."
+    },
+    687: {
+        name: "Anointed Feathers",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.1, 3, 2],
+        range: 3,
+        prob: 70,
+        desc: "Raise WIS and DEF of self and adjacent familiars at start of battle."
+    },
+    688: {
+        name: "Brush Shot",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [2],
+        range: 23,
+        prob: 30,
+        ward: 1,
+        desc: "Deal massive ATK-based damage to two random foes, ignoring position."
+    },
+    699: {
+        name: "Multi-Shot Aerial ",
+        type: 2,
+        func: 4,
+        calc: 3,
+        args: [1.6, 8, 0.1, 5000],
+        range: 39,
+        prob: 30,
+        ward: 2,
+        desc: "Heavy AGI-based damage, ignore position and may burn 4 random foes. Attacks rear first."
+    },
+    700: {
+        name: "Cherry Bomb",
+        type: 3,
+        func: 41,
+        calc: 2,
+        args: [1],
+        range: 21,
+        prob: 50,
+        ward: 2,
+        desc: "Chance to unleash WIS-based counter attack when struck."
     },
     10001: {
         name: "Standard Action",
