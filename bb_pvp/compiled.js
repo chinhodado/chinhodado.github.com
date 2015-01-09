@@ -664,8 +664,13 @@ var BattleGraphic = (function () {
                 group.add(explosion);
                 var click = function (arg) {
                     var cardMan = CardManager.getInstance();
-                    var card = cardMan.getCurrentMainCardByIndex(arg[0], arg[1]);
                     return function () {
+                        var nestedImg = this.get(0);
+                        var nestedImgHref = nestedImg.attr("href");
+                        var card = cardMan.getOriginalMainCardByIndex(arg[0], arg[1]);
+                        if (nestedImgHref != getScaledFamiliarWikiaImageLink(card.imageLink, card.fullName, BattleGraphic.IMAGE_WIDTH_BIG)) {
+                            card = cardMan.getOriginalReserveCardByIndex(arg[0], arg[1]);
+                        }
                         showCardDetailDialog(cardMan.getCardInfoForDialog(card));
                     };
                 };
@@ -1586,12 +1591,12 @@ var BrigGenerator = (function () {
     function BrigGenerator() {
     }
     BrigGenerator.getRandomBrig = function (randomMode, tierListString, isBloodclash) {
-        var randomList = FamiliarDatabase.getRandomFamList(+randomMode, tierListString);
+        var randomList = FamProvider.getRandomFamList(+randomMode, tierListString);
         var brigIds = [];
         var maxIndex = isBloodclash ? 9 : 4;
         if (isBloodclash) {
             var randIndex = getRandomInt(0, maxIndex);
-            brigIds[randIndex] = getRandomElement(FamiliarDatabase.getWarlordList());
+            brigIds[randIndex] = getRandomElement(FamProvider.getWarlordList());
         }
         for (var i = 0; i <= maxIndex; i++) {
             if (!brigIds[i]) {
@@ -1608,15 +1613,13 @@ var BrigGenerator = (function () {
         var p2_cardIds = [];
         var p1_warlordSkillIds = [];
         var p2_warlordSkillIds = [];
-        var availableSkills = Skill.getAvailableSkillsForSelect();
+        var availableSkills = SkillProvider.getAvailableSkillsForSelect();
         if (!tierListString) {
             tierListString = localStorage["tierList"];
         }
         if (option.p1RandomMode) {
             p1_cardIds = BrigGenerator.getRandomBrig(option.p1RandomMode, tierListString, isBloodClash);
-            for (var i = 0; i < 3; i++) {
-                p1_warlordSkillIds.push(+getRandomElement(availableSkills));
-            }
+            p1_warlordSkillIds = BrigGenerator.getSmartWarlordSkills();
         }
         else {
             p1_cardIds = data.p1_cardIds;
@@ -1624,15 +1627,13 @@ var BrigGenerator = (function () {
         }
         if (option.p2RandomMode) {
             p2_cardIds = BrigGenerator.getRandomBrig(option.p2RandomMode, tierListString, isBloodClash);
-            for (i = 0; i < 3; i++) {
-                p2_warlordSkillIds.push(+getRandomElement(availableSkills));
-            }
+            p2_warlordSkillIds = BrigGenerator.getSmartWarlordSkills();
         }
         else {
             p2_cardIds = data.p2_cardIds;
             p2_warlordSkillIds = data.p2_warlordSkillIds;
         }
-        for (i = 0; i < 10; i++) {
+        for (var i = 0; i < 10; i++) {
             if (i >= 5 && !isBloodClash)
                 break;
             var p1_cardInfo = famDatabase[p1_cardIds[i]];
@@ -1676,6 +1677,29 @@ var BrigGenerator = (function () {
         }
         return skillArray;
     };
+    BrigGenerator.getSmartWarlordSkills = function () {
+        var choosenCategory = getRandomUniqueElements(SkillProvider.skillCategories, 3);
+        var skills = [];
+        for (var i = 0; i < choosenCategory.length; i++) {
+            switch (choosenCategory[i]) {
+                case 10 /* OPENING */:
+                    skills.push(getRandomElement(SkillProvider.getAvailableOpeningSkillList()));
+                    break;
+                case 20 /* ACTIVE */:
+                    skills.push(getRandomElement(SkillProvider.getAvailableActiveSkillList()));
+                    break;
+                case 30 /* REACTIVE */:
+                    skills.push(getRandomElement(SkillProvider.getAvailableReactiveSkillList()));
+                    break;
+                case 16 /* ACTION_ON_DEATH */:
+                    skills.push(getRandomElement(SkillProvider.getAvailableOnDeathSkillList()));
+                    break;
+                default:
+                    throw new Error("Invalid skill category");
+            }
+        }
+        return skills;
+    };
     return BrigGenerator;
 })();
 var ENUM;
@@ -1694,6 +1718,13 @@ var ENUM;
         SkillType[SkillType["ACTION_ON_DEATH"] = 16] = "ACTION_ON_DEATH";
     })(ENUM.SkillType || (ENUM.SkillType = {}));
     var SkillType = ENUM.SkillType;
+    (function (SkillCategory) {
+        SkillCategory[SkillCategory["OPENING"] = 10] = "OPENING";
+        SkillCategory[SkillCategory["ACTIVE"] = 20] = "ACTIVE";
+        SkillCategory[SkillCategory["REACTIVE"] = 30] = "REACTIVE";
+        SkillCategory[SkillCategory["ACTION_ON_DEATH"] = 16] = "ACTION_ON_DEATH";
+    })(ENUM.SkillCategory || (ENUM.SkillCategory = {}));
+    var SkillCategory = ENUM.SkillCategory;
     (function (SkillFunc) {
         SkillFunc[SkillFunc["BUFF"] = 1] = "BUFF";
         SkillFunc[SkillFunc["DEBUFF"] = 2] = "DEBUFF";
@@ -2750,6 +2781,14 @@ var CardManager = (function () {
     };
     CardManager.prototype.getCurrentMainCardByIndex = function (playerId, index) {
         var cards = this.getPlayerCurrentMainCards(this.battle.getPlayerById(playerId));
+        return cards[index];
+    };
+    CardManager.prototype.getOriginalMainCardByIndex = function (playerId, index) {
+        var cards = this.getPlayerOriginalMainCards(this.battle.getPlayerById(playerId));
+        return cards[index];
+    };
+    CardManager.prototype.getOriginalReserveCardByIndex = function (playerId, index) {
+        var cards = this.getPlayerOriginalReserveCards(this.battle.getPlayerById(playerId));
         return cards[index];
     };
     CardManager.prototype.getTotalHPRatio = function (cards) {
@@ -6085,10 +6124,10 @@ var famDatabase = {
         fullName: "Zuniga, Guard Captain II"
     }
 };
-var FamiliarDatabase = (function () {
-    function FamiliarDatabase() {
+var FamProvider = (function () {
+    function FamProvider() {
     }
-    FamiliarDatabase.getTierList = function (tierToGet, allTierString) {
+    FamProvider.getTierList = function (tierToGet, allTierString) {
         if (!this.tierList) {
             this.tierList = {};
             var allTierList = JSON.parse(allTierString);
@@ -6112,7 +6151,7 @@ var FamiliarDatabase = (function () {
         }
         return this.tierList[tierToGet];
     };
-    FamiliarDatabase.getAllFamiliarList = function () {
+    FamProvider.getAllFamiliarList = function () {
         if (!this.allIdList) {
             this.allIdList = [];
             for (var key in famDatabase) {
@@ -6123,7 +6162,7 @@ var FamiliarDatabase = (function () {
         }
         return this.allIdList;
     };
-    FamiliarDatabase.getRandomFamList = function (type, allTierString) {
+    FamProvider.getRandomFamList = function (type, allTierString) {
         var tierXP = this.getTierList("X+", allTierString);
         var tierX = this.getTierList("X", allTierString);
         var tierSP = this.getTierList("S+", allTierString);
@@ -6159,12 +6198,12 @@ var FamiliarDatabase = (function () {
                 throw new Error("Invalid brig random type");
         }
     };
-    FamiliarDatabase.getWarlordList = function () {
+    FamProvider.getWarlordList = function () {
         return [1, 2, 3, 4, 5, 6, 7, 8];
     };
-    FamiliarDatabase.tierList = null;
-    FamiliarDatabase.allIdList = null;
-    return FamiliarDatabase;
+    FamProvider.tierList = null;
+    FamProvider.allIdList = null;
+    return FamProvider;
 })();
 var Formation = (function () {
     function Formation(type) {
@@ -6330,7 +6369,7 @@ function setFamOptions() {
 }
 function setSkillOptions() {
     var skillSelects = document.getElementsByClassName("skillSelect");
-    var skillIdArray = Skill.getAvailableSkillsForSelect();
+    var skillIdArray = SkillProvider.getAvailableSkillsForSelect();
     skillIdArray.sort(function (a, b) { return SkillDatabase[a].name.localeCompare(SkillDatabase[b].name); });
     for (var i = 0; i < skillSelects.length; i++) {
         for (var index = 0; index < skillIdArray.length; index++) {
@@ -6841,25 +6880,6 @@ var Skill = (function () {
         }
         return isDebuffAttack;
     };
-    Skill.isAvailableForSelect = function (skillId) {
-        var isAvailable = true;
-        var skillInfo = SkillDatabase[skillId];
-        if (skillInfo.isAutoAttack || skillId == 355 || skillId == 452) {
-            isAvailable = false;
-        }
-        return isAvailable;
-    };
-    Skill.getAvailableSkillsForSelect = function () {
-        if (this.availableSkillsForSelect == null) {
-            this.availableSkillsForSelect = [];
-            for (var key in SkillDatabase) {
-                if (this.isAvailableForSelect(key)) {
-                    this.availableSkillsForSelect.push(key);
-                }
-            }
-        }
-        return this.availableSkillsForSelect;
-    };
     Skill.getStatusModified = function (skillId) {
         var skillInfo = SkillDatabase[skillId];
         var statuses = [];
@@ -6962,7 +6982,6 @@ var Skill = (function () {
     Skill.prototype.getReady = function (executor) {
         this.range.getReady(executor);
     };
-    Skill.availableSkillsForSelect = null;
     return Skill;
 })();
 function getDamageCalculatedByATK(attacker, defender, ignorePosition) {
@@ -14691,6 +14710,80 @@ var RandomSkillLogic = (function (_super) {
     };
     return RandomSkillLogic;
 })(SkillLogic);
+var SkillProvider = (function () {
+    function SkillProvider() {
+    }
+    SkillProvider.getAvailableSkillsForSelect = function () {
+        if (this.availableSkillsForSelect == null) {
+            this.availableSkillsForSelect = [];
+            for (var key in SkillDatabase) {
+                if (this.isAvailableForSelect(key)) {
+                    this.availableSkillsForSelect.push(key);
+                }
+            }
+        }
+        return this.availableSkillsForSelect;
+    };
+    SkillProvider.getAvailableOpeningSkillList = function () {
+        if (this.openingSkillList == null) {
+            this.openingSkillList = [];
+            for (var key in SkillDatabase) {
+                if (this.isAvailableForSelect(key) && SkillDatabase[key].type == 1 /* OPENING */) {
+                    this.openingSkillList.push(key);
+                }
+            }
+        }
+        return this.openingSkillList;
+    };
+    SkillProvider.getAvailableActiveSkillList = function () {
+        if (this.activeSkillList == null) {
+            this.activeSkillList = [];
+            for (var key in SkillDatabase) {
+                if (this.isAvailableForSelect(key) && SkillDatabase[key].type == 2 /* ACTIVE */) {
+                    this.activeSkillList.push(key);
+                }
+            }
+        }
+        return this.activeSkillList;
+    };
+    SkillProvider.getAvailableReactiveSkillList = function () {
+        if (this.reactiveSkillList == null) {
+            this.reactiveSkillList = [];
+            for (var key in SkillDatabase) {
+                if (this.isAvailableForSelect(key) && (SkillDatabase[key].type == 3 /* DEFENSE */ || SkillDatabase[key].type == 5 /* PROTECT */ || SkillDatabase[key].type == 6 /* EVADE */)) {
+                    this.reactiveSkillList.push(key);
+                }
+            }
+        }
+        return this.reactiveSkillList;
+    };
+    SkillProvider.getAvailableOnDeathSkillList = function () {
+        if (this.onDeathSkillList == null) {
+            this.onDeathSkillList = [];
+            for (var key in SkillDatabase) {
+                if (this.isAvailableForSelect(key) && SkillDatabase[key].type == 16 /* ACTION_ON_DEATH */) {
+                    this.onDeathSkillList.push(key);
+                }
+            }
+        }
+        return this.onDeathSkillList;
+    };
+    SkillProvider.isAvailableForSelect = function (skillId) {
+        var isAvailable = true;
+        var skillInfo = SkillDatabase[skillId];
+        if (skillInfo.isAutoAttack || skillId == 355 || skillId == 452) {
+            isAvailable = false;
+        }
+        return isAvailable;
+    };
+    SkillProvider.availableSkillsForSelect = null;
+    SkillProvider.skillCategories = [10 /* OPENING */, 20 /* ACTIVE */, 30 /* REACTIVE */, 16 /* ACTION_ON_DEATH */];
+    SkillProvider.openingSkillList = null;
+    SkillProvider.activeSkillList = null;
+    SkillProvider.reactiveSkillList = null;
+    SkillProvider.onDeathSkillList = null;
+    return SkillProvider;
+})();
 var RangeFactory = (function () {
     function RangeFactory() {
     }
@@ -15004,19 +15097,6 @@ var BaseRange = (function () {
         }
         return hasValid;
     };
-    BaseRange.prototype.getRandomCard = function (cards) {
-        return getRandomElement(cards);
-    };
-    BaseRange.prototype.getRandomUniqueCards = function (cards, num) {
-        var len = cards.length;
-        while (len) {
-            var a = Math.floor(Math.random() * len);
-            var b = cards[--len];
-            cards[len] = cards[a];
-            cards[a] = b;
-        }
-        return cards.slice(0, num);
-    };
     BaseRange.prototype.getCondFunc = function (executor) {
         return function (card) {
             if (card.isDead || (card.getPlayerId() === executor.getPlayerId())) {
@@ -15089,7 +15169,7 @@ var EnemyRandomRange = (function (_super) {
     EnemyRandomRange.prototype.getTarget = function (executor) {
         if (this.numProcessed < this.numTarget) {
             this.numProcessed++;
-            return this.getRandomCard(this.getBaseTargets(this.getCondFunc(executor)));
+            return getRandomElement(this.getBaseTargets(this.getCondFunc(executor)));
         }
         else {
             return null;
@@ -15259,11 +15339,11 @@ var FriendRandomRange = (function (_super) {
         this.currentIndex = 0;
         if (baseTargets.length) {
             if (this.isUnique) {
-                targets = this.getRandomUniqueCards(baseTargets, this.numTargets);
+                targets = getRandomUniqueElements(baseTargets, this.numTargets);
             }
             else {
                 for (var i = 0; i < this.numTargets; i++) {
-                    targets.push(this.getRandomCard(baseTargets));
+                    targets.push(getRandomElement(baseTargets));
                 }
             }
         }
@@ -15407,7 +15487,7 @@ var EnemyRowRandomRange = (function (_super) {
         tmpRange.getReady(executor);
         if (this.numProcessed < this.numTargets) {
             this.numProcessed++;
-            return this.getRandomCard(tmpRange.targets);
+            return getRandomElement(tmpRange.targets);
         }
         else {
             return null;
@@ -15459,11 +15539,21 @@ function shuffle(array) {
 function getRandomElement(myArray) {
     return myArray[Math.floor(Math.random() * myArray.length)];
 }
+function getRandomUniqueElements(arr, num) {
+    var len = arr.length;
+    while (len) {
+        var a = Math.floor(Math.random() * len);
+        var b = arr[--len];
+        arr[len] = arr[a];
+        arr[a] = b;
+    }
+    return arr.slice(0, num);
+}
 function removeElementAtIndex(array, index) {
     array.splice(index, 1);
 }
 function pickRandomProperty(obj) {
-    var result;
+    var result = undefined;
     var count = 0;
     for (var prop in obj)
         if (Math.random() < 1 / ++count)
