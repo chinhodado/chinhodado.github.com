@@ -3528,6 +3528,21 @@ var famDatabase = {
         img: "4a0",
         fullName: "Bolus, the Blue Bolt II"
     },
+    21510: {
+        name: "Botis",
+        stats: [16009, 14742, 13994, 8003, 17255],
+        skills: [692, 693],
+        autoAttack: 10060,
+        img: "417",
+        fullName: "Botis, Dasher of Hopes II"
+    },
+    11510: {
+        name: "Botis",
+        stats: [14096, 14000, 10001, 5506, 13196],
+        skills: [694],
+        img: "2e7",
+        fullName: "Botis, Earl of Hell II"
+    },
     10977: {
         name: "Boudica",
         stats: [9967, 11914, 8918, 13110, 12014],
@@ -3812,6 +3827,14 @@ var famDatabase = {
         skills: [222],
         img: "373",
         fullName: "Deborah, Knight Immaculate II"
+    },
+    11512: {
+        name: "Deimos",
+        stats: [16497, 17753, 11188, 6996, 17363],
+        skills: [695, 696],
+        autoAttack: 10061,
+        img: "1b8",
+        fullName: "Deimos, Terror Spear II"
     },
     11225: {
         name: "Dein",
@@ -4639,6 +4662,14 @@ var famDatabase = {
         img: "210",
         fullName: "Kokopelli Mana II"
     },
+    11524: {
+        name: "Kokuanten",
+        stats: [18999, 7050, 19996, 20505, 13994],
+        skills: [697, 698],
+        autoAttack: 10003,
+        img: "2ad",
+        fullName: "Kokuanten, the Ominous II"
+    },
     11314: {
         name: "Kua Fu",
         stats: [16510, 16561, 12207, 9174, 13476],
@@ -4652,6 +4683,14 @@ var famDatabase = {
         skills: [258],
         img: "4d4",
         fullName: "Kyteler the Corrupted II"
+    },
+    11506: {
+        name: "Lachesis",
+        stats: [17992, 9596, 15002, 19205, 17753],
+        skills: [689, 690],
+        autoAttack: 10003,
+        img: "2ba",
+        fullName: "Lachesis, the Measurer II"
     },
     10985: {
         name: "Lahamu",
@@ -5282,6 +5321,14 @@ var famDatabase = {
         skills: [305],
         img: "125",
         fullName: "Phoenix, the Metempsychosis II"
+    },
+    11508: {
+        name: "Pixiu",
+        stats: [15706, 15999, 12999, 8005, 16489],
+        skills: [691, 701],
+        autoAttack: 10060,
+        img: "443",
+        fullName: "Pixiu, the Wealthy II"
     },
     21489: {
         name: "Poliahu",
@@ -6905,6 +6952,10 @@ var Skill = (function () {
             case 46 /* DEBUFF_AFFLICTION */:
                 statuses.push(skillInfo.args[1]);
                 break;
+            case 45 /* MULTI_DEBUFF */:
+                statuses.push(skillInfo.args[1]);
+                statuses.push(skillInfo.args[6]);
+                break;
             case 32 /* CASTER_BASED_DEBUFF */:
             case 38 /* ONHIT_DEBUFF */:
             case 39 /* ONHIT_BUFF */:
@@ -7110,6 +7161,7 @@ var SkillDatabase = {
         args: [0.5, 1],
         range: 3,
         prob: 70,
+        sac: 1,
         desc: "Raise ATK of self and adjacent familiars."
     },
     4: {
@@ -7120,6 +7172,7 @@ var SkillDatabase = {
         args: [0.5, 3],
         range: 3,
         prob: 70,
+        sac: 1,
         desc: "Raise WIS of self and adjacent familiars."
     },
     5: {
@@ -7170,6 +7223,7 @@ var SkillDatabase = {
         args: [0.5, 4],
         range: 7,
         prob: 70,
+        sac: 1,
         desc: "Lower AGI of up to three foes."
     },
     10: {
@@ -7181,6 +7235,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to all foes."
     },
     11: {
@@ -7192,6 +7247,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal heavy damage to all foes."
     },
     16: {
@@ -7202,6 +7258,7 @@ var SkillDatabase = {
         args: [1],
         range: 2,
         prob: 50,
+        sac: 1,
         desc: "Revive and fully restore HP of adjacent familiars."
     },
     17: {
@@ -7213,6 +7270,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal damage to six random targets."
     },
     18: {
@@ -7224,6 +7282,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal AGI-based damage to six random targets."
     },
     19: {
@@ -7233,6 +7292,7 @@ var SkillDatabase = {
         calc: 0,
         range: 8,
         prob: 70,
+        sac: 1,
         desc: "Remove the buffs of all foes."
     },
     20: {
@@ -7243,6 +7303,7 @@ var SkillDatabase = {
         args: [1],
         range: 1,
         prob: 50,
+        sac: 1,
         desc: "Revive an adjacent familiar."
     },
     21: {
@@ -7264,6 +7325,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal heavy damage to up to three foes."
     },
     26: {
@@ -7284,6 +7346,7 @@ var SkillDatabase = {
         args: [1],
         range: 2,
         prob: 30,
+        sac: 1,
         desc: "Restore a fixed amount of HP to adjacent familiars."
     },
     28: {
@@ -7295,6 +7358,7 @@ var SkillDatabase = {
         range: 5,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal damage and poison one foe."
     },
     29: {
@@ -7306,6 +7370,7 @@ var SkillDatabase = {
         range: 5,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal damage and sometimes paralyze one foe."
     },
     33: {
@@ -7317,6 +7382,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to three foes."
     },
     34: {
@@ -7328,6 +7394,7 @@ var SkillDatabase = {
         range: 5,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive damage to one foe."
     },
     38: {
@@ -7359,6 +7426,7 @@ var SkillDatabase = {
         range: 5,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy damage to one foe."
     },
     41: {
@@ -7370,6 +7438,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal damage and sometimes freeze up to three foes."
     },
     42: {
@@ -7381,6 +7450,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal damage to all foes."
     },
     43: {
@@ -7403,6 +7473,7 @@ var SkillDatabase = {
         range: 5,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal very heavy damage to one foe."
     },
     46: {
@@ -7414,6 +7485,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Attack three foes."
     },
     47: {
@@ -7425,6 +7497,7 @@ var SkillDatabase = {
         range: 12,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy damage to all foes in the front line."
     },
     48: {
@@ -7436,6 +7509,7 @@ var SkillDatabase = {
         range: 6,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal damage to up to two foes, ignoring position."
     },
     50: {
@@ -7480,6 +7554,7 @@ var SkillDatabase = {
         range: 5,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Poison one foe."
     },
     55: {
@@ -7501,6 +7576,7 @@ var SkillDatabase = {
         args: [1],
         range: 1,
         prob: 50,
+        sac: 1,
         desc: "Heal an adjacent familiar for the amount of damage taken."
     },
     61: {
@@ -7512,6 +7588,7 @@ var SkillDatabase = {
         range: 2,
         prob: 50,
         ward: 1,
+        sac: 1,
         desc: "Take damage in place of nearby ally and counter."
     },
     62: {
@@ -7522,6 +7599,7 @@ var SkillDatabase = {
         args: [1],
         range: 2,
         prob: 50,
+        sac: 1,
         desc: "Take damage in place of adjacent familiars."
     },
     63: {
@@ -7529,9 +7607,9 @@ var SkillDatabase = {
         type: 5,
         func: 12,
         calc: 0,
-        args: [0],
         range: 4,
         prob: 50,
+        sac: 1,
         desc: "Take damage in place of familiars."
     },
     64: {
@@ -7543,6 +7621,7 @@ var SkillDatabase = {
         range: 1,
         prob: 50,
         ward: 1,
+        sac: 1,
         desc: "Counterattack after receiving an attack."
     },
     69: {
@@ -7554,6 +7633,7 @@ var SkillDatabase = {
         range: 5,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy damage to one foe."
     },
     70: {
@@ -7576,6 +7656,7 @@ var SkillDatabase = {
         range: 5,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy damage to one foe."
     },
     77: {
@@ -7596,6 +7677,7 @@ var SkillDatabase = {
         args: [0.1, 2],
         range: 8,
         prob: 70,
+        sac: 1,
         desc: "Lower DEF of all foes."
     },
     79: {
@@ -7626,6 +7708,7 @@ var SkillDatabase = {
         args: [0.2, 1, 2],
         range: 4,
         prob: 70,
+        sac: 1,
         desc: "Raise ATK and DEF of all familiars."
     },
     85: {
@@ -7636,6 +7719,7 @@ var SkillDatabase = {
         args: [0.2, 4],
         range: 4,
         prob: 70,
+        sac: 1,
         desc: "Raise AGI of all familiars."
     },
     86: {
@@ -7646,6 +7730,7 @@ var SkillDatabase = {
         args: [0.2, 1],
         range: 8,
         prob: 70,
+        sac: 1,
         desc: "Lower ATK of all foes."
     },
     87: {
@@ -7666,6 +7751,7 @@ var SkillDatabase = {
         args: [0.2, 3],
         range: 8,
         prob: 70,
+        sac: 1,
         desc: "Lower WIS of all foes."
     },
     89: {
@@ -7676,6 +7762,7 @@ var SkillDatabase = {
         args: [0.2, 4],
         range: 8,
         prob: 70,
+        sac: 1,
         desc: "Lower AGI of all foes."
     },
     94: {
@@ -7686,6 +7773,7 @@ var SkillDatabase = {
         args: [0.3, 4],
         range: 4,
         prob: 70,
+        sac: 1,
         desc: "Raise AGI of all familiars."
     },
     95: {
@@ -7696,6 +7784,7 @@ var SkillDatabase = {
         args: [0.3, 1],
         range: 8,
         prob: 70,
+        sac: 1,
         desc: "Lower ATK of all foes."
     },
     96: {
@@ -7706,6 +7795,7 @@ var SkillDatabase = {
         args: [0.3, 2],
         range: 8,
         prob: 70,
+        sac: 1,
         desc: "Lower DEF of all foes."
     },
     97: {
@@ -7716,6 +7806,7 @@ var SkillDatabase = {
         args: [0.3, 3],
         range: 8,
         prob: 70,
+        sac: 1,
         desc: "Lower WIS of all foes."
     },
     98: {
@@ -7726,6 +7817,7 @@ var SkillDatabase = {
         args: [0.3, 4],
         range: 8,
         prob: 70,
+        sac: 1,
         desc: "Lower AGI of all foes."
     },
     104: {
@@ -7746,6 +7838,7 @@ var SkillDatabase = {
         args: [0.4, 2],
         range: 8,
         prob: 70,
+        sac: 1,
         desc: "Lower DEF of all foes."
     },
     106: {
@@ -7777,6 +7870,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal ice damage to all foes."
     },
     109: {
@@ -7788,6 +7882,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal lightning damage to all foes."
     },
     110: {
@@ -7799,6 +7894,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal AGI-based damage to all foes."
     },
     111: {
@@ -7810,6 +7906,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal WIS-based damage to three foes."
     },
     112: {
@@ -7832,6 +7929,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal damage and sometimes paralyze up to three foes."
     },
     114: {
@@ -7843,6 +7941,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy lightning damage to up to three foes."
     },
     115: {
@@ -7854,6 +7953,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy poison damage to three foes."
     },
     116: {
@@ -7864,6 +7964,7 @@ var SkillDatabase = {
         args: [0.7],
         range: 4,
         prob: 30,
+        sac: 1,
         desc: "Restore a fixed amount of HP to all party members."
     },
     117: {
@@ -7875,6 +7976,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Hurl a ball of flame to damage all foes."
     },
     118: {
@@ -7886,6 +7988,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to all foes."
     },
     119: {
@@ -7897,6 +8000,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Call down six random lightning bolts on foes."
     },
     120: {
@@ -7907,6 +8011,7 @@ var SkillDatabase = {
         args: [0.2, 3, 2],
         range: 4,
         prob: 70,
+        sac: 1,
         desc: "Raise WIS and DEF of all party members."
     },
     121: {
@@ -7918,6 +8023,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to three foes, regardless of his position."
     },
     122: {
@@ -7929,6 +8035,7 @@ var SkillDatabase = {
         range: 12,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy damage to the front line."
     },
     123: {
@@ -7940,6 +8047,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy fire damage to three random targets."
     },
     124: {
@@ -7951,6 +8059,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ice damage to three random targets."
     },
     125: {
@@ -7962,6 +8071,7 @@ var SkillDatabase = {
         range: 4,
         prob: 50,
         ward: 1,
+        sac: 1,
         desc: "Take damage in place of any ally and counter."
     },
     127: {
@@ -7973,6 +8083,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal damage and sometimes poison three random targets."
     },
     128: {
@@ -7984,6 +8095,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy damage and sometimes freeze up to three foes."
     },
     129: {
@@ -7995,6 +8107,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal damage to three foes."
     },
     131: {
@@ -8006,6 +8119,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to all foes, ignoring position."
     },
     132: {
@@ -8016,6 +8130,7 @@ var SkillDatabase = {
         args: [0.2, 1, 4],
         range: 4,
         prob: 70,
+        sac: 1,
         desc: "Raise ATK and AGI of all party members."
     },
     133: {
@@ -8026,6 +8141,7 @@ var SkillDatabase = {
         args: [0.4, 5],
         range: 4,
         prob: 70,
+        sac: 1,
         desc: "Reduce physical damage taken by all allies."
     },
     134: {
@@ -8036,6 +8152,7 @@ var SkillDatabase = {
         args: [0.4, 6],
         range: 4,
         prob: 70,
+        sac: 1,
         desc: "Reduce magic damage taken by all allies."
     },
     135: {
@@ -8056,6 +8173,7 @@ var SkillDatabase = {
         args: [0.7, 7],
         range: 3,
         prob: 70,
+        sac: 1,
         desc: "Reduce breath damage taken by self and adjacent familiars."
     },
     137: {
@@ -8067,6 +8185,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal four physical strikes that sometimes silence foes."
     },
     138: {
@@ -8078,6 +8197,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy physical damage to two random targets."
     },
     139: {
@@ -8089,6 +8209,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal Massive ATK-based damage to two random foes."
     },
     140: {
@@ -8100,6 +8221,7 @@ var SkillDatabase = {
         range: 5,
         prob: 70,
         ward: 1,
+        sac: 1,
         desc: "Cause attacks to have a high chance to paralyze foes."
     },
     141: {
@@ -8111,6 +8233,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Engulf six random foes in flames."
     },
     142: {
@@ -8122,6 +8245,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal physical damage to five random targets."
     },
     143: {
@@ -8133,6 +8257,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Damage all foes. May kill targets outright."
     },
     144: {
@@ -8144,6 +8269,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy damage to four foes."
     },
     145: {
@@ -8154,6 +8280,7 @@ var SkillDatabase = {
         args: [2],
         range: 4,
         prob: 30,
+        sac: 1,
         desc: "Restore a fixed amount of HP to all party members."
     },
     146: {
@@ -8164,6 +8291,7 @@ var SkillDatabase = {
         args: [0, 5, 0.3, 3],
         range: 8,
         prob: 70,
+        sac: 1,
         desc: "Chance to silence all foes at beginning of battle."
     },
     147: {
@@ -8175,6 +8303,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal damage and sometimes disable three random foes."
     },
     148: {
@@ -8186,6 +8315,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal damage and sometimes lower AGI of three foes."
     },
     149: {
@@ -8197,6 +8327,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal damage to all foes and sometimes lower DEF."
     },
     150: {
@@ -8207,6 +8338,7 @@ var SkillDatabase = {
         args: [0.5],
         range: 21,
         prob: 70,
+        sac: 1,
         desc: "Survive devastating damage as long as HP is above 50%."
     },
     152: {
@@ -8218,6 +8350,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy damage to up to three foes with a mighty swing."
     },
     153: {
@@ -8229,6 +8362,7 @@ var SkillDatabase = {
         range: 5,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive damage with dual blades to one foe."
     },
     154: {
@@ -8240,6 +8374,7 @@ var SkillDatabase = {
         range: 2,
         prob: 50,
         ward: 1,
+        sac: 1,
         desc: "Take heavy damage in place of nearby ally and counter."
     },
     155: {
@@ -8251,6 +8386,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Three random fire strikes that sometimes lower ATK."
     },
     156: {
@@ -8262,6 +8398,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to two random foes."
     },
     157: {
@@ -8272,6 +8409,7 @@ var SkillDatabase = {
         args: [0.1, 9],
         range: 4,
         prob: 70,
+        sac: 1,
         desc: "Raise ATK, DEF, WIS and AGI of all party members."
     },
     160: {
@@ -8283,6 +8421,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ice damage and sometimes freeze three foes."
     },
     161: {
@@ -8294,6 +8433,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal AGI-based damage to four random foes."
     },
     163: {
@@ -8305,6 +8445,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive damage and sometimes poison up to three foes."
     },
     164: {
@@ -8315,6 +8456,7 @@ var SkillDatabase = {
         args: [0.2, 1, 3],
         range: 4,
         prob: 70,
+        sac: 1,
         desc: "Raise the ATK and WIS of all party members."
     },
     165: {
@@ -8326,6 +8468,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal fire damage to all foes and sometimes lower ATK."
     },
     166: {
@@ -8337,6 +8480,7 @@ var SkillDatabase = {
         range: 21,
         prob: 50,
         ward: 1,
+        sac: 1,
         desc: "Chance to unleash a massive counter attack when struck."
     },
     167: {
@@ -8347,6 +8491,7 @@ var SkillDatabase = {
         args: [0.4, 5],
         range: 3,
         prob: 70,
+        sac: 1,
         desc: "Reduce physical damage taken by self and nearby familiars."
     },
     168: {
@@ -8358,6 +8503,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal damage and sometimes freeze six random foes."
     },
     169: {
@@ -8368,6 +8514,7 @@ var SkillDatabase = {
         args: [0.2, 8],
         range: 2,
         prob: 70,
+        sac: 1,
         desc: "Raise the skill trigger rate of adjacent familiars."
     },
     170: {
@@ -8379,6 +8526,7 @@ var SkillDatabase = {
         range: 15,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to foes in front and middle."
     },
     175: {
@@ -8389,6 +8537,7 @@ var SkillDatabase = {
         args: [2],
         range: 2,
         prob: 30,
+        sac: 1,
         desc: "Restore a large amount of HP to adjacent familiars."
     },
     177: {
@@ -8399,6 +8548,7 @@ var SkillDatabase = {
         args: [0.65, 5],
         range: 21,
         prob: 70,
+        sac: 1,
         desc: "Escape most damage from physical attacks."
     },
     178: {
@@ -8410,6 +8560,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy lightning damage to three random targets."
     },
     179: {
@@ -8421,6 +8572,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive AGI-based damage to two random foes."
     },
     180: {
@@ -8432,6 +8584,7 @@ var SkillDatabase = {
         range: 28,
         prob: 50,
         ward: 1,
+        sac: 1,
         desc: "Take damage in place of familiars to its right and counter."
     },
     185: {
@@ -8443,6 +8596,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal WIS-based damage to five random foes and sometimes paralyze them."
     },
     186: {
@@ -8454,6 +8608,7 @@ var SkillDatabase = {
         range: 6,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive damage and sometimes paralyze up to two foes."
     },
     187: {
@@ -8465,6 +8620,7 @@ var SkillDatabase = {
         range: 5,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to one foe, ignoring position."
     },
     188: {
@@ -8476,6 +8632,7 @@ var SkillDatabase = {
         range: 5,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal a heavy blow to one foe,sometimes lowering DEF."
     },
     193: {
@@ -8485,6 +8642,7 @@ var SkillDatabase = {
         calc: 0,
         range: 21,
         prob: 50,
+        sac: 1,
         randSkills: [10, 11, 16, 18, 19, 20, 21, 26, 27, 28, 29, 34, 38, 39, 41, 42, 43, 45, 46, 47, 48, 50, 51, 52, 54, 55, 69, 70, 108, 110, 111, 113, 114, 115, 116, 117, 118, 119, 121, 122, 123, 124, 127, 129, 131, 137, 138, 139, 140, 144, 145, 147, 148, 149, 152, 153, 155, 156, 160, 161, 163, 175, 187, 188, 197, 198, 206],
         desc: "Not even its user knows what this skill will do."
     },
@@ -8497,6 +8655,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive ATK-based damage to two random foes."
     },
     196: {
@@ -8508,6 +8667,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to four random foes."
     },
     197: {
@@ -8518,6 +8678,7 @@ var SkillDatabase = {
         args: [1.5],
         range: 4,
         prob: 30,
+        sac: 1,
         desc: "Restore HP to all party members."
     },
     198: {
@@ -8529,6 +8690,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal heavy damage to up to three foes."
     },
     199: {
@@ -8540,6 +8702,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage and sometimes poison six random foes."
     },
     202: {
@@ -8573,6 +8736,7 @@ var SkillDatabase = {
         range: 5,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive damage and sometimes freeze one foe."
     },
     205: {
@@ -8584,6 +8748,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal physical damage and sometimes freeze all foes."
     },
     206: {
@@ -8595,6 +8760,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal AGI-based damage to three random foes, ignoring position."
     },
     210: {
@@ -8606,6 +8772,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal WIS-based damage and sometimes poison four random foes."
     },
     211: {
@@ -8617,6 +8784,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal physical damage and sometimes silence all foes."
     },
     212: {
@@ -8628,6 +8796,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal WIS-based damage to four random foes."
     },
     214: {
@@ -8639,6 +8808,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to all foes."
     },
     216: {
@@ -8650,6 +8820,7 @@ var SkillDatabase = {
         range: 6,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive ATK-based damage to up to two foes."
     },
     217: {
@@ -8661,6 +8832,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive WIS-based damage to two random foes."
     },
     218: {
@@ -8672,6 +8844,7 @@ var SkillDatabase = {
         range: 15,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage and sometimes paralyze front/middles lines."
     },
     219: {
@@ -8683,6 +8856,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal AGI-based damage and sometimes lower AGI of all foes."
     },
     221: {
@@ -8694,6 +8868,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to three random foes."
     },
     222: {
@@ -8705,6 +8880,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive ATK-based damage to two random foes."
     },
     224: {
@@ -8716,6 +8892,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive ATK-based damage to three random foes."
     },
     225: {
@@ -8727,6 +8904,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal AGI-based damage to five random foes."
     },
     226: {
@@ -8738,6 +8916,7 @@ var SkillDatabase = {
         range: 15,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal WIS-based damage and sometimes paralyze front/middle lines."
     },
     227: {
@@ -8749,6 +8928,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive ATK-based damage to up to three foes."
     },
     228: {
@@ -8760,6 +8940,7 @@ var SkillDatabase = {
         range: 14,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive ATK-based damage to all foes in the rear line."
     },
     229: {
@@ -8782,6 +8963,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal AGI-based damage to all foes and sometimes lower ATK."
     },
     232: {
@@ -8793,6 +8975,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive WIS-based damage and sometimes paralyze three foes."
     },
     234: {
@@ -8804,6 +8987,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal WIS-based damage to five random foes."
     },
     236: {
@@ -8815,6 +8999,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive WIS-based damage to three random foes, ignoring position."
     },
     237: {
@@ -8826,6 +9011,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive WIS-based damage to up to three foes, ignoring position."
     },
     238: {
@@ -8837,6 +9023,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to four random foes."
     },
     239: {
@@ -8869,6 +9056,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage and sometimes freeze three random foes."
     },
     242: {
@@ -8880,6 +9068,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy WIS-based damage and sometimes freeze up to three foes, ignoring position."
     },
     244: {
@@ -8891,6 +9080,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to four random foes, ignoring position."
     },
     245: {
@@ -8902,6 +9092,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal WIS-based damage to all foes, ignoring position."
     },
     248: {
@@ -8913,6 +9104,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy AGI-based damage and randomly poison four foes."
     },
     249: {
@@ -8924,6 +9116,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to six random foes."
     },
     250: {
@@ -8935,6 +9128,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to up to three foes."
     },
     251: {
@@ -8946,6 +9140,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to five random foes."
     },
     252: {
@@ -8957,6 +9152,7 @@ var SkillDatabase = {
         range: 15,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to all foes in the front/middle line."
     },
     253: {
@@ -8968,6 +9164,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive ATK-based damage to two random foes."
     },
     254: {
@@ -8979,6 +9176,7 @@ var SkillDatabase = {
         range: 12,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to all foes in the front line."
     },
     256: {
@@ -8990,6 +9188,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to three foes."
     },
     258: {
@@ -9001,6 +9200,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal WIS-based damage to all foes, ignoring position."
     },
     259: {
@@ -9012,6 +9212,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to four random foes."
     },
     260: {
@@ -9023,6 +9224,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal AGI-based damage to six random foes and sometimes lower ATK."
     },
     261: {
@@ -9034,6 +9236,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal WIS-based damage to all foes, ignoring position."
     },
     263: {
@@ -9045,6 +9248,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to up to three foes."
     },
     264: {
@@ -9056,6 +9260,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive ATK-based damage to three random foes."
     },
     265: {
@@ -9066,6 +9271,7 @@ var SkillDatabase = {
         args: [0.5, 1],
         range: 3,
         prob: 70,
+        sac: 1,
         desc: "Raise ATK of self and adjacent familiars at beginning of battle."
     },
     267: {
@@ -9077,6 +9283,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive AGI-based damage to up to three foes."
     },
     268: {
@@ -9088,6 +9295,7 @@ var SkillDatabase = {
         range: 15,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to front/middle lines."
     },
     269: {
@@ -9099,6 +9307,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive AGI-based damage to three random foes, ignoring position."
     },
     270: {
@@ -9152,6 +9361,7 @@ var SkillDatabase = {
         range: 32,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to up to four foes."
     },
     275: {
@@ -9163,6 +9373,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to three random foes, ignoring position."
     },
     276: {
@@ -9174,6 +9385,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive WIS-based damage to two random foes, ignoring position."
     },
     277: {
@@ -9185,6 +9397,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal WIS-based damage and sometimes freeze five random foes, ignoring position."
     },
     280: {
@@ -9196,6 +9409,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive WIS-based damage to three random foes, ignoring position."
     },
     281: {
@@ -9207,6 +9421,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive WIS-based damage and sometimes paralyze up to three foes."
     },
     282: {
@@ -9218,6 +9433,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal AGI-based damage to five random foes, ignoring position."
     },
     285: {
@@ -9229,6 +9445,7 @@ var SkillDatabase = {
         range: 15,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal WIS-based damage to front/middle lines, ignoring position."
     },
     287: {
@@ -9250,6 +9467,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal WIS-based damage to six random foes, ignoring position."
     },
     289: {
@@ -9261,6 +9479,7 @@ var SkillDatabase = {
         range: 15,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to front/middle lines."
     },
     291: {
@@ -9282,6 +9501,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive ATK-based damage to up to three foes, ignoring position."
     },
     293: {
@@ -9293,6 +9513,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to four random foes, ignoring position."
     },
     294: {
@@ -9304,6 +9525,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive ATK-based damage to two random foes."
     },
     295: {
@@ -9347,6 +9569,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal WIS-based damage to all foes  and sometimes freeze them, ignoring position."
     },
     299: {
@@ -9379,6 +9602,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal WIS-based damage to all foes, ignoring position."
     },
     303: {
@@ -9390,6 +9614,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to three random foes, ignoring position."
     },
     304: {
@@ -9400,6 +9625,7 @@ var SkillDatabase = {
         args: [0.1, 1],
         range: 3,
         prob: 70,
+        sac: 1,
         desc: "Raise ATK of self and adjacent familiars."
     },
     305: {
@@ -9411,6 +9637,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal WIS-based damage to four random foes, ignoring position."
     },
     307: {
@@ -9422,6 +9649,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to three random foes, ignoring position."
     },
     308: {
@@ -9466,6 +9694,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to all foes, ignoring position."
     },
     314: {
@@ -9477,6 +9706,7 @@ var SkillDatabase = {
         range: 32,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to up to four foes."
     },
     315: {
@@ -9488,6 +9718,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to four random foes."
     },
     316: {
@@ -9509,6 +9740,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy damage to up to three foes with a mighty swing."
     },
     318: {
@@ -9520,6 +9752,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to five random foes."
     },
     319: {
@@ -9552,6 +9785,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal WIS-based damage to six random foes."
     },
     322: {
@@ -9563,6 +9797,7 @@ var SkillDatabase = {
         range: 15,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to front/middle lines, ignoring position."
     },
     325: {
@@ -9574,6 +9809,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to three random foes."
     },
     326: {
@@ -9585,6 +9821,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to three random foes."
     },
     327: {
@@ -9596,6 +9833,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to three random foes."
     },
     328: {
@@ -9649,6 +9887,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal AGI-based damage and sometimes freeze all foes."
     },
     334: {
@@ -9671,6 +9910,7 @@ var SkillDatabase = {
         range: 15,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to all foes in the front/middle lines, ignoring position."
     },
     339: {
@@ -9682,6 +9922,7 @@ var SkillDatabase = {
         range: 15,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal massive WIS-based damage to all foes in the front/middle lines, ignoring position."
     },
     340: {
@@ -9693,6 +9934,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to all foes."
     },
     341: {
@@ -9704,6 +9946,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal AGI-based damage to four random foes."
     },
     342: {
@@ -9725,6 +9968,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to all foes, sometimes lowering AGI."
     },
     345: {
@@ -9757,6 +10001,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive AGI-based damage to three random foes."
     },
     348: {
@@ -9768,6 +10013,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to four random foes."
     },
     349: {
@@ -9779,6 +10025,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to three random foes."
     },
     351: {
@@ -9811,6 +10058,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to three random foes and sometimes freeze them."
     },
     354: {
@@ -9822,6 +10070,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive WIS-based damage to two random foes and sometimes envenom them."
     },
     355: {
@@ -9831,7 +10080,8 @@ var SkillDatabase = {
         calc: 0,
         args: [0.5],
         range: 21,
-        prob: 100
+        prob: 100,
+        desc: "-"
     },
     356: {
         name: "Wicked Bolt",
@@ -9853,6 +10103,7 @@ var SkillDatabase = {
         range: 12,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to all foes in the front line."
     },
     358: {
@@ -9864,6 +10115,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage and sometimes silence four random foes."
     },
     359: {
@@ -9875,6 +10127,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to three random foes."
     },
     360: {
@@ -9897,6 +10150,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to five random foes."
     },
     362: {
@@ -9908,6 +10162,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to two random foes."
     },
     364: {
@@ -9919,6 +10174,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to up to three foes, ignoring position."
     },
     365: {
@@ -9930,6 +10186,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to three random foes, ignoring position."
     },
     366: {
@@ -9941,6 +10198,7 @@ var SkillDatabase = {
         range: 32,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to up to four foes, ignoring position."
     },
     367: {
@@ -9983,6 +10241,7 @@ var SkillDatabase = {
         args: [1, 1],
         range: 4,
         prob: 70,
+        sac: 1,
         desc: "Change the attack order by ATK for one turn."
     },
     372: {
@@ -9994,6 +10253,7 @@ var SkillDatabase = {
         range: 21,
         prob: 50,
         ward: 1,
+        sac: 1,
         desc: "Chance to unleash a counter attack when struck."
     },
     374: {
@@ -10046,6 +10306,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal AGI-based damage to four random foes and sometimes lower ATK."
     },
     379: {
@@ -10057,6 +10318,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to three random foes, ignoring position."
     },
     380: {
@@ -10089,6 +10351,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to up to three foes."
     },
     383: {
@@ -10100,6 +10363,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to three random foes."
     },
     385: {
@@ -10132,6 +10396,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to four random foes."
     },
     388: {
@@ -10163,6 +10428,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to three random foes"
     },
     391: {
@@ -10174,6 +10440,7 @@ var SkillDatabase = {
         range: 32,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal AGI-based damage to up to four foes, ignoring position."
     },
     392: {
@@ -10243,9 +10510,9 @@ var SkillDatabase = {
         type: 5,
         func: 12,
         calc: 0,
-        args: [0],
         range: 4,
         prob: 50,
+        sac: 1,
         desc: "Take damage in place of allies."
     },
     400: {
@@ -10299,6 +10566,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to three random foes."
     },
     405: {
@@ -10310,6 +10578,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to and sometimes poison four random foes, ignoring position."
     },
     406: {
@@ -10321,6 +10590,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to all foes, ignoring position."
     },
     407: {
@@ -10353,6 +10623,7 @@ var SkillDatabase = {
         range: 12,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive WIS-based damage to all foes in the front line, ignoring position."
     },
     412: {
@@ -10364,6 +10635,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal WIS-based damage to five random foes, ignoring position."
     },
     414: {
@@ -10396,6 +10668,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to four random foes, ignoring position."
     },
     418: {
@@ -10407,6 +10680,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive WIS-based damage to up to three foes, ignoring position."
     },
     419: {
@@ -10418,6 +10692,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to four random foes, ignoring position."
     },
     420: {
@@ -10429,6 +10704,7 @@ var SkillDatabase = {
         range: 15,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to all foes in the front/middle line."
     },
     421: {
@@ -10460,6 +10736,7 @@ var SkillDatabase = {
         args: [0.2, 2],
         range: 7,
         prob: 70,
+        sac: 1,
         desc: "Greatly lower DEF of up to three foes."
     },
     424: {
@@ -10471,6 +10748,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to and sometimes paralyze up to three foes."
     },
     425: {
@@ -10545,6 +10823,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal massive WIS-based damage to up to three foes, ignoring position."
     },
     433: {
@@ -10556,6 +10835,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to six random foes."
     },
     434: {
@@ -10567,6 +10847,7 @@ var SkillDatabase = {
         range: 313,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "AGI-based damage to up to three foes. Increased if fewer foes."
     },
     435: {
@@ -10590,6 +10871,18 @@ var SkillDatabase = {
         prob: 50,
         desc: "Reflect AGI-based damage back to up to three foes."
     },
+    437: {
+        name: "Mjolnir",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.5],
+        range: 32,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal heavy ATK-based damage to up to four foes, ignoring position."
+    },
     438: {
         name: "Poison Torrent",
         type: 2,
@@ -10599,6 +10892,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to and sometimes poison four random foes."
     },
     440: {
@@ -10623,17 +10917,6 @@ var SkillDatabase = {
         ward: 2,
         desc: "Deal massive WIS-based damage to two random foes, ignoring position."
     },
-    437: {
-        name: "Mjolnir",
-        type: 2,
-        func: 4,
-        calc: 1,
-        args: [1.5],
-        range: 32,
-        prob: 30,
-        ward: 1,
-        desc: "Deal heavy ATK-based damage to up to four foes, ignoring position."
-    },
     442: {
         name: "Masterstroke",
         type: 2,
@@ -10643,6 +10926,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to six random foes, ignoring position."
     },
     443: {
@@ -10654,6 +10938,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive AGI-based damage to two random foes."
     },
     444: {
@@ -10686,6 +10971,7 @@ var SkillDatabase = {
         range: 32,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to up to four foes, ignoring position."
     },
     447: {
@@ -10697,6 +10983,7 @@ var SkillDatabase = {
         range: 32,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to up to four foes, ignoring position."
     },
     448: {
@@ -10708,6 +10995,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal AGI-based damage to four random foes."
     },
     449: {
@@ -10719,6 +11007,7 @@ var SkillDatabase = {
         range: 313,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Heavy ATK-based damage to up to three foes. Increased if fewer foes."
     },
     450: {
@@ -10749,7 +11038,8 @@ var SkillDatabase = {
         calc: 0,
         args: [1],
         range: 21,
-        prob: 100
+        prob: 100,
+        desc: "-"
     },
     453: {
         name: "Shadow of Death",
@@ -10802,6 +11092,7 @@ var SkillDatabase = {
         range: 5,
         prob: 70,
         ward: 1,
+        sac: 1,
         desc: "Deal massive ATK-based damage, ignoring position, to one foe upon its death."
     },
     459: {
@@ -10855,6 +11146,7 @@ var SkillDatabase = {
         range: 32,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal heavy WIS-based damage and sometimes freeze up to four foes, ignoring position."
     },
     464: {
@@ -10866,6 +11158,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to and sometimes paralyze three random foes."
     },
     465: {
@@ -10877,6 +11170,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal WIS-based damage to five random foes, ignoring position."
     },
     466: {
@@ -10909,6 +11203,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage and sometimes envenom three random foes."
     },
     469: {
@@ -10920,6 +11215,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to all foes and sometimes reduce ATK."
     },
     471: {
@@ -10969,9 +11265,10 @@ var SkillDatabase = {
         type: 2,
         func: 24,
         calc: 0,
-        randSkills: [11, 16, 20, 26, 33, 34, 109, 110, 114, 116, 138, 145, 218, 232, 264, 274, 277, 287, 296, 319, 331, 345, 346, 354, 378, 426, 431, 462],
         range: 21,
         prob: 50,
+        sac: 1,
+        randSkills: [11, 16, 20, 26, 33, 34, 109, 110, 114, 116, 138, 145, 218, 232, 264, 274, 277, 287, 296, 319, 331, 345, 346, 354, 378, 426, 431, 462],
         desc: "The outcome of this skill depends on the user's Fortune."
     },
     476: {
@@ -10983,6 +11280,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive WIS-based damage to three random foes, ignoring position."
     },
     477: {
@@ -10994,6 +11292,7 @@ var SkillDatabase = {
         range: 32,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal heavy WIS-based damage and sometimes freeze up to four foes, ignoring position."
     },
     478: {
@@ -11012,7 +11311,7 @@ var SkillDatabase = {
         type: 1,
         func: 1,
         calc: 0,
-        args: [1, 18, 0, 0],
+        args: [1, 18],
         range: 121,
         prob: 70,
         desc: "Allows a random ally to perform an extra action during the next turn."
@@ -11064,7 +11363,6 @@ var SkillDatabase = {
         type: 5,
         func: 12,
         calc: 0,
-        args: [0],
         range: 4,
         prob: 50,
         desc: "Take damage in place of allies."
@@ -11130,6 +11428,7 @@ var SkillDatabase = {
         range: 32,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to up to four foes."
     },
     492: {
@@ -11141,6 +11440,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to four random foes, ignoring position."
     },
     493: {
@@ -11152,6 +11452,7 @@ var SkillDatabase = {
         range: 314,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "AGI-based damage to up to four foes. Increased if fewer foes."
     },
     494: {
@@ -11184,6 +11485,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal massive WIS-based damage to three random foes, ignoring position."
     },
     497: {
@@ -11195,6 +11497,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive ATK-based damage to three random foes, ignoring position."
     },
     499: {
@@ -11228,6 +11531,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Heavy ATK-based damage to four random foes and sometimes lower DEF, ignoring position."
     },
     502: {
@@ -11260,6 +11564,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive AGI-based damage, sometimes paralyze three random foes, ignoring position."
     },
     505: {
@@ -11271,6 +11576,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to five random foes, sometimes lowering WIS, ignoring position."
     },
     506: {
@@ -11282,6 +11588,7 @@ var SkillDatabase = {
         range: 313,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Heavy WIS-based damage to up to three foes, ignoring position. Increased if fewer foes."
     },
     507: {
@@ -11410,6 +11717,7 @@ var SkillDatabase = {
         range: 32,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive AGI-based damage to up to four foes, ignoring position."
     },
     520: {
@@ -11421,6 +11729,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to three random foes, ignoring position."
     },
     521: {
@@ -11432,6 +11741,7 @@ var SkillDatabase = {
         range: 314,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "ATK-based damage to and sometimes poison up to four foes. Increased if fewer foes."
     },
     522: {
@@ -11464,6 +11774,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to all foes and sometimes greatly lower ATK, ignoring position."
     },
     525: {
@@ -11475,6 +11786,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal AGI-based damage to four random foes, ignoring position."
     },
     527: {
@@ -11528,6 +11840,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to up to three foes."
     },
     533: {
@@ -11538,6 +11851,7 @@ var SkillDatabase = {
         args: [0.2, 3, 4],
         range: 4,
         prob: 70,
+        sac: 1,
         desc: "Raise WIS and AGI of all party members."
     },
     534: {
@@ -11568,6 +11882,7 @@ var SkillDatabase = {
         calc: 0,
         range: 4,
         prob: 70,
+        sac: 1,
         desc: "Remove the debuffs of self and all allies."
     },
     538: {
@@ -11620,6 +11935,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to four random foes."
     },
     543: {
@@ -11630,6 +11946,7 @@ var SkillDatabase = {
         args: [1],
         range: 2,
         prob: 50,
+        sac: 1,
         desc: "Revive and fully restore HP of adjacent familiars."
     },
     544: {
@@ -11641,6 +11958,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal AGI-based damage to and sometimes envenom five random foes."
     },
     545: {
@@ -11652,6 +11970,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to five random foes."
     },
     546: {
@@ -11685,6 +12004,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to four random foes, ignoring position."
     },
     549: {
@@ -11696,6 +12016,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal AGI-based damage to six random foes and sometimes reduce AGI."
     },
     550: {
@@ -11707,6 +12028,7 @@ var SkillDatabase = {
         range: 208,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "WIS-based damage to all foes, ignoring position. Increased if fewer foes."
     },
     551: {
@@ -11760,6 +12082,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to four random foes."
     },
     556: {
@@ -11771,6 +12094,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to four random foes and sometimes greatly lower DEF."
     },
     558: {
@@ -11865,6 +12189,7 @@ var SkillDatabase = {
         args: [0.1, 3],
         range: 8,
         prob: 70,
+        sac: 1,
         desc: "Greatly lower WIS of all foes."
     },
     568: {
@@ -11917,6 +12242,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal massive WIS-based damage, sometimes freeze three random foes, ignoring position."
     },
     573: {
@@ -11928,6 +12254,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal WIS-based damage and sometimes silence six random foes, ignoring position."
     },
     574: {
@@ -11939,6 +12266,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal AGI-based damage to all foes and sometimes paralyze targets."
     },
     577: {
@@ -11950,6 +12278,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to up to three foes."
     },
     578: {
@@ -11961,6 +12290,7 @@ var SkillDatabase = {
         range: 4,
         prob: 50,
         ward: 1,
+        sac: 1,
         desc: "Take damage in place of any ally and unleash a heavy counterattack."
     },
     579: {
@@ -11972,6 +12302,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage to all foes, ignoring position."
     },
     580: {
@@ -11983,6 +12314,7 @@ var SkillDatabase = {
         range: 314,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Heavy WIS-based damage to up to four foes. Increased if fewer foes."
     },
     581: {
@@ -12036,6 +12368,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Heavy WIS-based damage to four random foes and sometimes greatly lower WIS."
     },
     586: {
@@ -12047,6 +12380,7 @@ var SkillDatabase = {
         range: 419,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal varying AGI-based damage to four random foes."
     },
     588: {
@@ -12121,6 +12455,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal WIS-based damage to six random foes, ignoring position."
     },
     597: {
@@ -12186,6 +12521,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal venomous ATK-based damage to five random foes."
     },
     603: {
@@ -12197,6 +12533,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Massive ATK-based damage and drain HP from three random foes, ignoring position."
     },
     604: {
@@ -12208,6 +12545,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to three random foes, ignoring position."
     },
     605: {
@@ -12240,6 +12578,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal WIS-based damage to all foes and sometimes burn targets, ignoring position."
     },
     608: {
@@ -12251,6 +12590,7 @@ var SkillDatabase = {
         range: 17,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to six random foes and sometimes greatly lower AGI."
     },
     609: {
@@ -12262,6 +12602,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive ATK-based damage to two random foes."
     },
     610: {
@@ -12305,6 +12646,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy WIS-based damage and sometimes freeze three random foes, ignoring position."
     },
     614: {
@@ -12316,6 +12658,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to all foes and sometimes silence foes for 2 turns."
     },
     616: {
@@ -12369,6 +12712,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive WIS-based damage to two random foes, ignoring position."
     },
     621: {
@@ -12400,6 +12744,7 @@ var SkillDatabase = {
         calc: 0,
         range: 21,
         prob: 35,
+        sac: 1,
         randSkills: [624, 625, 626, 627],
         desc: "Strong weapon attack with unpredictable results."
     },
@@ -12456,6 +12801,7 @@ var SkillDatabase = {
         range: 21,
         prob: 50,
         ward: 1,
+        sac: 1,
         desc: "Chance to unleash a burning counter attack when struck."
     },
     629: {
@@ -12467,6 +12813,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to five random foes."
     },
     630: {
@@ -12520,6 +12867,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to five random foes and sometimes greatly lower DEF."
     },
     635: {
@@ -12531,6 +12879,7 @@ var SkillDatabase = {
         range: 19,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Heavy WIS-based damage to and sometimes paralyze four random foes, ignoring position."
     },
     636: {
@@ -12542,6 +12891,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal WIS-based damage and sometimes freeze five random foes, ignoring position."
     },
     637: {
@@ -12553,6 +12903,7 @@ var SkillDatabase = {
         range: 419,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal varying ATK-based damage to four random foes."
     },
     638: {
@@ -12585,6 +12936,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal AGI-based damage to five random foes and sometimes blind them for one turn."
     },
     641: {
@@ -12596,6 +12948,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal AGI-based damage to five random foes, ignoring position."
     },
     642: {
@@ -12607,6 +12960,7 @@ var SkillDatabase = {
         range: 313,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Heavy WIS-based damage, sometimes paralyze up to three foes. Increased if fewer foes."
     },
     643: {
@@ -12660,6 +13014,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "ATK-based damage and sometimes silence five random foes for 1 turn, ignoring position."
     },
     648: {
@@ -12671,6 +13026,7 @@ var SkillDatabase = {
         range: 43,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to three random foes, ignoring position. Attack front foes first."
     },
     649: {
@@ -12682,6 +13038,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to up to three foes, ignoring position."
     },
     650: {
@@ -12735,6 +13092,7 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal massive WIS-based damage to two random foes, ignoring position."
     },
     655: {
@@ -12788,6 +13146,7 @@ var SkillDatabase = {
         range: 15,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Heavy WIS-based DMG to all foes in front/middle line, may greatly lower ATK."
     },
     660: {
@@ -12820,6 +13179,7 @@ var SkillDatabase = {
         range: 20,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to five random foes, ignoring position."
     },
     663: {
@@ -12875,6 +13235,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal ATK-based damage to and sometimes silence all foes ."
     },
     668: {
@@ -12886,6 +13247,7 @@ var SkillDatabase = {
         range: 44,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy AGI-based damage to four random foes. Attacks front foes first."
     },
     671: {
@@ -12897,6 +13259,7 @@ var SkillDatabase = {
         range: 2,
         prob: 50,
         ward: 1,
+        sac: 1,
         desc: "Take damage in place of adjacent familiars and counter."
     },
     672: {
@@ -12929,6 +13292,7 @@ var SkillDatabase = {
         range: 314,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Heavy WIS-based damage and sometimes disable up to four foes. Increased if fewer foes."
     },
     675: {
@@ -12940,6 +13304,7 @@ var SkillDatabase = {
         range: 32,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to up to four foes, ignoring position."
     },
     676: {
@@ -12951,6 +13316,7 @@ var SkillDatabase = {
         range: 16,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal heavy ATK-based damage and sometimes silence three random foes."
     },
     677: {
@@ -13004,6 +13370,7 @@ var SkillDatabase = {
         range: 8,
         prob: 30,
         ward: 2,
+        sac: 1,
         desc: "Deal WIS-based damage and drain HP from all foes, ignoring position."
     },
     682: {
@@ -13015,6 +13382,7 @@ var SkillDatabase = {
         range: 314,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to up to four foes. Increased if fewer foes."
     },
     683: {
@@ -13026,6 +13394,7 @@ var SkillDatabase = {
         range: 7,
         prob: 30,
         ward: 3,
+        sac: 1,
         desc: "Deal heavy WIS-based damage to up to three foes, ignoring position."
     },
     684: {
@@ -13080,7 +13449,115 @@ var SkillDatabase = {
         range: 23,
         prob: 30,
         ward: 1,
+        sac: 1,
         desc: "Deal massive ATK-based damage to two random foes, ignoring position."
+    },
+    689: {
+        name: "Pain Ordained",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [2.05],
+        range: 313,
+        prob: 30,
+        ward: 2,
+        desc: "Massive WIS-based damage to up to three foes, ignoring position. Increased if fewer foes."
+    },
+    690: {
+        name: "Fate Restrained",
+        type: 1,
+        func: 45,
+        calc: 0,
+        args: [0.25, 2, 0, 0, 0, 0.15, 3],
+        range: 7,
+        prob: 70,
+        desc: "Greatly lower DEF and WIS of up to three foes."
+    },
+    691: {
+        name: "Hands of Riches",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [2.3, 2, 0.4],
+        range: 6,
+        prob: 30,
+        ward: 1,
+        desc: "Deal massive ATK-based damage and sometimes paralyze up to two foes."
+    },
+    692: {
+        name: "Blade of Ending",
+        type: 2,
+        func: 33,
+        calc: 3,
+        args: [1.6, 2, 0.15, 0.3],
+        range: 16,
+        prob: 30,
+        ward: 1,
+        desc: "Heavy AGI-based damage to three random foes and sometimes greatly lower DEF."
+    },
+    693: {
+        name: "Twist of Fate",
+        type: 5,
+        func: 28,
+        calc: 7,
+        args: [0.25, 3, 6, 3, 0.5],
+        range: 21,
+        prob: 50,
+        desc: "Reflect 50% of AGI-based damage back to up to two foes."
+    },
+    694: {
+        name: "Serpent's Lash",
+        type: 2,
+        func: 3,
+        calc: 3,
+        args: [0.75],
+        range: 20,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal AGI-based damage to five random foes."
+    },
+    695: {
+        name: "Rain of Terror",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.7],
+        range: 314,
+        prob: 30,
+        ward: 1,
+        desc: "Heavy ATK-based damage to up to four foes, ignoring position. Increased if fewer foes."
+    },
+    696: {
+        name: "Fearless",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.5, 5, 6],
+        range: 21,
+        prob: 70,
+        desc: "Reduce physical and magical damage taken by self greatly."
+    },
+    697: {
+        name: "Staff of Doom",
+        type: 2,
+        func: 37,
+        calc: 2,
+        args: [1.6, 0.15, 27, 21],
+        range: 19,
+        prob: 30,
+        ward: 2,
+        desc: "Deal heavy WIS-based damage and drain HP from four random foes, ignoring position."
+    },
+    698: {
+        name: "Reclaim Soul",
+        type: 3,
+        func: 11,
+        calc: 1,
+        args: [1],
+        range: 3,
+        prob: 50,
+        desc: "Convert damage to heal self and adjacent familiars."
     },
     699: {
         name: "Multi-Shot Aerial ",
@@ -13103,6 +13580,16 @@ var SkillDatabase = {
         prob: 50,
         ward: 2,
         desc: "Chance to unleash WIS-based counter attack when struck."
+    },
+    701: {
+        name: "Gaze of Wealth",
+        type: 1,
+        func: 19,
+        calc: 0,
+        args: [0, 2, 0.15],
+        range: 7,
+        prob: 70,
+        desc: "Chance to paralyze up to three foes at start of battle."
     },
     10001: {
         name: "Standard Action",
@@ -13776,6 +14263,30 @@ var SkillDatabase = {
         isAutoAttack: true,
         desc: "Deal WIS-based damage to one foe and sometimes greatly lower AGI."
     },
+    10060: {
+        name: "Standard Action",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1, 2, 0.2],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage and sometimes paralyze target."
+    },
+    10061: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.2],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
 };
 var SkillLogicFactory = (function () {
     function SkillLogicFactory() {
@@ -13789,6 +14300,8 @@ var SkillLogicFactory = (function () {
             case 2 /* DEBUFF */:
             case 32 /* CASTER_BASED_DEBUFF */:
                 return new DebuffSkillLogic();
+            case 45 /* MULTI_DEBUFF */:
+                return new MultiDebuffSkillLogic();
             case 46 /* DEBUFF_AFFLICTION */:
                 return new DebuffAfflictionSkillLogic();
             case 39 /* ONHIT_BUFF */:
@@ -14020,6 +14533,24 @@ var DebuffSkillLogic = (function (_super) {
     };
     return DebuffSkillLogic;
 })(SkillLogic);
+var MultiDebuffSkillLogic = (function (_super) {
+    __extends(MultiDebuffSkillLogic, _super);
+    function MultiDebuffSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    MultiDebuffSkillLogic.prototype.execute = function (data) {
+        _super.prototype.execute.call(this, data);
+        var tempSkill = new Skill(data.skill.id);
+        tempSkill.skillFuncArg1 = tempSkill.skillFuncArg6;
+        tempSkill.skillFuncArg2 = tempSkill.skillFuncArg7;
+        tempSkill.skillFuncArg3 = tempSkill.skillFuncArg8;
+        tempSkill.skillFuncArg4 = tempSkill.skillFuncArg9;
+        tempSkill.skillFuncArg5 = tempSkill.skillFuncArg10;
+        data.skill = tempSkill;
+        _super.prototype.execute.call(this, data);
+    };
+    return MultiDebuffSkillLogic;
+})(DebuffSkillLogic);
 var DebuffAfflictionSkillLogic = (function (_super) {
     __extends(DebuffAfflictionSkillLogic, _super);
     function DebuffAfflictionSkillLogic() {
@@ -14769,12 +15300,7 @@ var SkillProvider = (function () {
         return this.onDeathSkillList;
     };
     SkillProvider.isAvailableForSelect = function (skillId) {
-        var isAvailable = true;
-        var skillInfo = SkillDatabase[skillId];
-        if (skillInfo.isAutoAttack || skillId == 355 || skillId == 452) {
-            isAvailable = false;
-        }
-        return isAvailable;
+        return SkillDatabase[skillId].sac == 1;
     };
     SkillProvider.availableSkillsForSelect = null;
     SkillProvider.skillCategories = [10 /* OPENING */, 20 /* ACTIVE */, 30 /* REACTIVE */, 16 /* ACTION_ON_DEATH */];
@@ -15908,35 +16434,40 @@ var BattleModel = (function () {
     BattleModel.prototype.processDebuff = function (executor, target, skill) {
         var status, multi;
         var isNewLogic = false;
-        if (skill.skillFunc === 21 /* DEBUFFATTACK */ || skill.skillFunc === 22 /* DEBUFFINDIRECT */) {
-            status = skill.skillFuncArg2;
-            multi = skill.skillFuncArg4;
-        }
-        else if (skill.skillFunc === 2 /* DEBUFF */) {
-            status = skill.skillFuncArg2;
-            multi = skill.skillFuncArg1;
-        }
-        else if (skill.skillFunc === 32 /* CASTER_BASED_DEBUFF */ || skill.skillFunc === 46 /* DEBUFF_AFFLICTION */) {
-            status = skill.skillFuncArg2;
-            multi = skill.skillFuncArg1;
-            isNewLogic = true;
-        }
-        else if (skill.skillFunc === 33 /* CASTER_BASED_DEBUFF_ATTACK */ || skill.skillFunc === 34 /* CASTER_BASED_DEBUFF_MAGIC */) {
-            status = skill.skillFuncArg2;
-            multi = skill.skillFuncArg4;
-            isNewLogic = true;
-        }
-        else if (skill.skillFunc === 38 /* ONHIT_DEBUFF */) {
-            status = skill.skillFuncArg2;
-            multi = skill.skillFuncArg1;
-            isNewLogic = true;
-            if (skill.skillFuncArg4) {
+        switch (skill.skillFunc) {
+            case 21 /* DEBUFFATTACK */:
+            case 22 /* DEBUFFINDIRECT */:
+                status = skill.skillFuncArg2;
                 multi = skill.skillFuncArg4;
-                var isFlat = true;
-            }
-        }
-        else {
-            throw new Error("Wrong skill to use with processDebuff()");
+                break;
+            case 2 /* DEBUFF */:
+                status = skill.skillFuncArg2;
+                multi = skill.skillFuncArg1;
+                break;
+            case 32 /* CASTER_BASED_DEBUFF */:
+            case 46 /* DEBUFF_AFFLICTION */:
+            case 45 /* MULTI_DEBUFF */:
+                status = skill.skillFuncArg2;
+                multi = skill.skillFuncArg1;
+                isNewLogic = true;
+                break;
+            case 33 /* CASTER_BASED_DEBUFF_ATTACK */:
+            case 34 /* CASTER_BASED_DEBUFF_MAGIC */:
+                status = skill.skillFuncArg2;
+                multi = skill.skillFuncArg4;
+                isNewLogic = true;
+                break;
+            case 38 /* ONHIT_DEBUFF */:
+                status = skill.skillFuncArg2;
+                multi = skill.skillFuncArg1;
+                isNewLogic = true;
+                if (skill.skillFuncArg4) {
+                    multi = skill.skillFuncArg4;
+                    var isFlat = true;
+                }
+                break;
+            default:
+                throw new Error("Wrong skill to use with processDebuff()");
         }
         if (isFlat) {
             var baseAmount = -100;
