@@ -6169,7 +6169,78 @@ var famDatabase = {
         skills: [132],
         img: "322",
         fullName: "Zuniga, Guard Captain II"
-    }
+    },
+    11519: {
+        name: "Koroku",
+        stats: [15341, 16561, 13013, 7492, 16853],
+        skills: [705],
+        autoAttack: 10065,
+        img: "11f",
+        fullName: "Koroku, the Death Stinger II"
+    },
+    11517: {
+        name: "Etain",
+        stats: [15511, 7873, 11015, 17038, 17201],
+        skills: [704],
+        autoAttack: 10064,
+        img: "147",
+        fullName: "Etain, Butterfly Tamer II"
+    },
+    11157: {
+        name: "Ausguss",
+        stats: [14937, 9087, 12304, 16952, 14308],
+        skills: [708],
+        autoAttack: 10007,
+        img: "3ce",
+        fullName: "Ausguss, Jailer II"
+    },
+    11516: {
+        name: "Kotyangwuti",
+        stats: [18512, 9509, 15023, 20028, 17992],
+        skills: [703],
+        autoAttack: 10063,
+        img: "3ce",
+        fullName: "Kotyangwuti, Spider Spirit II"
+    },
+    11356: {
+        name: "Ulfhe",
+        stats: [24102, 22921, 18447, 18057, 18219],
+        skills: [702],
+        autoAttack: 10062,
+        img: "268",
+        fullName: "Ulfhe, Sword-Shield Master II"
+    },
+    11522: {
+        name: "Briar",
+        stats: [18988, 9000, 20028, 19519, 12987],
+        skills: [804, 805],
+        autoAttack: 10007,
+        img: "36b",
+        fullName: "Briar, Grimoire Keeper II"
+    },
+    11514: {
+        name: "Eros",
+        stats: [15438, 16292, 14486, 6284, 16668],
+        skills: [801],
+        img: "38c",
+        fullName: "Eros, the Golden Arrow II"
+    },
+    11520: {
+        name: "Oliver",
+        stats: [15912, 14980, 13702, 8014, 17266],
+        skills: [800],
+        autoAttack: 10067,
+        img: "3e5",
+        fullName: "Sir Oliver, the Golden Sword II"
+    },
+    21511: {
+        name: "Venus",
+        stats: [21967, 19039, 19982, 18011, 9391],
+        skills: [709],
+        autoAttack: 10066,
+        img: "21d",
+        fullName: "Intrepid Hand of Venus"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -13591,6 +13662,122 @@ var SkillDatabase = {
         prob: 70,
         desc: "Chance to paralyze up to three foes at start of battle."
     },
+    702: {
+        name: "Shield Slash",
+        type: 2,
+        func: 34,
+        calc: 3,
+        args: [1.75, 2, 1, 0.1],
+        range: 8,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal heavy AGI-based damage and lower DEF of all foes, ignoring position."
+    },
+    703: {
+        name: "Entwining Silk",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.3, 4, 0.2],
+        range: 20,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal WIS-based damage and sometimes disable five random foes."
+    },
+    704: {
+        name: "Scales of Darkness",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.1, 7, 0.2, 1, 0.9],
+        range: 17,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal WIS-based damage to six random foes and sometimes blind them."
+    },
+    705: {
+        name: "Hornet Sting",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.35, 1, 0.3, 10],
+        range: 20,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal ATK-based damage to five random foes and sometimes poison them, ignoring position."
+    },
+    708: {
+        name: "Discipline",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.6],
+        range: 32,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal heavy WIS-based damage to up to four foes, ignoring position."
+    },
+    709: {
+        name: "Winds of Anemone",
+        type: 2,
+        func: 18,
+        calc: 4,
+        args: [1.5],
+        range: 4,
+        prob: 30,
+        sac: 1,
+        desc: "Restore a large amount of HP to all party members."
+    },
+    800: {
+        name: "Hauteclere",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [2.65],
+        range: 23,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal massive ATK-based damage to two random foes."
+    },
+    801: {
+        name: "Mischief Arrows",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.4, 8, 0.5, 1000],
+        range: 8,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "ATK-based damage and may burn all foes."
+    },
+    804: {
+        name: "Twin Oars",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [2.1],
+        range: 16,
+        prob: 30,
+        ward: 2,
+        desc: "Massive WIS-based damage to three random foes."
+    },
+    805: {
+        name: "Golden Fleece",
+        type: 2,
+        func: 6,
+        calc: 0,
+        args: [1],
+        range: 122,
+        prob: 50,
+        desc: "Revive and fully restore HP of two random familiars."
+    },
     10001: {
         name: "Standard Action",
         type: 2,
@@ -14286,6 +14473,78 @@ var SkillDatabase = {
         ward: 1,
         isAutoAttack: true,
         desc: "ATK-based damage to one foe."
+    },
+    10062: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [0.8],
+        range: 6,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to up to two foes."
+    },
+    10063: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1, 4, 0.25],
+        range: 5,
+        prob: 100,
+        ward: 2,
+        isAutoAttack: true,
+        desc: "WIS-based damage and sometimes disable target."
+    },
+    10064: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1, 7, 0.25, 1, 0.9],
+        range: 5,
+        prob: 100,
+        ward: 2,
+        isAutoAttack: true,
+        desc: "WIS-based damage and sometimes blind target."
+    },
+    10065: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.2, 1, 0.5, 10],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage and sometimes envenom target."
+    },
+    10066: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [0.85],
+        range: 16,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to three random foes, ignoring position."
+    },
+    10067: {
+        name: "Standard Action",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [0.7],
+        range: 23,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to two random foes."
     },
 };
 var SkillLogicFactory = (function () {
