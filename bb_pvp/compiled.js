@@ -6241,6 +6241,63 @@ var famDatabase = {
         img: "21d",
         fullName: "Intrepid Hand of Venus"
     },
+    11523: {
+        name: "Jason",
+        stats: [15348, 18024, 11015, 8978, 16876],
+        skills: [802, 803],
+        img: "4c7",
+        fullName: "Jason, Fallen Hero II"
+    },
+    11535: {
+        name: "Macaca",
+        stats: [13962, 13671, 12025, 6368, 9453],
+        skills: [813],
+        img: "2a6",
+        fullName: "Macaca, the Headlong II"
+    },
+    11532: {
+        name: "Kibitsuhiko",
+        stats: [19335, 18642, 16562, 11448, 17981],
+        skills: [809, 810],
+        img: "38d",
+        fullName: "Kibitsuhiko, Ogre Slayer II"
+    },
+    21531: {
+        name: "Onra",
+        stats: [13377, 13496, 12250, 7516, 9368],
+        skills: [808],
+        img: "3b8",
+        fullName: "Onra, Ogre of Darkness II"
+    },
+    11531: {
+        name: "Onra",
+        stats: [15719, 16416, 15147, 6710, 15147],
+        skills: [807],
+        img: "155",
+        fullName: "Onra, Ogre Lord II"
+    },
+    11533: {
+        name: "Momoso",
+        stats: [15034, 16973, 11925, 9997, 15836],
+        skills: [811, 812],
+        img: "39b",
+        fullName: "Momoso, Pheasant Tamer II"
+    },
+    21529: {
+        name: "Aso",
+        stats: [19587, 18851, 18105, 13823, 18083],
+        skills: [806],
+        autoAttack: 10100,
+        img: "170",
+        fullName: "Aso, the Asura"
+    },
+    21416: {
+        name: "Mercury",
+        stats: [22700, 20970, 18517, 12020, 18005],
+        skills: [814, 815],
+        img: "3d8",
+        fullName: "Intrepid Hand of Mercury"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -13757,8 +13814,29 @@ var SkillDatabase = {
         sac: 1,
         desc: "ATK-based damage and may burn all foes."
     },
-    804: {
+    802: {
         name: "Twin Oars",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [2.25],
+        range: 6,
+        prob: 30,
+        ward: 1,
+        desc: "Deal massive ATK-based damage to up to two foes."
+    },
+    803: {
+        name: "Golden Fleece",
+        type: 16,
+        func: 1,
+        calc: 0,
+        args: [0.5, 17, 0.5],
+        range: 4,
+        prob: 70,
+        desc: "Chance to raise HP of all party members upon his death."
+    },
+    804: {
+        name: "Thorn Whip",
         type: 2,
         func: 4,
         calc: 2,
@@ -13769,7 +13847,7 @@ var SkillDatabase = {
         desc: "Massive WIS-based damage to three random foes."
     },
     805: {
-        name: "Golden Fleece",
+        name: "Waking Kiss",
         type: 2,
         func: 6,
         calc: 0,
@@ -13777,6 +13855,127 @@ var SkillDatabase = {
         range: 122,
         prob: 50,
         desc: "Revive and fully restore HP of two random familiars."
+    },
+    806: {
+        name: "Dance of the Ogres",
+        type: 2,
+        func: 4,
+        calc: 3,
+        args: [2.25],
+        range: 16,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal massive AGI-based damage to three random foes, ignoring position."
+    },
+    807: {
+        name: "Iron Rod",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1.4],
+        range: 15,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal ATK-based damage to all foes in the front/middle line."
+    },
+    808: {
+        name: "Bloodied Rod",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [0.8],
+        range: 12,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal ATK-based damage to all foes in the front line."
+    },
+    809: {
+        name: "Ogresbane",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1.15, 8, 0.25, 2000],
+        range: 45,
+        prob: 30,
+        ward: 1,
+        desc: "Deal ATK-based damage and sometimes burn five random foes. Attack front foes first."
+    },
+    810: {
+        name: "Fighting Spirit",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.35, 1],
+        range: 3,
+        prob: 70,
+        desc: "Raise ATK of self and adjacent familiars based on 35% of his WIS."
+    },
+    811: {
+        name: "Talon Rush",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.55],
+        range: 19,
+        prob: 30,
+        ward: 1,
+        desc: "Deal heavy ATK-based damage to four random foes, ignoring position."
+    },
+    812: {
+        name: "Vitality Pinion",
+        type: 1,
+        func: 44,
+        calc: 0,
+        args: [0.2, 1, 0, 0, 0, 0.2, 3],
+        range: 3,
+        prob: 70,
+        desc: "Raise ATK and WIS of self and adjacent familiars at start of battle."
+    },
+    813: {
+        name: "Dogfight",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [2],
+        range: 23,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal massive ATK-based damage to two random foes."
+    },
+    814: {
+        name: "Winds of War",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1.4],
+        range: 19,
+        prob: 30,
+        ward: 1,
+        desc: "Deal ATK-based damage to four random foes."
+    },
+    815: {
+        name: "Psychopomp",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [816, 16],
+        range: 153,
+        prob: 70,
+        desc: "Self and two random allies are automatically revived with 60% HP after being killed."
+    },
+    816: {
+        name: "Metempsychosis",
+        type: 16,
+        func: 6,
+        calc: 0,
+        args: [0.6],
+        range: 21,
+        prob: 100,
+        desc: "-"
     },
     10001: {
         name: "Standard Action",
@@ -14545,6 +14744,30 @@ var SkillDatabase = {
         ward: 1,
         isAutoAttack: true,
         desc: "ATK-based damage to two random foes."
+    },
+    10100: {
+        name: "Standard Action",
+        type: 2,
+        func: 34,
+        calc: 1,
+        args: [1.4, 4, 0.5, 0.15],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to one foe and sometimes lower AGI of target."
+    },
+    10101: {
+        name: "Standard Action",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1, 1, 0.5, 5],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage and sometimes poison target."
     },
 };
 var SkillLogicFactory = (function () {
@@ -15784,7 +16007,14 @@ var RangeFactory = (function () {
         133: 3,
         134: 4,
         135: 5,
-        136: 6
+        136: 6,
+        142: 2,
+        143: 3,
+        144: 4,
+        145: 5,
+        153: 3,
+        154: 4,
+        155: 5,
     };
     RangeFactory.INCLUDE_SELF = {
         111: true,
@@ -15799,11 +16029,41 @@ var RangeFactory = (function () {
         134: true,
         135: true,
         136: true,
+        142: true,
+        143: true,
+        144: true,
+        145: true,
+        153: true,
+        154: true,
+        155: true,
         332: true,
         333: true,
         334: true,
         335: true,
-        336: true
+        336: true,
+        511: true,
+        512: true,
+        513: true,
+        514: true,
+        515: true,
+        516: true,
+        542: true,
+        543: true,
+        544: true,
+        545: true,
+    };
+    RangeFactory.FORCED_SELF = {
+        142: true,
+        143: true,
+        144: true,
+        145: true,
+        153: true,
+        154: true,
+        155: true,
+        542: true,
+        543: true,
+        544: true,
+        545: true,
     };
     RangeFactory.IS_UNIQUE = {
         121: true,
@@ -15817,7 +16077,10 @@ var RangeFactory = (function () {
         133: true,
         134: true,
         135: true,
-        136: true
+        136: true,
+        153: true,
+        154: true,
+        155: true,
     };
     RangeFactory.ScalePatternParams = {
         202: [1.5, 1],
@@ -16117,19 +16380,40 @@ var FriendRandomRange = (function (_super) {
         this.selectDead = selectDead;
         this.isUnique = RangeFactory.FRIEND_RANDOM_RANGE_TARGET_NUM[id];
         this.includeSelf = RangeFactory.INCLUDE_SELF[id];
+        this.forcedSelf = RangeFactory.FORCED_SELF[id];
     }
     FriendRandomRange.prototype.getReady = function (executor, skillCondFunc) {
         var baseTargets = this.getBaseTargets(this.getCondFunc(executor, skillCondFunc));
         var targets = [];
         this.currentIndex = 0;
+        var selfAllowed = false;
+        for (var i = 0; i < baseTargets.length; i++) {
+            if (executor === baseTargets[i]) {
+                selfAllowed = true;
+                break;
+            }
+        }
         if (baseTargets.length) {
             if (this.isUnique) {
                 targets = getRandomUniqueElements(baseTargets, this.numTargets);
             }
             else {
-                for (var i = 0; i < this.numTargets; i++) {
+                for (i = 0; i < this.numTargets; i++) {
                     targets.push(getRandomElement(baseTargets));
                 }
+            }
+        }
+        if (this.forcedSelf && selfAllowed) {
+            var alreadyIncludedSelf = false;
+            for (i = 0; i < targets.length; i++) {
+                if (executor === targets[i]) {
+                    alreadyIncludedSelf = true;
+                    break;
+                }
+            }
+            if (!alreadyIncludedSelf) {
+                targets.shift();
+                targets.unshift(executor);
             }
         }
         this.targets = targets;
