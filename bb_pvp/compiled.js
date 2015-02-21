@@ -1763,6 +1763,8 @@ var ENUM;
         SkillFunc[SkillFunc["ONHIT_BUFF"] = 39] = "ONHIT_BUFF";
         SkillFunc[SkillFunc["CLEAR_DEBUFF"] = 40] = "CLEAR_DEBUFF";
         SkillFunc[SkillFunc["COUNTER_INDIRECT"] = 41] = "COUNTER_INDIRECT";
+        SkillFunc[SkillFunc["COUNTER_DEBUFF"] = 42] = "COUNTER_DEBUFF";
+        SkillFunc[SkillFunc["COUNTER_DEBUFF_INDIRECT"] = 43] = "COUNTER_DEBUFF_INDIRECT";
         SkillFunc[SkillFunc["MULTI_BUFF"] = 44] = "MULTI_BUFF";
         SkillFunc[SkillFunc["MULTI_DEBUFF"] = 45] = "MULTI_DEBUFF";
         SkillFunc[SkillFunc["DEBUFF_AFFLICTION"] = 46] = "DEBUFF_AFFLICTION";
@@ -6298,6 +6300,77 @@ var famDatabase = {
         img: "3d8",
         fullName: "Intrepid Hand of Mercury"
     },
+    11540: {
+        name: "Houdi",
+        stats: [13293, 6006, 10001, 15498, 12001],
+        skills: [822],
+        autoAttack: 10003,
+        img: "14b",
+        fullName: "Houdi, the Illusory Flame II"
+    },
+    11538: {
+        name: "Brangane",
+        stats: [14610, 7639, 12001, 17899, 15804],
+        skills: [819],
+        autoAttack: 10003,
+        img: "2de",
+        fullName: "Brangane, the Enchanting II"
+    },
+    11541: {
+        name: "Aengus",
+        stats: [15803, 6996, 12239, 17006, 16497],
+        skills: [823, 824],
+        autoAttack: 10003,
+        img: "453",
+        fullName: "Aengus, the Charitable II"
+    },
+    11557: {
+        name: "Peony",
+        stats: [17298, 17797, 12250, 7505, 16399],
+        skills: [820, 821],
+        autoAttack: 10101,
+        img: "394",
+        fullName: "Peony, the Jiang Shi II"
+    },
+    11536: {
+        name: "Juno",
+        stats: [19552, 18501, 17006, 17992, 9000],
+        skills: [817, 818],
+        img: "489",
+        fullName: "Juno, Goddess of Affection II"
+    },
+    11547: {
+        name: "Barometz",
+        stats: [16961, 15121, 14145, 14000, 9052],
+        skills: [830],
+        autoAttack: 10105,
+        img: "184",
+        fullName: "Caparisoned Barometz II"
+    },
+    11545: {
+        name: "Chi-Hu",
+        stats: [16529, 17071, 13106, 7440, 15738],
+        skills: [829],
+        autoAttack: 10104,
+        img: "381",
+        fullName: "Chi-Hu II"
+    },
+    11544: {
+        name: "Karna",
+        stats: [19324, 20310, 15478, 11004, 17461],
+        skills: [828],
+        autoAttack: 10103,
+        img: "365",
+        fullName: "Karna, the Red Eye II"
+    },
+    11543: {
+        name: "He Qiong",
+        stats: [24253, 14243, 22206, 23051, 17992],
+        skills: [827],
+        autoAttack: 10007,
+        img: "359",
+        fullName: "He Qiong, the Transcendent II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -6951,6 +7024,8 @@ var Skill = (function () {
             case 4 /* MAGIC */:
             case 13 /* COUNTER */:
             case 41 /* COUNTER_INDIRECT */:
+            case 42 /* COUNTER_DEBUFF */:
+            case 43 /* COUNTER_DEBUFF_INDIRECT */:
             case 14 /* PROTECT_COUNTER */:
             case 21 /* DEBUFFATTACK */:
             case 22 /* DEBUFFINDIRECT */:
@@ -6970,6 +7045,7 @@ var Skill = (function () {
         switch (func) {
             case 3 /* ATTACK */:
             case 13 /* COUNTER */:
+            case 42 /* COUNTER_DEBUFF */:
             case 14 /* PROTECT_COUNTER */:
             case 28 /* PROTECT_REFLECT */:
             case 21 /* DEBUFFATTACK */:
@@ -7048,6 +7124,8 @@ var Skill = (function () {
             case 22 /* DEBUFFINDIRECT */:
             case 33 /* CASTER_BASED_DEBUFF_ATTACK */:
             case 34 /* CASTER_BASED_DEBUFF_MAGIC */:
+            case 42 /* COUNTER_DEBUFF */:
+            case 43 /* COUNTER_DEBUFF_INDIRECT */:
                 isDebuffAttack = true;
                 break;
             default:
@@ -7078,6 +7156,8 @@ var Skill = (function () {
             case 33 /* CASTER_BASED_DEBUFF_ATTACK */:
             case 34 /* CASTER_BASED_DEBUFF_MAGIC */:
             case 46 /* DEBUFF_AFFLICTION */:
+            case 42 /* COUNTER_DEBUFF */:
+            case 43 /* COUNTER_DEBUFF_INDIRECT */:
                 statuses.push(skillInfo.args[1]);
                 break;
             case 45 /* MULTI_DEBUFF */:
@@ -13977,6 +14057,161 @@ var SkillDatabase = {
         prob: 100,
         desc: "-"
     },
+    817: {
+        name: "Jealousy",
+        type: 3,
+        func: 42,
+        calc: 1,
+        args: [1.55, 1, 1, 0.07],
+        range: 21,
+        prob: 50,
+        ward: 1,
+        desc: "Chance to unleash a heavy counter attack when struck, greatly lower ATK."
+    },
+    818: {
+        name: "Grace of Love",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.45, 2],
+        range: 21,
+        prob: 70,
+        desc: "Raise DEF of self at start of battle."
+    },
+    819: {
+        name: "Enthralling Scent",
+        type: 2,
+        func: 34,
+        calc: 2,
+        args: [1.65, 3, 0.3, 0.07],
+        range: 34,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Heavy WIS-based damage to all foes in the front/rear lines, sometimes greatly lower WIS."
+    },
+    820: {
+        name: "Leaping Dead",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1.1, 1, 0.3, 10],
+        range: 40,
+        prob: 30,
+        ward: 1,
+        desc: "ATK-based damage to five random foes, sometimes poison them. Attacks rear foes first."
+    },
+    821: {
+        name: "Hug of the Dead",
+        type: 1,
+        func: 19,
+        calc: 0,
+        args: [0, 4, 0.3],
+        range: 7,
+        prob: 70,
+        desc: "Sometimes disable up to three foes at start of battle."
+    },
+    822: {
+        name: "Burning Tarots",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [0.65],
+        range: 17,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal WIS-based damage to six random foes, ignoring position."
+    },
+    823: {
+        name: "Lovesickness",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.35, 5, 0.15, 1],
+        range: 8,
+        prob: 30,
+        ward: 2,
+        desc: "Deal WIS-based damage to all foes and sometimes silence targets, ignoring position."
+    },
+    824: {
+        name: "Tune of Love",
+        type: 1,
+        func: 44,
+        calc: 0,
+        args: [0.3, 2, 0, 0, 0, 0.1, 3],
+        range: 4,
+        prob: 70,
+        desc: "Raise DEF/WIS of all familiars based on 30% and 10% of his WIS respectively."
+    },
+    827: {
+        name: "Lotus Blossom",
+        type: 2,
+        func: 34,
+        calc: 2,
+        args: [1.75, 1, 1, 0.06],
+        range: 19,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal heavy WIS-based damage and lower ATK of four random foes."
+    },
+    828: {
+        name: "Scarlet Arrows",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.3, 8, 0.3, 2000],
+        range: 8,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal ATK-based damage to all foes and sometimes burn targets, ignoring position."
+    },
+    829: {
+        name: "Rousing Roar",
+        type: 1,
+        func: 44,
+        calc: 1,
+        args: [0.2, 1, 0, 0, 0, 0.1, 4],
+        range: 3,
+        prob: 70,
+        sac: 1,
+        desc: "Raise ATK/AGI of self and adjacent familiars on 20% and 10% of its ATK respectively."
+    },
+    830: {
+        name: "Gift of the Fleece",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.4, 5],
+        range: 3,
+        prob: 70,
+        sac: 1,
+        desc: "Reduce physical damage taken by self and adjacent familiars."
+    },
+    831: {
+        name: "Fervent Blade",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [2],
+        range: 16,
+        prob: 30,
+        ward: 1,
+        desc: "Deal massive ATK-based damage to three random foes."
+    },
+    832: {
+        name: "Tit for Tat",
+        type: 3,
+        func: 13,
+        calc: 1,
+        args: [1.3],
+        range: 21,
+        prob: 50,
+        ward: 1,
+        desc: "Chance to unleash a counter attack when struck."
+    },
     10001: {
         name: "Standard Action",
         type: 2,
@@ -14769,6 +15004,42 @@ var SkillDatabase = {
         isAutoAttack: true,
         desc: "ATK-based damage and sometimes poison target."
     },
+    10103: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.2],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
+    10104: {
+        name: "Standard Action",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [0.8],
+        range: 6,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to up to two foes."
+    },
+    10105: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.5],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "Heavy ATK-based damage to one foe."
+    },
 };
 var SkillLogicFactory = (function () {
     function SkillLogicFactory() {
@@ -14817,6 +15088,9 @@ var SkillLogicFactory = (function () {
                 return new CounterSkillLogic();
             case 29 /* COUNTER_DISPELL */:
                 return new CounterDispellSkillLogic();
+            case 42 /* COUNTER_DEBUFF */:
+            case 43 /* COUNTER_DEBUFF_INDIRECT */:
+                return new CounterDebuffSkillLogic();
             case 40 /* CLEAR_DEBUFF */:
                 return new ClearDebuffSkillLogic();
             case 11 /* DRAIN */:
@@ -15449,7 +15723,7 @@ var CounterSkillLogic = (function (_super) {
             skill: data.skill,
             additionalDescription: data.executor.name + " counters " + data.attacker.name + "! ",
         });
-        if (!data.executor.justMissed && !data.attacker.justEvaded && !data.attacker.isDead) {
+        if (!data.executor.justMissed && !data.attacker.justEvaded && !data.attacker.isDead && data.skill.skillFunc === 13 /* COUNTER */) {
             this.battleModel.processAffliction(data.executor, data.attacker, data.skill);
         }
     };
@@ -15502,6 +15776,20 @@ var CounterDispellSkillLogic = (function (_super) {
     };
     return CounterDispellSkillLogic;
 })(ProtectSkillLogic);
+var CounterDebuffSkillLogic = (function (_super) {
+    __extends(CounterDebuffSkillLogic, _super);
+    function CounterDebuffSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    CounterDebuffSkillLogic.prototype.execute = function (data) {
+        _super.prototype.execute.call(this, data);
+        var protector = data.executor;
+        if (!protector.isDead && protector.canUseSkill() && !data.attacker.isDead && Math.random() <= data.skill.skillFuncArg3) {
+            this.battleModel.processDebuff(protector, data.attacker, data.skill);
+        }
+    };
+    return CounterDebuffSkillLogic;
+})(CounterSkillLogic);
 var OnHitBuffSkillLogic = (function (_super) {
     __extends(OnHitBuffSkillLogic, _super);
     function OnHitBuffSkillLogic() {
@@ -15897,7 +16185,7 @@ var RangeFactory = (function () {
         return paramArray[nthTarget];
     };
     RangeFactory.isRowBasedRange = function (rangeId) {
-        if (rangeId === 12 /* ENEMY_FRONT_ALL */ || rangeId === 13 /* ENEMY_MID_ALL */ || rangeId === 14 /* ENEMY_REAR_ALL */ || rangeId === 15 /* ENEMY_FRONT_MID_ALL */) {
+        if (rangeId === 12 /* ENEMY_FRONT_ALL */ || rangeId === 13 /* ENEMY_MID_ALL */ || rangeId === 14 /* ENEMY_REAR_ALL */ || rangeId === 15 /* ENEMY_FRONT_MID_ALL */ || rangeId === 34 /* ENEMY_FRONT_REAR_ALL */) {
             return true;
         }
         return false;
@@ -15930,6 +16218,8 @@ var RangeFactory = (function () {
                 return new EnemyRearAllRange(id);
             case 15 /* ENEMY_FRONT_MID_ALL */:
                 return new EnemyFrontMidAllRange(id);
+            case 34 /* ENEMY_FRONT_REAR_ALL */:
+                return new EnemyFrontRearAllRange(id);
             case 21 /* MYSELF */:
                 return new SelfRange(id, selectDead);
             case 28 /* RIGHT */:
@@ -16496,6 +16786,28 @@ var EnemyFrontMidAllRange = (function (_super) {
     };
     return EnemyFrontMidAllRange;
 })(BaseRowRange);
+var EnemyFrontRearAllRange = (function (_super) {
+    __extends(EnemyFrontRearAllRange, _super);
+    function EnemyFrontRearAllRange() {
+        _super.apply(this, arguments);
+    }
+    EnemyFrontRearAllRange.prototype.getReady = function (executor) {
+        this.currentIndex = 0;
+        var candidates = this.getBaseTargets(this.getCondFunc(executor));
+        if (candidates.length) {
+            var frontCards = this.getSameRowCards(candidates, 1 /* FRONT */);
+            var rearCards = this.getSameRowCards(candidates, 3 /* REAR */);
+            if (frontCards.length > 0 || rearCards.length > 0) {
+                candidates = frontCards.concat(rearCards);
+            }
+            else {
+                candidates = this.getSameRowCards(candidates, 2 /* MID */);
+            }
+        }
+        this.targets = candidates;
+    };
+    return EnemyFrontRearAllRange;
+})(BaseRowRange);
 var EnemyFrontAllRange = (function (_super) {
     __extends(EnemyFrontAllRange, _super);
     function EnemyFrontAllRange() {
@@ -16996,6 +17308,8 @@ var BattleModel = (function () {
                 break;
             case 33 /* CASTER_BASED_DEBUFF_ATTACK */:
             case 34 /* CASTER_BASED_DEBUFF_MAGIC */:
+            case 42 /* COUNTER_DEBUFF */:
+            case 43 /* COUNTER_DEBUFF_INDIRECT */:
                 status = skill.skillFuncArg2;
                 multi = skill.skillFuncArg4;
                 isNewLogic = true;
