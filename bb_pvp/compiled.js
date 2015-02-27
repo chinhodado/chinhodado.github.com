@@ -1975,11 +1975,6 @@ var ENUM;
         FormationType[FormationType["HYDRA_5"] = 11] = "HYDRA_5";
     })(ENUM.FormationType || (ENUM.FormationType = {}));
     var FormationType = ENUM.FormationType;
-    (function (ProcOrderType) {
-        ProcOrderType[ProcOrderType["ANDROID"] = 1] = "ANDROID";
-        ProcOrderType[ProcOrderType["IOS"] = 2] = "IOS";
-    })(ENUM.ProcOrderType || (ENUM.ProcOrderType = {}));
-    var ProcOrderType = ENUM.ProcOrderType;
     (function (BattleType) {
         BattleType[BattleType["BLOOD_CLASH"] = 1] = "BLOOD_CLASH";
         BattleType[BattleType["NORMAL"] = 2] = "NORMAL";
@@ -2058,7 +2053,7 @@ var Card = (function () {
         this.player = player;
         this.formationColumn = nth % 5;
         this.formationRow = player.formation.getCardRow(this.formationColumn);
-        this.procIndex = Formation.getProcIndex(this.formationRow, this.formationColumn, BattleModel.getInstance().procOrderType);
+        this.procIndex = Formation.getProcIndex(this.formationRow, this.formationColumn);
         this.skills = skills;
         if (cardData.autoAttack) {
             this.autoAttack = new Skill(cardData.autoAttack);
@@ -6371,6 +6366,45 @@ var famDatabase = {
         img: "359",
         fullName: "He Qiong, the Transcendent II"
     },
+    11553: {
+        name: "Rapunzel",
+        stats: [18349, 20223, 17428, 8805, 18208],
+        skills: [836, 837],
+        autoAttack: 10108,
+        img: "391",
+        fullName: "Rapunzel, Grimoire Keeper II"
+    },
+    11552: {
+        name: "Druj",
+        stats: [15024, 12999, 15647, 7005, 17241],
+        skills: [835],
+        img: "460",
+        fullName: "Druj Nasu, the Impure II"
+    },
+    11550: {
+        name: "Medea",
+        stats: [17493, 18598, 17493, 10300, 5999],
+        skills: [834],
+        autoAttack: 10107,
+        img: "37b",
+        fullName: "Medea, Vengeful Queen II"
+    },
+    21549: {
+        name: "Discordia",
+        stats: [20031, 18525, 19831, 12014, 17989],
+        skills: [833],
+        autoAttack: 10106,
+        img: "42a",
+        fullName: "Discordia, Bringer of Ruin"
+    },
+    11554: {
+        name: "Pandora",
+        stats: [15023, 7028, 13528, 16887, 16529],
+        skills: [838, 839],
+        autoAttack: 10003,
+        img: "12a",
+        fullName: "Pandora, Fallen Heroine II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -6470,17 +6504,13 @@ var Formation = (function () {
         Formation.FORMATION_CONFIG[9 /* PINCER_5 */] = [3, 1, 3, 1, 3];
         Formation.FORMATION_CONFIG[10 /* SAW_5 */] = [1, 3, 2, 3, 1];
         Formation.FORMATION_CONFIG[11 /* HYDRA_5 */] = [3, 3, 1, 1, 1];
-        Formation.ANDROID_PROC_ORDER[1 /* FRONT */] = [11, 15, 14, 13, 12];
-        Formation.ANDROID_PROC_ORDER[2 /* MID */] = [6, 10, 9, 8, 7];
-        Formation.ANDROID_PROC_ORDER[3 /* REAR */] = [1, 5, 4, 3, 2];
-        Formation.IOS_PROC_ORDER[1 /* FRONT */] = [11, 12, 13, 14, 15];
-        Formation.IOS_PROC_ORDER[2 /* MID */] = [6, 7, 8, 9, 10];
-        Formation.IOS_PROC_ORDER[3 /* REAR */] = [1, 2, 3, 4, 5];
+        Formation.UNI_PROC_ORDER[1 /* FRONT */] = [11, 12, 13, 14, 15];
+        Formation.UNI_PROC_ORDER[2 /* MID */] = [6, 7, 8, 9, 10];
+        Formation.UNI_PROC_ORDER[3 /* REAR */] = [1, 2, 3, 4, 5];
         return null;
     };
-    Formation.getProcIndex = function (row, column, type) {
-        var order = (type == 1 /* ANDROID */) ? this.ANDROID_PROC_ORDER : this.IOS_PROC_ORDER;
-        return order[row][column];
+    Formation.getProcIndex = function (row, column) {
+        return Formation.UNI_PROC_ORDER[row][column];
     };
     Formation.prototype.getCardRow = function (position) {
         return Formation.FORMATION_CONFIG[this.type][position];
@@ -6489,8 +6519,7 @@ var Formation = (function () {
         return Formation.FORMATION_CONFIG[this.type];
     };
     Formation.FORMATION_CONFIG = {};
-    Formation.ANDROID_PROC_ORDER = {};
-    Formation.IOS_PROC_ORDER = {};
+    Formation.UNI_PROC_ORDER = {};
     Formation.whyfoo = Formation.initialize();
     return Formation;
 })();
@@ -6520,9 +6549,6 @@ function setPreviousChoices() {
     }
     if (localStorage.getItem("2f") && localStorage.getItem("2f") != "null") {
         document.getElementById("2f").value = localStorage.getItem("2f");
-    }
-    if (localStorage.getItem("po") && localStorage.getItem("po") != "null") {
-        document.getElementById("po").value = localStorage.getItem("po");
     }
     if (localStorage.getItem("debug") == "true") {
         document.getElementById("debug").checked = true;
@@ -6633,8 +6659,6 @@ function setSkillOptions() {
 function getBattleDataOption() {
     localStorage.setItem("debug", getURLParameter("debug"));
     var data = {}, option = {};
-    option.procOrder = getURLParameter("po");
-    localStorage.setItem("po", option.procOrder);
     var battleType = getURLParameter("bt");
     localStorage.setItem("bt", battleType);
     option.battleType = battleType;
@@ -14212,6 +14236,94 @@ var SkillDatabase = {
         ward: 1,
         desc: "Chance to unleash a counter attack when struck."
     },
+    833: {
+        name: "Seeds of Strife",
+        type: 2,
+        func: 4,
+        calc: 3,
+        args: [1.55, 2, 0.2],
+        range: 208,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Heavy AGI-based DMG to all foes, sometimes paralyze target. Increased if fewer foes."
+    },
+    834: {
+        name: "Cold Blood",
+        type: 3,
+        func: 41,
+        calc: 1,
+        args: [1.5, 1, 0.4, 10],
+        range: 21,
+        prob: 50,
+        ward: 1,
+        sac: 1,
+        desc: "Chance to unleash a heavy poisonous counter attack (10% of max HP) when struck."
+    },
+    835: {
+        name: "Funerary Wings",
+        type: 2,
+        func: 3,
+        calc: 3,
+        args: [1.6, 2, 0.3],
+        range: 16,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Heavy AGI-based damage to and sometimes paralyze three random foes."
+    },
+    836: {
+        name: "Blade of Hair",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.3],
+        range: 20,
+        prob: 30,
+        ward: 1,
+        desc: "ATK-based damage to five random foes, ignoring position."
+    },
+    837: {
+        name: "Hair Cocoon",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [1, 18],
+        range: 122,
+        prob: 70,
+        desc: "Allows two random allies to perform an extra action during the next turn."
+    },
+    838: {
+        name: "Calamity Unleashed",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.75],
+        range: 19,
+        prob: 30,
+        ward: 2,
+        desc: "Heavy WIS-based damage to four random foes, ignoring position."
+    },
+    839: {
+        name: "Last Hope",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [840, 16],
+        range: 21,
+        prob: 50,
+        desc: "Revive and fully restore HP of self upon her death."
+    },
+    840: {
+        name: "Dawn's Light",
+        type: 16,
+        func: 6,
+        calc: 0,
+        args: [1],
+        range: 21,
+        prob: 100,
+        desc: "-"
+    },
     10001: {
         name: "Standard Action",
         type: 2,
@@ -15039,6 +15151,42 @@ var SkillDatabase = {
         ward: 1,
         isAutoAttack: true,
         desc: "Heavy ATK-based damage to one foe."
+    },
+    10106: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.2],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
+    10107: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.2, 1, 0.3, 10],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to one foe and sometimes poison target."
+    },
+    10108: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.2],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
     },
 };
 var SkillLogicFactory = (function () {
@@ -16977,7 +17125,6 @@ var BattleModel = (function () {
     function BattleModel(data, option, tierListString) {
         if (option === void 0) { option = {}; }
         this.isBloodClash = false;
-        this.procOrderType = 1 /* ANDROID */;
         this.isFinished = false;
         this.playerWon = null;
         this.p1_mainCards = [];
@@ -17001,7 +17148,6 @@ var BattleModel = (function () {
         this.logger = BattleLogger.getInstance();
         this.cardManager = CardManager.getInstance();
         var graphic = new BattleGraphic();
-        this.procOrderType = option.procOrder;
         if (option.battleType && option.battleType == 1 /* BLOOD_CLASH */) {
             this.isBloodClash = true;
         }
