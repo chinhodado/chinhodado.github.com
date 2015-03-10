@@ -266,6 +266,13 @@ var BattleBackground = (function () {
         "111/Carpet24",
         "117/Carpet25",
         "3c8/Carpet26",
+        "2f5/Carpet27",
+        "2cb/Carpet28",
+        "1b8/Carpet29",
+        "26b/Carpet30",
+        "18d/Carpet31",
+        "265/Carpet32",
+        "4bc/Carpet33",
         "392/Castle01",
         "2f9/Castle02",
         "3b4/Cave01",
@@ -273,6 +280,9 @@ var BattleBackground = (function () {
         "3bc/Cave03",
         "1ad/Cave04",
         "4d5/Cave05",
+        "494/Christmas01",
+        "3b3/Christmas02",
+        "280/Christmas03",
         "3bf/Desert01",
         "4c9/Desert02",
         "3d9/Fog01",
@@ -308,6 +318,8 @@ var BattleBackground = (function () {
         "28f/Road17",
         "2a5/Road28",
         "102/Road29",
+        "403/Road33",
+        "4a2/Road34",
         "4e9/Ruins01",
         "1f4/Sakura01",
         "336/Snow01",
@@ -6405,6 +6417,90 @@ var famDatabase = {
         img: "12a",
         fullName: "Pandora, Fallen Heroine II"
     },
+    11564: {
+        name: "Ninurta",
+        stats: [13465, 6954, 10332, 14120, 11077],
+        skills: [848],
+        autoAttack: 10007,
+        img: "292",
+        fullName: "Ninurta, the Thunderclap II"
+    },
+    11561: {
+        name: "Persephone",
+        stats: [18793, 8686, 13929, 21957, 18154],
+        skills: [844, 845],
+        autoAttack: 10007,
+        img: "4b1",
+        fullName: "Persephone, Spring Goddess II"
+    },
+    11560: {
+        name: "Bheara",
+        stats: [14975, 6502, 12207, 17475, 16754],
+        skills: [842],
+        autoAttack: 10007,
+        img: "387",
+        fullName: "Bheara, Wastestrider II"
+    },
+    21560: {
+        name: "Bheara",
+        stats: [13572, 8426, 9509, 13301, 11459],
+        skills: [843],
+        autoAttack: 10007,
+        img: "141",
+        fullName: "Bheara, Tree of Death II"
+    },
+    11562: {
+        name: "Oka",
+        stats: [16042, 5122, 12120, 17959, 17244],
+        skills: [846, 847],
+        autoAttack: 10007,
+        img: "275",
+        fullName: "Oka, Kunoichi II"
+    },
+    21558: {
+        name: "Jarilo",
+        stats: [20987, 21955, 18023, 12050, 17965],
+        skills: [841],
+        autoAttack: 10109,
+        img: "31b",
+        fullName: "Jarilo, God of Fertility"
+    },
+    11567: {
+        name: "Phlox",
+        stats: [15047, 5298, 13489, 17499, 16607],
+        skills: [863],
+        img: "23d",
+        fullName: "Phlox, Avern Witch II"
+    },
+    11569: {
+        name: "Icemelt",
+        stats: [11794, 8101, 8502, 14402, 14000],
+        skills: [858],
+        img: "408",
+        fullName: "Icemelt Dragon II"
+    },
+    21569: {
+        name: "Cocytus",
+        stats: [16497, 6248, 12001, 18252, 16995],
+        skills: [866, 867],
+        autoAttack: 10111,
+        img: "2f0",
+        fullName: "Cocytus Dragon II"
+    },
+    11570: {
+        name: "War Bear",
+        stats: [18999, 17504, 15500, 11492, 6292],
+        skills: [859, 860],
+        img: "1b8",
+        fullName: "War Bear II"
+    },
+    11565: {
+        name: "Sigurd",
+        stats: [19996, 19053, 14005, 11004, 17992],
+        skills: [864, 865],
+        img: "25e",
+        fullName: "Sigurd, Dragonslayer II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -6778,9 +6874,10 @@ function getTierList(whatToDoNext) {
     if (!localStorage.getItem("tierList") || needUpdate) {
         console.log("Fetching tier list...");
         $.ajax({
-            "url": "https://www.kimonolabs.com/api/e67eckbg?apikey=ddafaf08128df7d12e4e0f8e044d2372&callback=" + callback,
+            "url": "https://www.kimonolabs.com/api/e67eckbg?apikey=ddafaf08128df7d12e4e0f8e044d2372",
             "crossDomain": true,
-            "dataType": "jsonp"
+            "dataType": "jsonp",
+            "jsonpCallback": callback
         });
     }
     else {
@@ -7219,7 +7316,7 @@ var Skill = (function () {
     Skill.canProtectFromAttackType = function (type, attackSkill) {
         switch (type) {
             case 2 /* SKILL */:
-                return (attackSkill.skillFunc != 13 /* COUNTER */ && attackSkill.skillFunc != 14 /* PROTECT_COUNTER */ && attackSkill.skillFunc != 41 /* COUNTER_INDIRECT */ && attackSkill.id == 10000);
+                return (attackSkill.skillFunc != 13 /* COUNTER */ && attackSkill.skillFunc != 14 /* PROTECT_COUNTER */ && attackSkill.skillFunc != 41 /* COUNTER_INDIRECT */ && attackSkill.id != 10000);
             case 3 /* NOT_COUNTER */:
                 return (attackSkill.skillFunc != 13 /* COUNTER */ && attackSkill.skillFunc != 14 /* PROTECT_COUNTER */ && attackSkill.skillFunc != 41 /* COUNTER_INDIRECT */);
             default:
@@ -14324,6 +14421,276 @@ var SkillDatabase = {
         prob: 100,
         desc: "-"
     },
+    841: {
+        name: "Raging Spear",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1.35, 2, 0.25],
+        range: 32,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal ATK-based damage to and sometimes paralyze up to four foes."
+    },
+    842: {
+        name: "Icy Flame",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.6, 8, 0.25, 2500],
+        range: 19,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal heavy WIS-based damage and sometimes burn four random foes, ignoring position."
+    },
+    843: {
+        name: "Rampike Limbs",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.2],
+        range: 32,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal WIS-based damage to up to four foes, ignoring position."
+    },
+    844: {
+        name: "Infernal Gale",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.45],
+        range: 19,
+        prob: 30,
+        ward: 2,
+        desc: "Deal WIS-based damage to four random foes, ignoring position."
+    },
+    845: {
+        name: "Spring Breeze",
+        type: 1,
+        func: 44,
+        calc: 0,
+        args: [0.2, 3, 0, 0, 0, 0.3, 5],
+        range: 3,
+        prob: 70,
+        desc: "Raise WIS and reduce physical damage taken by self and adjacent familiars."
+    },
+    846: {
+        name: "Sakura Shower",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1, 2, 0.2],
+        range: 17,
+        prob: 30,
+        ward: 2,
+        desc: "Deal WIS-based damage to and sometimes paralyze six random foes, ignoring position."
+    },
+    847: {
+        name: "Petals of Confusion",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.15, 3],
+        range: 3,
+        prob: 70,
+        desc: "Raise WIS of self and adjacent familiars, based on 15% of her WIS."
+    },
+    848: {
+        name: "Gale Claw",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [2],
+        range: 23,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal massive WIS-based damage to two random foes, ignoring position."
+    },
+    849: {
+        name: "Blazing Rapier",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.15],
+        range: 16,
+        prob: 30,
+        ward: 2,
+        desc: "Deal heavy WIS-based damage to three random foes, ignoring position."
+    },
+    850: {
+        name: "Blazing Rapier",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.15],
+        range: 19,
+        prob: 30,
+        ward: 2,
+        desc: "Deal heavy WIS-based damage to four random foes, ignoring position."
+    },
+    851: {
+        name: "Blazing Rapier",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.15],
+        range: 20,
+        prob: 30,
+        ward: 2,
+        desc: "Deal heavy WIS-based damage to five random foes, ignoring position."
+    },
+    852: {
+        name: "Conflagration",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.1, 3],
+        range: 3,
+        prob: 70,
+        desc: "Raise WIS of self and adjacent familiars, based on 10% of his WIS."
+    },
+    853: {
+        name: "Conflagration",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.15, 3],
+        range: 3,
+        prob: 70,
+        desc: "Raise WIS of self and adjacent familiars, based on 15% of his WIS."
+    },
+    854: {
+        name: "Conflagration",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.2, 3],
+        range: 3,
+        prob: 70,
+        desc: "Raise WIS of self and adjacent familiars, based on 20% of his WIS."
+    },
+    855: {
+        name: "Inferno Aegis",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.1, 5],
+        range: 3,
+        prob: 70,
+        desc: "Reduce physical damage taken by self and adjacent familiars by 10%."
+    },
+    856: {
+        name: "Inferno Aegis",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.2, 5],
+        range: 3,
+        prob: 70,
+        desc: "Reduce physical damage taken by self and adjacent familiars by 20%."
+    },
+    857: {
+        name: "Inferno Aegis",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.3, 5],
+        range: 3,
+        prob: 70,
+        desc: "Reduce physical damage taken by self and adjacent familiars by 30%."
+    },
+    858: {
+        name: "Freezing Wind",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [0.85],
+        range: 20,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal WIS-based damage to five random foes, ignoring position."
+    },
+    859: {
+        name: "Lashing Claws",
+        type: 5,
+        func: 14,
+        calc: 1,
+        args: [1.45],
+        range: 2,
+        prob: 50,
+        ward: 1,
+        desc: "Take damage in place of adjacent familiars and counter."
+    },
+    860: {
+        name: "Last Stand",
+        type: 1,
+        func: 44,
+        calc: 1,
+        args: [0.3, 17, 0, 0, 0, 0.3, 2],
+        range: 3,
+        prob: 70,
+        desc: "Raise HP/DEF of self and adjacent familiars on 30% of its ATK respectively."
+    },
+    863: {
+        name: "Popping Petals",
+        type: 2,
+        func: 33,
+        calc: 2,
+        args: [1.3, 3, 0.2, 0.1],
+        range: 20,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal WIS-based damage to five random foes and sometimes greatly lower WIS."
+    },
+    864: {
+        name: "Reforged Blade",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1.75],
+        range: 16,
+        prob: 30,
+        ward: 1,
+        desc: "Deal heavy ATK-based damage to three random foes."
+    },
+    865: {
+        name: "Dragonblood Ward",
+        type: 6,
+        func: 27,
+        calc: 0,
+        args: [2, 10, 78, 79],
+        range: 21,
+        prob: 50,
+        desc: "Evade enemy WIS-based and AGI-based attack skills."
+    },
+    866: {
+        name: "Winds of Sorrow",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.6, 3, 0.3],
+        range: 314,
+        prob: 30,
+        ward: 2,
+        desc: "Heavy WIS-based damage and sometimes freeze up to four foes. Increased if fewer foes."
+    },
+    867: {
+        name: "Tail Blizzard",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.1, 4],
+        range: 3,
+        prob: 70,
+        desc: "Raise AGI of self and adjacent familiars at start of battle."
+    },
     10001: {
         name: "Standard Action",
         type: 2,
@@ -15187,6 +15554,30 @@ var SkillDatabase = {
         ward: 1,
         isAutoAttack: true,
         desc: "ATK-based damage to one foe."
+    },
+    10109: {
+        name: "Standard Action",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [0.7],
+        range: 6,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage up to two foes."
+    },
+    10111: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1, 3, 0.2],
+        range: 5,
+        prob: 100,
+        ward: 2,
+        isAutoAttack: true,
+        desc: "WIS-based damage and sometimes freeze target."
     },
 };
 var SkillLogicFactory = (function () {
