@@ -6469,6 +6469,7 @@ var famDatabase = {
         name: "Phlox",
         stats: [15047, 5298, 13489, 17499, 16607],
         skills: [863],
+        autoAttack: 10003,
         img: "23d",
         fullName: "Phlox, Avern Witch II"
     },
@@ -6500,6 +6501,46 @@ var famDatabase = {
         skills: [864, 865],
         img: "25e",
         fullName: "Sigurd, Dragonslayer II"
+    },
+    11574: {
+        name: "Dryad",
+        stats: [15186, 17060, 14449, 6487, 16670],
+        skills: [870],
+        autoAttack: 10103,
+        img: "3c2",
+        fullName: "Dryad Archer II"
+    },
+    11572: {
+        name: "Banshee",
+        stats: [23560, 16009, 21480, 24708, 18533],
+        skills: [872, 873],
+        autoAttack: 10114,
+        img: "42d",
+        fullName: "Banshee Rider II"
+    },
+    11577: {
+        name: "Emerald",
+        stats: [25012, 24383, 21881, 12272, 18208],
+        skills: [868],
+        autoAttack: 10112,
+        img: "342",
+        fullName: "Emerald Dragon II"
+    },
+    21571: {
+        name: "Rattlebolt",
+        stats: [19552, 11502, 20007, 20999, 18221],
+        skills: [861, 862],
+        autoAttack: 10110,
+        img: "35b",
+        fullName: "Rattlebolt Wyvern"
+    },
+    11576: {
+        name: "Lubberkin",
+        stats: [15793, 12965, 16144, 6078, 17060],
+        skills: [871],
+        autoAttack: 10061,
+        img: "1fc",
+        fullName: "Lubberkin, Four Leaf Clover II"
     },
 };
 var FamProvider = (function () {
@@ -7299,6 +7340,8 @@ var Skill = (function () {
     };
     Skill.canProtectFromCalcType = function (type, attackSkill) {
         switch (type) {
+            case 0 /* DEFAULT */:
+                return true;
             case 1 /* ATK */:
             case 2 /* WIS */:
             case 3 /* AGI */:
@@ -7310,7 +7353,7 @@ var Skill = (function () {
             case 10 /* WIS_AGI */:
                 return attackSkill.skillCalcType == 2 /* WIS */ || attackSkill.skillCalcType == 3 /* AGI */;
             default:
-                return false;
+                throw new Error("Unimplemented calcType for canProtectFromCalcType()");
         }
     };
     Skill.canProtectFromAttackType = function (type, attackSkill) {
@@ -14408,7 +14451,7 @@ var SkillDatabase = {
         calc: 0,
         args: [840, 16],
         range: 21,
-        prob: 50,
+        prob: 70,
         desc: "Revive and fully restore HP of self upon her death."
     },
     840: {
@@ -14637,6 +14680,27 @@ var SkillDatabase = {
         prob: 70,
         desc: "Raise HP/DEF of self and adjacent familiars on 30% of its ATK respectively."
     },
+    861: {
+        name: "Flame Gout",
+        type: 2,
+        func: 34,
+        calc: 2,
+        args: [1.35, 2, 0.25, 0.15],
+        range: 208,
+        prob: 30,
+        ward: 3,
+        desc: "WIS-based DMG and sometimes lower DEF of all foes. Increased if fewer foes."
+    },
+    862: {
+        name: "Brass Wing",
+        type: 5,
+        func: 28,
+        calc: 7,
+        args: [0.23, 0, 7, 3, 0.3],
+        range: 21,
+        prob: 50,
+        desc: "Reflect 70% of all kinds of damages back to up to three foes."
+    },
     863: {
         name: "Popping Petals",
         type: 2,
@@ -14690,6 +14754,63 @@ var SkillDatabase = {
         range: 3,
         prob: 70,
         desc: "Raise AGI of self and adjacent familiars at start of battle."
+    },
+    868: {
+        name: "Emerald Flame",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1.1, 1, 0.3, 10],
+        range: 20,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal ATK-based damage to and sometimes poison five random foes."
+    },
+    870: {
+        name: "Oak Arrow",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [2, 2, 0.4],
+        range: 313,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Massive ATK-based damage, sometimes paralyze up to three foes. Increased if fewer foes."
+    },
+    871: {
+        name: "Flying Leaf",
+        type: 2,
+        func: 4,
+        calc: 3,
+        args: [1.6],
+        range: 314,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Heavy AGI-based damage to up to four foes, ignoring position. Increased if fewer foes."
+    },
+    872: {
+        name: "Fervent Hooves",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.35],
+        range: 20,
+        prob: 30,
+        ward: 2,
+        desc: "Deal WIS-based damage to five random foes."
+    },
+    873: {
+        name: "Binding Whip",
+        type: 1,
+        func: 19,
+        calc: 0,
+        args: [0, 2, 0.3],
+        range: 7,
+        prob: 70,
+        desc: "Chance to paralyze up to three foes at start of battle."
     },
     10001: {
         name: "Standard Action",
@@ -15567,6 +15688,18 @@ var SkillDatabase = {
         isAutoAttack: true,
         desc: "ATK-based damage up to two foes."
     },
+    10110: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1],
+        range: 5,
+        prob: 100,
+        ward: 3,
+        isAutoAttack: true,
+        desc: "WIS-based damage to one foe."
+    },
     10111: {
         name: "Standard Action",
         type: 2,
@@ -15578,6 +15711,42 @@ var SkillDatabase = {
         ward: 2,
         isAutoAttack: true,
         desc: "WIS-based damage and sometimes freeze target."
+    },
+    10112: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.2, 1, 0.2, 10],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to one foe and sometimes poison target."
+    },
+    10113: {
+        name: "Standard Action",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1.5],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "Heavy ATK-based damage to one foe."
+    },
+    10114: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.2, 2, 0.3],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage and sometimes paralyze target."
     },
 };
 var SkillLogicFactory = (function () {
