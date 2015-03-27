@@ -1780,6 +1780,7 @@ var ENUM;
         SkillFunc[SkillFunc["MULTI_BUFF"] = 44] = "MULTI_BUFF";
         SkillFunc[SkillFunc["MULTI_DEBUFF"] = 45] = "MULTI_DEBUFF";
         SkillFunc[SkillFunc["DEBUFF_AFFLICTION"] = 46] = "DEBUFF_AFFLICTION";
+        SkillFunc[SkillFunc["ABSORB"] = 51] = "ABSORB";
     })(ENUM.SkillFunc || (ENUM.SkillFunc = {}));
     var SkillFunc = ENUM.SkillFunc;
     (function (SkillCalcType) {
@@ -1842,6 +1843,23 @@ var ENUM;
         StatusType[StatusType["REMAIN_HP_ATK_WIS_AGI_UP"] = 29] = "REMAIN_HP_ATK_WIS_AGI_UP";
     })(ENUM.StatusType || (ENUM.StatusType = {}));
     var StatusType = ENUM.StatusType;
+    (function (BuffStatusType) {
+        BuffStatusType[BuffStatusType["ATK"] = 1] = "ATK";
+        BuffStatusType[BuffStatusType["DEF"] = 2] = "DEF";
+        BuffStatusType[BuffStatusType["WIS"] = 3] = "WIS";
+        BuffStatusType[BuffStatusType["AGI"] = 4] = "AGI";
+        BuffStatusType[BuffStatusType["ATK_DEF"] = 5] = "ATK_DEF";
+        BuffStatusType[BuffStatusType["ATK_WIS"] = 6] = "ATK_WIS";
+        BuffStatusType[BuffStatusType["ATK_AGI"] = 7] = "ATK_AGI";
+        BuffStatusType[BuffStatusType["DEF_WIS"] = 8] = "DEF_WIS";
+        BuffStatusType[BuffStatusType["DEF_AGI"] = 9] = "DEF_AGI";
+        BuffStatusType[BuffStatusType["WIS_AGI"] = 10] = "WIS_AGI";
+        BuffStatusType[BuffStatusType["ATK_DEF_WIS"] = 11] = "ATK_DEF_WIS";
+        BuffStatusType[BuffStatusType["ATK_DEF_AGI"] = 12] = "ATK_DEF_AGI";
+        BuffStatusType[BuffStatusType["DEF_WIS_AGI"] = 13] = "DEF_WIS_AGI";
+        BuffStatusType[BuffStatusType["ALL_STATUS"] = 14] = "ALL_STATUS";
+    })(ENUM.BuffStatusType || (ENUM.BuffStatusType = {}));
+    var BuffStatusType = ENUM.BuffStatusType;
     (function (SkillRange) {
         SkillRange[SkillRange["EITHER_SIDE"] = 1] = "EITHER_SIDE";
         SkillRange[SkillRange["BOTH_SIDES"] = 2] = "BOTH_SIDES";
@@ -2219,6 +2237,22 @@ var Card = (function () {
         }
         else {
             throw new Error("Invalid stat type");
+        }
+    };
+    Card.prototype.getOriginalStat = function (statType) {
+        switch (statType) {
+            case "HP":
+                return this.originalStats.hp;
+            case "ATK":
+                return this.originalStats.atk;
+            case "DEF":
+                return this.originalStats.def;
+            case "WIS":
+                return this.originalStats.wis;
+            case "AGI":
+                return this.originalStats.agi;
+            default:
+                throw new Error("Invalid StatType!");
         }
     };
     Card.prototype.setAffliction = function (type, option) {
@@ -6542,6 +6576,21 @@ var famDatabase = {
         img: "1fc",
         fullName: "Lubberkin, Four Leaf Clover II"
     },
+    11582: {
+        name: "Vlad",
+        stats: [18934, 8491, 15240, 19812, 18024],
+        skills: [877, 878],
+        autoAttack: 10007,
+        img: "187",
+        fullName: "Vlad, Swap II"
+    },
+    11521: {
+        name: "Wrath",
+        stats: [19010, 21101, 16410, 11936, 18154],
+        skills: [706, 707],
+        img: "279",
+        fullName: "Wrath, Beast of Sin II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -7260,15 +7309,17 @@ var Skill = (function () {
         return SkillDatabase[skillId].isAutoAttack;
     };
     Skill.isMagicSkill = function (skillId) {
-        var isMagicSkill = false;
         var skillInfo = SkillDatabase[skillId];
         if (skillInfo.calc == 2 /* WIS */) {
-            isMagicSkill = true;
+            return true;
         }
-        if ([19 /* AFFLICTION */, 1 /* BUFF */, 2 /* DEBUFF */, 44 /* MULTI_BUFF */, 45 /* MULTI_DEBUFF */, 46 /* DEBUFF_AFFLICTION */, 4 /* MAGIC */, 34 /* CASTER_BASED_DEBUFF_MAGIC */, 37 /* DRAIN_MAGIC */].indexOf(skillInfo.func) != -1) {
-            isMagicSkill = true;
+        if (skillInfo.type == 1 /* OPENING */) {
+            return true;
         }
-        return isMagicSkill;
+        if ([19 /* AFFLICTION */, 1 /* BUFF */, 2 /* DEBUFF */, 44 /* MULTI_BUFF */, 45 /* MULTI_DEBUFF */, 46 /* DEBUFF_AFFLICTION */, 4 /* MAGIC */, 34 /* CASTER_BASED_DEBUFF_MAGIC */, 51 /* ABSORB */, 37 /* DRAIN_MAGIC */].indexOf(skillInfo.func) != -1) {
+            return true;
+        }
+        return false;
     };
     Skill.isAoeSkill = function (skillId) {
         var isAoe = false;
@@ -7332,6 +7383,9 @@ var Skill = (function () {
                 statuses.push(skillInfo.args[1]);
                 if (skillInfo.args[2])
                     statuses.push(skillInfo.args[2]);
+                break;
+            case 51 /* ABSORB */:
+                statuses = AbsorbSkillLogic.getComponentStatusFromBuffStatusType(skillInfo.args[1]);
                 break;
             default:
                 break;
@@ -14011,6 +14065,27 @@ var SkillDatabase = {
         sac: 1,
         desc: "Deal ATK-based damage to five random foes and sometimes poison them, ignoring position."
     },
+    706: {
+        name: "Storm of Wrath",
+        type: 2,
+        func: 36,
+        calc: 1,
+        args: [1.1, 0.2, 27, 21],
+        range: 20,
+        prob: 30,
+        ward: 1,
+        desc: "Drains HP from five random foes while dealing ATK-based damage."
+    },
+    707: {
+        name: "Furious Roar",
+        type: 1,
+        func: 51,
+        calc: 0,
+        args: [0, 1, 0.35, 2, 0.35, 1, 121, 120, 43],
+        range: 7,
+        prob: 70,
+        desc: "Absorbs ATK from up to three foes at beginning of battles."
+    },
     708: {
         name: "Discipline",
         type: 2,
@@ -14811,6 +14886,27 @@ var SkillDatabase = {
         range: 7,
         prob: 70,
         desc: "Chance to paralyze up to three foes at start of battle."
+    },
+    877: {
+        name: "Blood Blade",
+        type: 2,
+        func: 37,
+        calc: 2,
+        args: [1.7, 0.3, 27, 21],
+        range: 19,
+        prob: 30,
+        ward: 2,
+        desc: "Drains HP from four random foes while dealing heavy WIS-based damage."
+    },
+    878: {
+        name: "Eye of Confusion",
+        type: 1,
+        func: 51,
+        calc: 0,
+        args: [0, 10, 0.08, 2, 0.35, 1, 121, 120, 43],
+        range: 16,
+        prob: 70,
+        desc: "Absorbs AGI and WIS from three random foes at the beginning of battles."
     },
     10001: {
         name: "Standard Action",
@@ -15813,6 +15909,8 @@ var SkillLogicFactory = (function () {
                 return new TurnOrderChangeSkillLogic();
             case 24 /* RANDOM */:
                 return new RandomSkillLogic();
+            case 51 /* ABSORB */:
+                return new AbsorbSkillLogic();
             default:
                 throw new Error("Invalid skillFunc or not implemented");
         }
@@ -15842,6 +15940,36 @@ var SkillLogic = (function () {
         var allCards = this.cardManager.getAllCurrentMainCards();
         for (var i = 0; i < allCards.length; i++) {
             allCards[i].clearDamagePhaseData();
+        }
+    };
+    SkillLogic.prototype.getComponentStatus = function (type) {
+        switch (type) {
+            case 9 /* ALL_STATUS */:
+                return [1 /* ATK */, 2 /* DEF */, 3 /* WIS */, 4 /* AGI */];
+            case 15 /* REMAIN_HP_ALL_STATUS_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 20 /* REMAIN_HP_ATK_DEF_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */];
+            case 21 /* REMAIN_HP_ATK_WIS_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 13 /* REMAIN_HP_WIS_UP */];
+            case 22 /* REMAIN_HP_ATK_AGI_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 23 /* REMAIN_HP_DEF_WIS_UP */:
+                return [12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */];
+            case 24 /* REMAIN_HP_DEF_AGI_UP */:
+                return [12 /* REMAIN_HP_DEF_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 25 /* REMAIN_HP_WIS_AGI_UP */:
+                return [13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 26 /* REMAIN_HP_ATK_DEF_WIS_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */];
+            case 27 /* REMAIN_HP_ATK_DEF_AGI_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 28 /* REMAIN_HP_DEF_WIS_AGI_UP */:
+                return [12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 29 /* REMAIN_HP_ATK_WIS_AGI_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            default:
+                return null;
         }
     };
     return SkillLogic;
@@ -15931,36 +16059,6 @@ var BuffSkillLogic = (function (_super) {
             }
         }
     };
-    BuffSkillLogic.prototype.getComponentStatus = function (type) {
-        switch (type) {
-            case 9 /* ALL_STATUS */:
-                return [1 /* ATK */, 2 /* DEF */, 3 /* WIS */, 4 /* AGI */];
-            case 15 /* REMAIN_HP_ALL_STATUS_UP */:
-                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
-            case 20 /* REMAIN_HP_ATK_DEF_UP */:
-                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */];
-            case 21 /* REMAIN_HP_ATK_WIS_UP */:
-                return [11 /* REMAIN_HP_ATK_UP */, 13 /* REMAIN_HP_WIS_UP */];
-            case 22 /* REMAIN_HP_ATK_AGI_UP */:
-                return [11 /* REMAIN_HP_ATK_UP */, 14 /* REMAIN_HP_AGI_UP */];
-            case 23 /* REMAIN_HP_DEF_WIS_UP */:
-                return [12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */];
-            case 24 /* REMAIN_HP_DEF_AGI_UP */:
-                return [12 /* REMAIN_HP_DEF_UP */, 14 /* REMAIN_HP_AGI_UP */];
-            case 25 /* REMAIN_HP_WIS_AGI_UP */:
-                return [13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
-            case 26 /* REMAIN_HP_ATK_DEF_WIS_UP */:
-                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */];
-            case 27 /* REMAIN_HP_ATK_DEF_AGI_UP */:
-                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 14 /* REMAIN_HP_AGI_UP */];
-            case 28 /* REMAIN_HP_DEF_WIS_AGI_UP */:
-                return [12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
-            case 29 /* REMAIN_HP_ATK_WIS_AGI_UP */:
-                return [11 /* REMAIN_HP_ATK_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
-            default:
-                return null;
-        }
-    };
     return BuffSkillLogic;
 })(SkillLogic);
 var MultiBuffSkillLogic = (function (_super) {
@@ -16034,6 +16132,97 @@ var DebuffAfflictionSkillLogic = (function (_super) {
         tempAfflictionSkillLogic.execute(data);
     };
     return DebuffAfflictionSkillLogic;
+})(SkillLogic);
+var AbsorbSkillLogic = (function (_super) {
+    __extends(AbsorbSkillLogic, _super);
+    function AbsorbSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    AbsorbSkillLogic.prototype.execute = function (data) {
+        var skill = data.skill;
+        var executor = data.executor;
+        skill.getReady(executor);
+        var target;
+        var statusToBuff = AbsorbSkillLogic.getComponentStatusFromBuffStatusType(skill.skillFuncArg2);
+        var debuffMulti = skill.skillFuncArg3;
+        while (target = skill.getTarget(executor)) {
+            for (var j = 0; j < statusToBuff.length; j++) {
+                var statusType = statusToBuff[j];
+                console.assert(skill.skillFuncArg4 == 2 /* WIS */, "Non WIS-based debuff unimplemented!");
+                console.assert(skill.skillFuncArg6 == 1, "Absorb doesn't have 100% probability - unimplemented!");
+                var isNewLogic = false;
+                var debuffAmount = Math.floor(executor.getWIS() * debuffMulti);
+                var lowStatLimit = target.getOriginalStat(ENUM.StatusType[statusType]) * Card.NEW_DEBUFF_LOW_LIMIT_FACTOR;
+                var currentStat = target.getStat(ENUM.StatusType[statusType]);
+                var maxDebuffLimit = lowStatLimit > currentStat ? 0 : currentStat - lowStatLimit;
+                if (debuffAmount > maxDebuffLimit) {
+                    debuffAmount = maxDebuffLimit;
+                }
+                target.changeStatus(statusType, -debuffAmount, isNewLogic);
+                this.logger.addMinorEvent({
+                    executorId: executor.id,
+                    targetId: target.id,
+                    type: 2 /* STATUS */,
+                    status: {
+                        type: statusType,
+                        isNewLogic: isNewLogic
+                    },
+                    description: target.name + "'s " + ENUM.StatusType[statusType] + " decreased by " + Math.abs(debuffAmount),
+                    amount: -debuffAmount,
+                    skillId: skill.id
+                });
+                var buffAmount = Math.floor(Math.abs(debuffAmount) * skill.skillFuncArg5);
+                executor.changeStatus(statusType, buffAmount, false);
+                this.logger.addMinorEvent({
+                    executorId: executor.id,
+                    targetId: executor.id,
+                    type: 2 /* STATUS */,
+                    status: {
+                        type: statusType,
+                        isAllUp: skill.skillFuncArg2 == 9 /* ALL_STATUS */
+                    },
+                    description: executor.name + "'s " + ENUM.StatusType[statusType] + " increased by " + buffAmount,
+                    amount: buffAmount,
+                    skillId: skill.id
+                });
+            }
+        }
+    };
+    AbsorbSkillLogic.getComponentStatusFromBuffStatusType = function (type) {
+        switch (type) {
+            case 1 /* ATK */:
+                return [1 /* ATK */];
+            case 2 /* DEF */:
+                return [2 /* DEF */];
+            case 3 /* WIS */:
+                return [3 /* WIS */];
+            case 4 /* AGI */:
+                return [4 /* AGI */];
+            case 5 /* ATK_DEF */:
+                return [1 /* ATK */, 2 /* DEF */];
+            case 6 /* ATK_WIS */:
+                return [1 /* ATK */, 3 /* WIS */];
+            case 7 /* ATK_AGI */:
+                return [1 /* ATK */, 4 /* AGI */];
+            case 8 /* DEF_WIS */:
+                return [2 /* DEF */, 3 /* WIS */];
+            case 9 /* DEF_AGI */:
+                return [2 /* DEF */, 4 /* AGI */];
+            case 10 /* WIS_AGI */:
+                return [3 /* WIS */, 4 /* AGI */];
+            case 11 /* ATK_DEF_WIS */:
+                return [1 /* ATK */, 2 /* DEF */, 3 /* WIS */];
+            case 12 /* ATK_DEF_AGI */:
+                return [1 /* ATK */, 2 /* DEF */, 4 /* AGI */];
+            case 13 /* DEF_WIS_AGI */:
+                return [2 /* DEF */, 3 /* WIS */, 4 /* AGI */];
+            case 14 /* ALL_STATUS */:
+                return [1 /* ATK */, 2 /* DEF */, 3 /* WIS */, 4 /* AGI */];
+            default:
+                return [3 /* WIS */];
+        }
+    };
+    return AbsorbSkillLogic;
 })(SkillLogic);
 var ClearStatusSkillLogic = (function (_super) {
     __extends(ClearStatusSkillLogic, _super);
