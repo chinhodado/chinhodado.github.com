@@ -357,7 +357,7 @@ var BattleDebugger = (function () {
         var majorLog = BattleLogger.getInstance().majorEventLog;
         var currentTurn = -10;
         for (var i = 0; i < majorLog.length; i++) {
-            if (majorLog[i].turn != currentTurn) {
+            if (majorLog[i].turn !== currentTurn) {
                 currentTurn = majorLog[i].turn;
                 this.displayTurn(currentTurn);
             }
@@ -385,7 +385,7 @@ var BattleDebugger = (function () {
         newEvent.setAttribute("tabindex", index + "");
         newEvent.setAttribute("id", index + "");
         newEvent.onclick = function () {
-            BattleDebugger.getInstance().displayEventLogAtIndex(this.id);
+            BattleDebugger.getInstance().displayEventLogAtIndex(+this.id);
         };
         turnEventList.appendChild(newEvent);
     };
@@ -422,12 +422,12 @@ var BattleDebugger = (function () {
         }
         var graphic = BattleGraphic.getInstance();
         var logger = BattleLogger.getInstance();
-        var lastEventIndex = (majorIndex == 0) ? 0 : majorIndex - 1;
+        var lastEventIndex = (majorIndex === 0) ? 0 : majorIndex - 1;
         var lastEventField = logger.getFieldAtMajorIndex(lastEventIndex);
         var field = logger.getFieldAtMajorIndex(majorIndex);
         for (var p = 1; p <= 2; p++) {
-            var playerCards = field["player" + p + "Cards"];
-            var lastPlayerCards = lastEventField["player" + p + "Cards"];
+            var playerCards = field[("player" + p + "Cards")];
+            var lastPlayerCards = lastEventField[("player" + p + "Cards")];
             for (var f = 0; f < 5; f++) {
                 var stats = playerCards[f].stats;
                 var originalStats = playerCards[f].originalStats;
@@ -454,28 +454,28 @@ var BattleDebugger = (function () {
                     wis: "WIS: " + finalWis,
                     agi: "AGI: " + finalAgi,
                 };
-                if (status.attackResistance != 0)
+                if (status.attackResistance !== 0)
                     infoText.physicalResist = "PW: " + status.attackResistance;
-                if (status.magicResistance != 0)
+                if (status.magicResistance !== 0)
                     infoText.magicalResist = "MW: " + status.magicResistance;
-                if (status.breathResistance != 0)
+                if (status.breathResistance !== 0)
                     infoText.breathResist = "BW: " + status.breathResistance;
-                if (status.willAttackAgain != 0)
+                if (status.willAttackAgain !== 0)
                     infoText.willAttackAgain = "Extra action: Yes";
-                if (status.skillProbability != 0)
+                if (status.skillProbability !== 0)
                     infoText.skillProbability = "Extra prob.: " + status.skillProbability;
-                if (status.hpShield != 0)
+                if (status.hpShield !== 0)
                     infoText.hpShield = "HP Shld.: " + status.hpShield;
                 if (afflict) {
                     infoText.affliction = "Affliction: " + Affliction.getAfflictionAdjective(afflict.type);
                     if (afflict.type === 5 /* SILENT */) {
-                        infoText.affliction += (" (" + afflict.validTurnNum + " turn)");
+                        infoText.affliction += " (" + afflict.validTurnNum + " turn)";
                     }
                     else if (afflict.type === 1 /* POISON */) {
-                        infoText.affliction += (" (" + afflict.percent + " %)");
+                        infoText.affliction += " (" + afflict.percent + " %)";
                     }
                     else if (afflict.type === 8 /* BURN */) {
-                        infoText.affliction += (" (" + afflict.damage + ")");
+                        infoText.affliction += " (" + afflict.damage + ")";
                     }
                     else {
                         infoText.affliction += " (1 turn)";
@@ -525,8 +525,8 @@ var BattleDebugger = (function () {
                     infoText.name = "<b>" + infoText.name + "</b>";
                 }
                 var htmlelem = document.getElementById("player" + p + "Fam" + f);
-                htmlelem.innerHTML = infoText.name + "<br>" + infoText.hp + "<br>" + infoText.atk + "<br>" + infoText.def + "<br>" + infoText.wis + "<br>" + infoText.agi + (infoText.physicalResist ? ("<br>" + infoText.physicalResist) : "") + (infoText.magicalResist ? ("<br>" + infoText.magicalResist) : "") + (infoText.breathResist ? ("<br>" + infoText.breathResist) : "") + (infoText.willAttackAgain ? ("<br>" + infoText.willAttackAgain) : "") + (infoText.skillProbability ? ("<br>" + infoText.skillProbability) : "") + (infoText.hpShield ? ("<br>" + infoText.hpShield) : "") + (infoText.affliction ? ("<br>" + infoText.affliction) : "");
-                var lastEventCard = lastEventField["player" + p + "Cards"][f];
+                htmlelem.innerHTML = infoText.name + "<br>" + infoText.hp + "<br>" + infoText.atk + "<br>" + infoText.def + "<br>" + infoText.wis + "<br>" + infoText.agi + (infoText.physicalResist ? "<br>" + infoText.physicalResist : "") + (infoText.magicalResist ? "<br>" + infoText.magicalResist : "") + (infoText.breathResist ? "<br>" + infoText.breathResist : "") + (infoText.willAttackAgain ? "<br>" + infoText.willAttackAgain : "") + (infoText.skillProbability ? "<br>" + infoText.skillProbability : "") + (infoText.hpShield ? "<br>" + infoText.hpShield : "") + (infoText.affliction ? "<br>" + infoText.affliction : "");
+                var lastEventCard = lastEventField[("player" + p + "Cards")][f];
                 graphic.displayHP(lastEventCard.stats.hp / lastEventCard.originalStats.hp * 100, p, f, 0);
             }
         }
@@ -630,7 +630,7 @@ var BattleGraphic = (function () {
             var verticalStep = PLAYER_GROUP_HEIGHT / 2;
             var coordArray = [];
             this.coordArray[player] = coordArray;
-            var groupPlayer = draw.group().attr('id', 'p' + player + 'group');
+            var groupPlayer = draw.group().attr('id', "p" + player + "group");
             if ((BattleGraphic.HIDE_PLAYER1 && player == 1) || (BattleGraphic.HIDE_PLAYER2 && player == 2)) {
                 groupPlayer.hide();
             }
@@ -665,12 +665,12 @@ var BattleGraphic = (function () {
             for (i = 0; i < 5; i++) {
                 var image_x_coord = coordArray[i][0] - BattleGraphic.IMAGE_WIDTH / 2;
                 var image_y_coord = coordArray[i][1] - BattleGraphic.IMAGE_WIDTH * 1.5 / 2;
-                var image = draw.image(imageLinksArray[i]).move(image_x_coord, image_y_coord).attr('id', 'p' + player + 'f' + i + 'image').loaded(function (loader) {
+                var image = draw.image(imageLinksArray[i]).move(image_x_coord, image_y_coord).attr('id', "p" + player + "f" + i + "image").loaded(function (loader) {
                     this.size(BattleGraphic.IMAGE_WIDTH);
                 });
-                var damageText = draw.text('0').font({ size: wr * 22, family: BattleGraphic.FONT }).attr({ fill: '#fff', stroke: '#000', 'stroke-width': hr * 2 + 'px' }).center(coordArray[i][0], coordArray[i][1]).attr('id', 'p' + player + 'f' + i + 'damageText').opacity(0);
-                var explosion = draw.image('img/explosion.png', wr * 70, wr * 70).move(image_x_coord, image_y_coord).attr('id', 'p' + player + 'f' + i + 'explosion').opacity(0);
-                var group = draw.group().attr('id', 'p' + player + 'f' + i + 'group');
+                var damageText = draw.text('0').font({ size: wr * 22, family: BattleGraphic.FONT }).attr({ fill: '#fff', stroke: '#000', 'stroke-width': hr * 2 + 'px' }).center(coordArray[i][0], coordArray[i][1]).attr('id', "p" + player + "f" + i + "damageText").opacity(0);
+                var explosion = draw.image('img/explosion.png', wr * 70, wr * 70).move(image_x_coord, image_y_coord).attr('id', "p" + player + "f" + i + "explosion").opacity(0);
+                var group = draw.group().attr('id', "p" + player + "f" + i + "group");
                 group.add(image);
                 group.add(damageText);
                 group.add(explosion);
@@ -708,8 +708,8 @@ var BattleGraphic = (function () {
         var field = this.logger.getFieldAtMajorIndex(majorIndex);
         for (var p = 1; p <= 2; p++) {
             for (var f = 0; f < 5; f++) {
-                var image = SVG.get('p' + p + 'f' + f + 'image');
-                var card = field["player" + p + "Cards"][f];
+                var image = SVG.get("p" + p + "f" + f + "image");
+                var card = field[("player" + p + "Cards")][f];
                 image.load(getScaledFamiliarWikiaImageLink(card.imageLink, card.fullName, BattleGraphic.IMAGE_WIDTH_BIG));
             }
         }
@@ -725,15 +725,15 @@ var BattleGraphic = (function () {
         if (percent < 0) {
             percent = 0;
         }
-        var hpbarId = 'p' + player + 'f' + index + 'hp';
+        var hpbarId = "p" + player + "f" + index + "hp";
         var hpbar = SVG.get(hpbarId);
         if (!hpbar) {
             hpbar = draw.rect(width, height).style({ 'stroke-width': BattleGraphic.wr * 1, 'stroke': '#000000' }).attr('id', hpbarId).move(xstart, ystart);
-            var groupId = 'p' + player + 'f' + index + 'group';
+            var groupId = "p" + player + "f" + index + "group";
             var group = SVG.get(groupId);
             group.add(hpbar);
         }
-        var hpGradientId = 'p' + player + 'f' + index + 'hpGradient';
+        var hpGradientId = "p" + player + "f" + index + "hpGradient";
         var hpGradient = SVG.get(hpGradientId);
         var duration = 1;
         if (!isNaN(animDuration)) {
@@ -741,14 +741,14 @@ var BattleGraphic = (function () {
         }
         if (!hpGradient) {
             hpGradient = draw.gradient('linear', function (stop) {
-                stop.at({ offset: '100%', color: '#00ff00' }).attr('id', 'p' + player + 'f' + index + 'hpgs1');
-                stop.at({ offset: '100%', color: 'transparent' }).attr('id', 'p' + player + 'f' + index + 'hpgs2');
+                stop.at({ offset: '100%', color: '#00ff00' }).attr('id', "p" + player + "f" + index + "hpgs1");
+                stop.at({ offset: '100%', color: 'transparent' }).attr('id', "p" + player + "f" + index + "hpgs2");
             }).attr('id', hpGradientId);
             hpbar.fill(hpGradient);
         }
         else {
-            var s1 = SVG.get('p' + player + 'f' + index + 'hpgs1');
-            var s2 = SVG.get('p' + player + 'f' + index + 'hpgs2');
+            var s1 = SVG.get("p" + player + "f" + index + "hpgs1");
+            var s2 = SVG.get("p" + player + "f" + index + "hpgs2");
             s1.animate(duration + 's').update({ offset: percent + '%' });
             s2.animate(duration + 's').update({ offset: percent + '%' });
         }
@@ -756,7 +756,7 @@ var BattleGraphic = (function () {
     };
     BattleGraphic.prototype.displayDamageTextAndHP = function (playerId, famIndex, majorIndex, minorIndex) {
         var field = this.logger.getFieldAtMinorIndex(majorIndex, minorIndex);
-        var targetInfo = field["player" + playerId + "Cards"][famIndex];
+        var targetInfo = field[("player" + playerId + "Cards")][famIndex];
         var stats = targetInfo.stats;
         var originalStats = targetInfo.originalStats;
         var center_x = this.coordArray[playerId][famIndex][0];
@@ -778,9 +778,12 @@ var BattleGraphic = (function () {
         if (data.amount > 0) {
             txtColor = '#00ff00';
         }
-        var damageText = SVG.get('p' + playerId + 'f' + famIndex + 'damageText');
+        var damageText = SVG.get("p" + playerId + "f" + famIndex + "damageText");
         damageText.text(txt).font({ size: BattleGraphic.wr * 22 }).attr({ fill: txtColor }).center(center_x, center_y).opacity(1).front();
-        damageText.animate({ duration: '2s' }).opacity(0);
+        damageText.animate({ duration: '2s' }).opacity(0).after(function () {
+            this.text('-');
+            this.center(center_x, center_y);
+        });
         this.displayHP(stats.hp / originalStats.hp * 100, playerId, famIndex);
     };
     BattleGraphic.prototype.displayWard = function (playerId, famIndex, majorIndex, minorIndex) {
@@ -810,6 +813,7 @@ var BattleGraphic = (function () {
         var svgAfflictTxt = this.getAfflictionText(playerId, famIndex);
         if (data.affliction.isFinished) {
             svgAfflictTxt.hide();
+            svgAfflictTxt.text('-');
         }
         else {
             var text = Affliction.getAfflictionAdjective(data.affliction.type);
@@ -821,9 +825,10 @@ var BattleGraphic = (function () {
         for (var player = 1; player <= 2; player++) {
             for (var fam = 0; fam < 5; fam++) {
                 var svgAfflictTxt = this.getAfflictionText(player, fam);
-                var data = field["player" + player + "Cards"][fam];
+                var data = field[("player" + player + "Cards")][fam];
                 if (!data.affliction) {
                     svgAfflictTxt.hide();
+                    svgAfflictTxt.text('-');
                 }
                 else {
                     var text = Affliction.getAfflictionAdjective(data.affliction.type);
@@ -839,7 +844,7 @@ var BattleGraphic = (function () {
     BattleGraphic.prototype.displayDeadAliveFamiliar = function (player, fam, isDead) {
         var image;
         if (0 /* IS_MOBILE */) {
-            image = document.getElementById('p' + player + 'f' + fam + 'image');
+            image = document.getElementById("p" + player + "f" + fam + "image");
             if (isDead) {
                 image.style.opacity = 0.4;
             }
@@ -848,7 +853,7 @@ var BattleGraphic = (function () {
             }
         }
         else {
-            image = SVG.get('p' + player + 'f' + fam + 'image');
+            image = SVG.get("p" + player + "f" + fam + "image");
             var filter = SVG.get('darkenFilter');
             if (isDead) {
                 if (!filter) {
@@ -929,7 +934,7 @@ var BattleGraphic = (function () {
             else {
                 procEffect = this.getProcEffect(executor.getPlayerId(), executor.formationColumn, 'lineSpark');
             }
-            SVG.get('p' + executor.getPlayerId() + 'f' + executor.formationColumn + 'group').front();
+            SVG.get("p" + executor.getPlayerId() + "f" + executor.formationColumn + "group").front();
             procEffect.opacity(1);
             procEffect.animate({ duration: '3s' }).rotate(180).after(function () {
                 this.rotate(0);
@@ -943,8 +948,8 @@ var BattleGraphic = (function () {
                 });
             });
         }
-        var groupSkillBg = SVG.get('p' + executor.getPlayerId() + 'SkillBgTextGroup');
-        var svgText = SVG.get('p' + executor.getPlayerId() + 'SkillText');
+        var groupSkillBg = SVG.get("p" + executor.getPlayerId() + "SkillBgTextGroup");
+        var svgText = SVG.get("p" + executor.getPlayerId() + "SkillText");
         var yText = BattleGraphic.hr * (executor.getPlayerId() == 1 ? 272 : 8);
         var skillName = SkillDatabase[skillId].name;
         svgText.text(skillName).move(BattleGraphic.wr * (55 + 150) - svgText.bbox().width / 2, yText);
@@ -1008,7 +1013,9 @@ var BattleGraphic = (function () {
         var minorLog = this.logger.minorEventLog;
         var data = minorLog[majorIndex][minorIndex];
         if (minorIndex < minorLog[majorIndex].length) {
-            this.getMainBattleEffect().text(data.battleDesc).center(BattleGraphic.wr * 200, BattleGraphic.hr * 300).opacity(1).animate({ duration: '3s' }).opacity(0);
+            this.getMainBattleEffect().text(data.battleDesc).center(BattleGraphic.wr * 200, BattleGraphic.hr * 300).opacity(1).animate({ duration: '3s' }).opacity(0).after(function () {
+                this.text('-');
+            });
             this.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
         }
     };
@@ -1068,8 +1075,11 @@ var BattleGraphic = (function () {
                         displayText = displayText + "\n" + displayText2;
                     }
                 }
-                var damageText = SVG.get('p' + target.getPlayerId() + 'f' + target.formationColumn + 'damageText');
-                damageText.text(displayText).center(center_x, center_y).font({ size: fontSize }).opacity(1).animate({ delay: '0.5s' }).opacity(0);
+                var damageText = SVG.get("p" + target.getPlayerId() + "f" + target.formationColumn + "damageText");
+                damageText.text(displayText).center(center_x, center_y).font({ size: fontSize }).opacity(1).animate({ delay: '0.5s' }).opacity(0).after(function () {
+                    this.text('-');
+                    this.center(center_x, center_y);
+                });
             }
             this.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
         }
@@ -1080,17 +1090,20 @@ var BattleGraphic = (function () {
         var executor = this.cardMan.getCardById(data.executorId);
         var executorGroup = this.getCardImageGroup(executor);
         executorGroup.front();
-        SVG.get('p' + executor.getPlayerId() + 'group').front();
+        SVG.get("p" + executor.getPlayerId() + "group").front();
         if (minorIndex < minorLog[majorIndex].length) {
             var target = this.cardMan.getCardById(data.targetId);
             var playerId = target.getPlayerId();
             var index = target.formationColumn;
             var center_x = this.coordArray[playerId][index][0];
             var center_y = this.coordArray[playerId][index][1];
-            var damageText = SVG.get('p' + playerId + 'f' + index + 'damageText');
-            damageText.text("REVIVED").center(center_x, center_y).font({ size: BattleGraphic.wr * 18 }).opacity(1).animate({ delay: '0.5s' }).opacity(0);
+            var damageText = SVG.get("p" + playerId + "f" + index + "damageText");
+            damageText.text("REVIVED").center(center_x, center_y).font({ size: BattleGraphic.wr * 18 }).opacity(1).animate({ delay: '0.5s' }).opacity(0).after(function () {
+                this.text('-');
+                this.center(center_x, center_y);
+            });
             this.displayHP(data.reviveHPRatio * 100, playerId, index);
-            this.getAfflictionText(playerId, index).hide();
+            this.getAfflictionText(playerId, index).hide().text('-').center(center_x, center_y);
             this.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
         }
     };
@@ -1103,7 +1116,7 @@ var BattleGraphic = (function () {
         var x1 = executorGroup.rbox().x;
         var y1 = executorGroup.rbox().y;
         executorGroup.front();
-        SVG.get('p' + executor.getPlayerId() + 'group').front();
+        SVG.get("p" + executor.getPlayerId() + "group").front();
         if (minorIndex < minorLog[majorIndex].length) {
             var protectedCard = this.cardMan.getCardById(data.protect.protectedId);
             var protectedGroup = this.getCardImageGroup(protectedCard);
@@ -1125,7 +1138,7 @@ var BattleGraphic = (function () {
                 moveBackTime = 0.1;
             }
             var nextData = minorLog[majorIndex][minorIndex + 1];
-            var explosion = SVG.get('p' + executor.getPlayerId() + 'f' + executor.formationColumn + 'explosion');
+            var explosion = SVG.get("p" + executor.getPlayerId() + "f" + executor.formationColumn + "explosion");
             executorGroup.animate({ duration: moveTime + 's' }).move(x_protected - x1, y_protected - y1 + y_offset).after(function () {
                 if (Skill.isIndirectSkill(nextData.skillId)) {
                     var exploDuration = 0.2;
@@ -1151,7 +1164,7 @@ var BattleGraphic = (function () {
                     });
                 }
                 else {
-                    SVG.get('p' + attackerCard.getPlayerId() + 'group').front();
+                    SVG.get("p" + attackerCard.getPlayerId() + "group").front();
                     attackerGroup.animate({ duration: '0.5s' }).move(executorGroup.rbox().x - x_attacker, executorGroup.rbox().y - y_attacker).after(function () {
                         explosion.opacity(1);
                         that.displayPostDamage(executor.getPlayerId(), executor.formationColumn, majorIndex, minorIndex + 1);
@@ -1182,7 +1195,7 @@ var BattleGraphic = (function () {
                 that.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
             });
             this.displayHP(100, mainId, main.formationColumn, 0);
-            this.getAfflictionText(mainId, main.formationColumn).hide();
+            this.getAfflictionText(mainId, main.formationColumn).hide().text('-');
         }
     };
     BattleGraphic.prototype.displayDescriptionEvent = function (majorIndex, minorIndex, option) {
@@ -1192,7 +1205,7 @@ var BattleGraphic = (function () {
         var executor = this.cardMan.getCardById(data.executorId);
         var executorGroup = this.getCardImageGroup(executor);
         executorGroup.front();
-        SVG.get('p' + executor.getPlayerId() + 'group').front();
+        SVG.get("p" + executor.getPlayerId() + "group").front();
         if (minorIndex < minorLog[majorIndex].length) {
             if (!data.noProcEffect) {
                 this.displayProcSkill(executor.id, data.skillId, {
@@ -1218,8 +1231,11 @@ var BattleGraphic = (function () {
                 var target = this.cardMan.getCardById(data.bcAddProb.targetId);
                 var center_x = this.coordArray[target.getPlayerId()][target.formationColumn][0];
                 var center_y = this.coordArray[target.getPlayerId()][target.formationColumn][1];
-                var damageText = SVG.get('p' + target.getPlayerId() + 'f' + target.formationColumn + 'damageText');
-                damageText.text("+10%").center(center_x, center_y).font({ size: BattleGraphic.wr * 25 }).opacity(1).animate({ delay: '2s' }).opacity(0);
+                var damageText = SVG.get("p" + target.getPlayerId() + "f" + target.formationColumn + "damageText");
+                damageText.text("+10%").center(center_x, center_y).font({ size: BattleGraphic.wr * 25 }).opacity(1).animate({ delay: '2s' }).opacity(0).after(function () {
+                    this.text('-');
+                    this.center(center_x, center_y);
+                });
             }
             this.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
         }
@@ -1256,8 +1272,8 @@ var BattleGraphic = (function () {
         var x1 = executorGroup.rbox().x;
         var y1 = executorGroup.rbox().y;
         executorGroup.front();
-        SVG.get('p' + executor.getPlayerId() + 'group').front();
-        var explosion = SVG.get('p' + target.getPlayerId() + 'f' + target.formationColumn + 'explosion');
+        SVG.get("p" + executor.getPlayerId() + "group").front();
+        var explosion = SVG.get("p" + target.getPlayerId() + "f" + target.formationColumn + "explosion");
         if (Skill.isAoeSkill(data.skillId)) {
             var exploSet = [];
             if (data.executorId === majorLog[majorIndex].executorId && data.skillId === majorLog[majorIndex].skillId) {
@@ -1272,7 +1288,7 @@ var BattleGraphic = (function () {
             }
             for (var i = 0; i < aoeTargets.length; i++) {
                 var exploTargetCol = this.cardMan.getCardById(aoeTargets[i]).formationColumn;
-                exploSet.push(SVG.get('p' + target.getPlayerId() + 'f' + exploTargetCol + 'explosion'));
+                exploSet.push(SVG.get("p" + target.getPlayerId() + "f" + exploTargetCol + "explosion"));
             }
             if (noAttackAnim) {
                 this.displayPostDamage(target.getPlayerId(), target.formationColumn, majorIndex, minorIndex);
@@ -1346,10 +1362,10 @@ var BattleGraphic = (function () {
         }
     };
     BattleGraphic.prototype.getCardImage = function (card) {
-        return SVG.get('p' + card.getPlayerId() + 'f' + card.formationColumn + 'image');
+        return SVG.get("p" + card.getPlayerId() + "f" + card.formationColumn + "image");
     };
     BattleGraphic.prototype.getCardImageGroup = function (card) {
-        return SVG.get('p' + card.getPlayerId() + 'f' + card.formationColumn + 'group');
+        return SVG.get("p" + card.getPlayerId() + "f" + card.formationColumn + "group");
     };
     BattleGraphic.prototype.getWard = function (playerId, famIndex, type) {
         var wardTxt, wardFileName;
@@ -1369,25 +1385,25 @@ var BattleGraphic = (function () {
             default:
                 throw new Error("Invalid type of ward");
         }
-        var ward = SVG.get('p' + playerId + 'f' + famIndex + wardTxt);
+        var ward = SVG.get("p" + playerId + "f" + famIndex + wardTxt);
         if (!ward) {
-            ward = SVG.get('mainSvg').image('img/' + wardFileName, BattleGraphic.wr * 70, BattleGraphic.wr * 70).center(this.coordArray[playerId][famIndex][0], this.coordArray[playerId][famIndex][1]).attr('id', 'p' + playerId + 'f' + famIndex + wardTxt).opacity(0);
-            SVG.get('p' + playerId + 'f' + famIndex + 'group').add(ward);
+            ward = SVG.get('mainSvg').image("img/" + wardFileName, BattleGraphic.wr * 70, BattleGraphic.wr * 70).center(this.coordArray[playerId][famIndex][0], this.coordArray[playerId][famIndex][1]).attr('id', "p" + playerId + "f" + famIndex + wardTxt).opacity(0);
+            SVG.get("p" + playerId + "f" + famIndex + "group").add(ward);
         }
         return ward;
     };
     BattleGraphic.prototype.getAfflictionText = function (playerId, famIndex) {
-        var txt = SVG.get('p' + playerId + 'f' + famIndex + 'afflictText');
+        var txt = SVG.get("p" + playerId + "f" + famIndex + "afflictText");
         if (!txt) {
-            txt = SVG.get('mainSvg').text('Paralyzed').font({ size: BattleGraphic.wr * 14, family: BattleGraphic.FONT }).attr({ fill: '#fff', stroke: '#000', 'stroke-width': BattleGraphic.AFFLICTION_TEXT_STROKE_WIDTH }).center(this.coordArray[playerId][famIndex][0], this.coordArray[playerId][famIndex][1] + BattleGraphic.IMAGE_WIDTH * 1.5 / 2 + BattleGraphic.hr * 20).attr('id', 'p' + playerId + 'f' + famIndex + 'afflictText').hide();
-            SVG.get('p' + playerId + 'f' + famIndex + 'group').add(txt);
+            txt = SVG.get('mainSvg').text('Paralyzed').font({ size: BattleGraphic.wr * 14, family: BattleGraphic.FONT }).attr({ fill: '#fff', stroke: '#000', 'stroke-width': BattleGraphic.AFFLICTION_TEXT_STROKE_WIDTH }).center(this.coordArray[playerId][famIndex][0], this.coordArray[playerId][famIndex][1] + BattleGraphic.IMAGE_WIDTH * 1.5 / 2 + BattleGraphic.hr * 20).attr('id', "p" + playerId + "f" + famIndex + "afflictText").hide();
+            SVG.get("p" + playerId + "f" + famIndex + "group").add(txt);
         }
         return txt;
     };
     BattleGraphic.prototype.getProcEffect = function (playerId, famIndex, type) {
         var file = type == "spellCircle" ? "circle_blue.png" : "lineSpark.png";
-        var effect = SVG.get('mainSvg').image('img/' + file, BattleGraphic.wr * 150, BattleGraphic.wr * 150).center(this.coordArray[playerId][famIndex][0], this.coordArray[playerId][famIndex][1]).attr('id', 'p' + playerId + 'f' + famIndex + 'spellCircle').opacity(0);
-        SVG.get('p' + playerId + 'f' + famIndex + 'group').add(effect);
+        var effect = SVG.get('mainSvg').image("img/" + file, BattleGraphic.wr * 150, BattleGraphic.wr * 150).center(this.coordArray[playerId][famIndex][0], this.coordArray[playerId][famIndex][1]).attr('id', "p" + playerId + "f" + famIndex + "spellCircle").opacity(0);
+        SVG.get("p" + playerId + "f" + famIndex + "group").add(effect);
         return effect;
     };
     BattleGraphic.prototype.getMainBattleEffect = function () {
@@ -6591,6 +6607,83 @@ var famDatabase = {
         img: "279",
         fullName: "Wrath, Beast of Sin II"
     },
+    11594: {
+        name: "Isegrim",
+        stats: [12573, 12928, 12049, 8491, 9515],
+        skills: [889],
+        img: "31d",
+        fullName: "Isegrim, the Lone Wolf II"
+    },
+    11591: {
+        name: "Aletheia",
+        stats: [18674, 19010, 17277, 10939, 18165],
+        skills: [885, 886],
+        img: "2be",
+        fullName: "Aletheia, Knight Templar II"
+    },
+    21430: {
+        name: "Bijan",
+        stats: [22189, 20473, 18945, 11176, 18083],
+        skills: [874],
+        autoAttack: 10115,
+        img: "16a",
+        fullName: "Bijan, the Comet"
+    },
+    11581: {
+        name: "Adara",
+        stats: [14424, 17805, 13013, 7005, 16902],
+        skills: [876],
+        autoAttack: 10117,
+        img: "205",
+        fullName: "Adara Luck Shot, Swap II"
+    },
+    11579: {
+        name: "Gryla",
+        stats: [17049, 4363, 15489, 16594, 15500],
+        skills: [879, 880],
+        autoAttack: 10007,
+        isMounted: true,
+        img: "3a9",
+        fullName: "Gryla, Swap II"
+    },
+    11592: {
+        name: "Andromalius",
+        stats: [15749, 16172, 12564, 7960, 17277],
+        skills: [887, 888],
+        img: "2b6",
+        fullName: "Andromalius, Eater of Lies II"
+    },
+    11258: {
+        name: "Amazon",
+        stats: [15034, 16670, 14048, 8025, 16107],
+        skills: [875],
+        autoAttack: 10116,
+        img: "2a8",
+        fullName: "Amazon Berserker II"
+    },
+    21590: {
+        name: "Lenore",
+        stats: [13182, 9455, 12120, 8404, 12900],
+        skills: [884],
+        img: "271",
+        fullName: "Lenore, the False II"
+    },
+    21588: {
+        name: "Apate",
+        stats: [21266, 9647, 18128, 21466, 17977],
+        skills: [882],
+        autoAttack: 10118,
+        img: "111",
+        fullName: "Apate, Goddess of Deceit"
+    },
+    11590: {
+        name: "Lenore",
+        stats: [15903, 12280, 13745, 8709, 17292],
+        skills: [883],
+        autoAttack: 10061,
+        img: "1e6",
+        fullName: "Lenore, the Sly Fox II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -7178,7 +7271,7 @@ function onSimulationResultObtained(finalData, startTime, endTime) {
     }
     famIdArray.sort(function (a, b) { return finalData.winCountTable[b] - finalData.winCountTable[a]; });
     var simResultDiv = document.getElementById("simResultDiv");
-    simResultDiv.innerHTML += ("Player 2 won: " + finalData.p2WinCount + "<br> Player 1 won: " + finalData.p1WinCount + "<br><br> Time: " + ((endTime - startTime) / 1000).toFixed(2) + "s" + "<br><a href=setting.html>Go back to main page </a>");
+    simResultDiv.innerHTML += ("Player 2 won: " + finalData.p2WinCount + "<br> Player 1 won: " + finalData.p1WinCount + "<br><br> Time: " + ((endTime - startTime) / 1000).toFixed(2) + "s<br><a href=setting.html>Go back to main page </a>");
     var detail1 = "<br><br><details><summary> Most frequent appearances in win team: </summary><br>";
     for (var i = 0; i < famIdArray.length; i++) {
         var id = famIdArray[i];
@@ -14887,6 +14980,42 @@ var SkillDatabase = {
         prob: 70,
         desc: "Chance to paralyze up to three foes at start of battle."
     },
+    874: {
+        name: "Perforate",
+        type: 2,
+        func: 33,
+        calc: 1,
+        args: [0.95, 3, 0.25, 0.19],
+        range: 17,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal ATK-based damage to six random foes and sometimes greatly lower WIS."
+    },
+    875: {
+        name: "Primal Dance",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1.45],
+        range: 314,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal ATK-based damage to up to four foes. Increased if fewer foes."
+    },
+    876: {
+        name: "Sharpshooting",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [2.7, 5, 0.3, 1],
+        range: 23,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal massive ATK-based damage to two random foes, sometimes silence targets."
+    },
     877: {
         name: "Blood Blade",
         type: 2,
@@ -14907,6 +15036,127 @@ var SkillDatabase = {
         range: 16,
         prob: 70,
         desc: "Absorbs AGI and WIS from three random foes at the beginning of battles."
+    },
+    879: {
+        name: "Bloodied Hatchet",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [881, 16],
+        range: 36,
+        prob: 70,
+        desc: "Self and an ally on the right are automatically revived with 70% HP after being killed."
+    },
+    880: {
+        name: "Hungry Leopard",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [2.05],
+        range: 16,
+        prob: 30,
+        ward: 2,
+        desc: "Deal massive WIS-based damage to three random foes, ignoring position."
+    },
+    881: {
+        name: "Ferocious Incarnation",
+        type: 16,
+        func: 6,
+        calc: 0,
+        args: [0.7],
+        range: 21,
+        prob: 100,
+        desc: "-"
+    },
+    882: {
+        name: "Deceiving Fog",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.6, 7, 0.3, 1, 0.9],
+        range: 314,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Heavy WIS dmg and sometimes blind up to 4 foes, ignoring position.  Incresed if fewer foes."
+    },
+    883: {
+        name: "Foul Play",
+        type: 2,
+        func: 4,
+        calc: 3,
+        args: [1.25, 2, 0.2],
+        range: 20,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal AGI-based damage to and sometimes paralyze five random foes, ignoring position. "
+    },
+    884: {
+        name: "Surprise Attack",
+        type: 2,
+        func: 4,
+        calc: 3,
+        args: [1.25],
+        range: 19,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal AGI-based damage to four random foes, ignoring position."
+    },
+    885: {
+        name: "Blade of Truth",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [0.95],
+        range: 17,
+        prob: 30,
+        ward: 1,
+        desc: "Deal ATK-based damage to six random foes."
+    },
+    886: {
+        name: "Honest Heart",
+        type: 1,
+        func: 44,
+        calc: 0,
+        args: [0.3, 1, 0, 0, 0, 0.3, 6],
+        range: 3,
+        prob: 70,
+        desc: "Raise ATK and reduce magical damage taken by self and adjacent familiars."
+    },
+    887: {
+        name: "Punishing Fangs",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1.4, 1, 0.25, 10],
+        range: 19,
+        prob: 30,
+        ward: 1,
+        desc: "Deal ATK-based damage to and sometimes poison four random foes."
+    },
+    888: {
+        name: "False Justice",
+        type: 1,
+        func: 44,
+        calc: 0,
+        args: [0.3, 1, 0, 0, 0, 0.1, 3],
+        range: 3,
+        prob: 70,
+        desc: "Raise ATK + WIS of self and adjacent familiars by 30% and 10% of WIS respectively."
+    },
+    889: {
+        name: "Twin Sickles",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [2],
+        range: 23,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal massive ATK-based damage to two random foes."
     },
     10001: {
         name: "Standard Action",
@@ -15843,6 +16093,54 @@ var SkillDatabase = {
         ward: 1,
         isAutoAttack: true,
         desc: "ATK-based damage and sometimes paralyze target."
+    },
+    10115: {
+        name: "Standard Action",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [0.6],
+        range: 23,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to two random foes."
+    },
+    10116: {
+        name: "Standard Action",
+        type: 2,
+        func: 36,
+        calc: 1,
+        args: [1, 0.5, 27, 21],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage and drain HP from target."
+    },
+    10117: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.4, 5, 0.25, 1],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage and sometimes silence target."
+    },
+    10118: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1, 7, 0.3, 1, 0.9],
+        range: 5,
+        prob: 100,
+        ward: 2,
+        isAutoAttack: true,
+        desc: "WIS-based damage and sometimes blind target."
     },
 };
 var SkillLogicFactory = (function () {
@@ -17121,6 +17419,8 @@ var RangeFactory = (function () {
                 return new SelfRange(id, selectDead);
             case 28 /* RIGHT */:
                 return new RightRange(id);
+            case 36 /* SELF_IMMEDIATE_RIGHT */:
+                return new SelfImmediateRightRange(id);
             default:
                 throw new Error("Invalid range or not implemented");
         }
@@ -17368,6 +17668,25 @@ var BothSidesRange = (function (_super) {
         this.targets = targets;
     };
     return BothSidesRange;
+})(BaseRange);
+var SelfImmediateRightRange = (function (_super) {
+    __extends(SelfImmediateRightRange, _super);
+    function SelfImmediateRightRange() {
+        _super.apply(this, arguments);
+    }
+    SelfImmediateRightRange.prototype.getReady = function (executor) {
+        var targets = [];
+        this.currentIndex = 0;
+        if (!executor.isDead) {
+            targets.push(executor);
+        }
+        var rightCard = CardManager.getInstance().getRightSideCard(executor);
+        if (rightCard && !rightCard.isDead) {
+            targets.push(rightCard);
+        }
+        this.targets = targets;
+    };
+    return SelfImmediateRightRange;
 })(BaseRange);
 var RandomRange = (function (_super) {
     __extends(RandomRange, _super);
