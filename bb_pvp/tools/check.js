@@ -111,6 +111,15 @@ function checkFam(data) {
                     (famDb.autoAttack && (famSrc.defaultSkillId != 0) && (famDb.autoAttack != famSrc.defaultSkillId)))
                     conflict = true;
 
+                if (famDb.rarity !== famSrc.rarity)
+                    conflict = true;
+
+                if (famDb.evo !== famSrc.evolution)
+                    conflict = true;
+
+                if (famSrc.passiveSkillId1 !== 0 && (!famDb.passiveSkills || famDb.passiveSkills[0] !== famSrc.passiveSkillId1))
+                    conflict = true;
+
                 if (conflict) {
                     div.innerHTML += ("Conflict: " + name + "<br>");
                 }
