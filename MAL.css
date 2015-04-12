@@ -1,0 +1,143 @@
+/**
+ * CSS for MyAnimeList
+ */
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&subset=latin,vietnamese);
+
+/**
+ * HEADER COLOR AND FONT
+ * The main headers. Every header is above each part of your list
+ * (they say things like Currently Watching, Completed, Dropped, etc).
+ */
+.header_title {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+/**
+ * SUB-HEADERS BACKGROUND COLOR COLOR
+ * Below each main header is the sub-header which says Score, Episodes, Tags, etc.
+ */
+.table_header {
+}
+
+/**
+ * ANIME/MANGA TITLE
+ * The anime/manga titles on your list, like Bleach, Vampire Knight, etc.
+ */
+.animetitle, .animetitle:visited {
+}
+
+/**
+ * LIST
+ * more of the numbers, links, and words on the list itself!
+ */
+.td1, .td2, .category_totals, .table_header, #grand_totals, #copyright {
+    color: #000;
+    font-size: 95%;
+}
+
+/**
+ * Use this to increase the width of your list!
+ */
+#list_surround {
+    width: 950px;
+    margin: auto;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    background: rgba(255,251,251,.97);
+}
+
+a {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover, a:visited:hover {
+    color: red;
+    text-decoration: underline;
+}
+
+a, a:visited {
+    color: #000;
+}
+
+.category_totals, .td1, .td2, #grand_totals, #copyright {
+    border-width: 0;
+    padding: 2px;
+}
+
+.category_totals:HOVER, .td1:HOVER, .td2:HOVER, #grand_totals:HOVER, #copyright:HOVER {
+    border-width: 0;
+    padding: 2px;
+}
+
+tr:hover td {
+    background: rgba(64, 46, 24, 0.1);
+}
+
+tr:hover td:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+tr:hover td:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+#copyright:after {
+    content: " Custom CSS by chinhodado.";
+}
+
+.status_selected {
+/*    background-color:#000;
+    padding:2px;
+    color:#fff;
+    text-decoration:blink*/
+}
+
+.status_not_selected {
+/*    background-color:#000;
+    padding:2px;
+    color:#fff*/
+}
+
+.status_selected a {
+    /*color:#0ff*/
+}
+
+.status_not_selected a {
+    /*color:#fff*/
+}
+
+.thickbox {
+    color: #0ff;
+    font-family: fantasy;
+    font-size: 12px;
+}
+
+.header_title {
+    padding: 2px;
+}
+
+.table_header {
+    border-width: 0;
+    font-weight: 700;
+    padding: 2px;
+}
+
+.category_totals {
+    height: 30px;
+}
+
+#copyright,#grand_totals {
+    text-align: center;
+    margin: 0 auto;
+}
