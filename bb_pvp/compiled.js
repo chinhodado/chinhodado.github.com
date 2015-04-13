@@ -2090,13 +2090,13 @@ var Card = (function () {
         this.lastBattleDamageDealt = 0;
         this.justMissed = false;
         this.justEvaded = false;
+        this.passiveSkills = [];
         this.openingSkills = [];
         this.activeSkills = [];
         this.protectSkills = [];
         this.defenseSkills = [];
         this.ondeathSkills = [null, null];
         this.surviveSkill = null;
-        this.passiveSkills = [];
         var cardData = famDatabase[dbId];
         this.name = cardData.name;
         this.fullName = cardData.fullName;
@@ -2909,8 +2909,9 @@ var CardManager = (function () {
     };
     CardManager.prototype.getCardInfoForDialog = function (card) {
         var skillInfo = [];
-        for (var i = 0; i < card.skills.length; i++) {
-            var skill = card.skills[i];
+        var allSkills = card.skills.concat(card.passiveSkills);
+        for (var i = 0; i < allSkills.length; i++) {
+            var skill = allSkills[i];
             skillInfo.push({
                 "id": skill.id,
                 "name": skill.name,
