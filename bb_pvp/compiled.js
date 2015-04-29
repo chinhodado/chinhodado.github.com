@@ -7803,6 +7803,85 @@ var famDatabase = {
         evo: 2,
         fullName: "Brine Drake"
     },
+    11604: {
+        name: "Hellawes",
+        stats: [15327, 7559, 12272, 16659, 16800],
+        skills: [907],
+        autoAttack: 10007,
+        img: "431",
+        rarity: 4,
+        evo: 2,
+        fullName: "Hellawes, Fetter Witch II"
+    },
+    11607: {
+        name: "Shackled Red Wyrm",
+        stats: [25521, 14092, 20386, 23538, 18219],
+        skills: [905],
+        autoAttack: 10123,
+        img: "281",
+        rarity: 6,
+        evo: 2,
+        fullName: "Shackled Red Wyrm II"
+    },
+    11606: {
+        name: "Palamedes",
+        stats: [15376, 16217, 14561, 6650, 17071],
+        skills: [908],
+        autoAttack: 10103,
+        img: "21e",
+        rarity: 4,
+        evo: 4,
+        fullName: "Palamedes, the Hawk's Eye II"
+    },
+    11612: {
+        name: "Belle",
+        stats: [16009, 17006, 14980, 14807, 18208],
+        skills: [914, 915],
+        autoAttack: 10125,
+        isMounted: true,
+        img: "31f",
+        rarity: 5,
+        evo: 2,
+        fullName: "Belle, Grimoire Keeper II"
+    },
+    11611: {
+        name: "Chariot Hippocamp",
+        stats: [14402, 14792, 13024, 7980, 17706],
+        skills: [913],
+        img: "281",
+        rarity: 4,
+        evo: 4,
+        fullName: "Chariot Hippocamp II"
+    },
+    21608: {
+        name: "Neptune",
+        stats: [20461, 10404, 17836, 21674, 18023],
+        skills: [911],
+        autoAttack: 10057,
+        img: "349",
+        rarity: 5,
+        evo: 3,
+        fullName: "Intrepid Hand of Neptune"
+    },
+    1609: {
+        name: "Charybdis",
+        stats: [14048, 16042, 13918, 9000, 16887],
+        skills: [912],
+        img: "3c9",
+        rarity: 4,
+        evo: 2,
+        fullName: "Charybdis II"
+    },
+    11613: {
+        name: "Amphitrite",
+        stats: [16226, 7418, 19638, 20158, 17569],
+        skills: [916, 917],
+        autoAttack: 10001,
+        img: "2ed",
+        rarity: 5,
+        evo: 2,
+        fullName: "Amphitrite, Nereid Queen II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -16423,6 +16502,154 @@ var SkillDatabase = {
         ward: 1,
         desc: "Deal ATK-based damage to five random foes."
     },
+    905: {
+        name: "Perdition's Flame",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.15, 8, 0.2, 3000],
+        range: 41,
+        prob: 30,
+        ward: 3,
+        sac: 1,
+        desc: "Deal WIS-based damage to six random foes and sometimes burn targets. Attacks rear foes first."
+    },
+    906: {
+        name: "Binding Water",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.55, 3, 0.25],
+        range: 19,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal heavy WIS-based damage and sometimes freeze four random foes, ignoring position."
+    },
+    907: {
+        name: "Despair",
+        type: 2,
+        func: 7,
+        calc: 2,
+        args: [2.05, 0.05],
+        range: 16,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal massive WIS-based damage to three random foes. Chance to kill targets."
+    },
+    908: {
+        name: "Chivalrous Arrows",
+        type: 2,
+        func: 34,
+        calc: 1,
+        args: [1.35, 1, 0.2, 0.15],
+        range: 20,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal ATK-based damage to five random foes and sometimes lower ATK, ignoring position."
+    },
+    909: {
+        name: "Arondight",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.65, 5, 0.2, 1],
+        range: 19,
+        prob: 30,
+        ward: 1,
+        desc: "Deal heavy ATK-based damage and sometimes silence four random foes, ignoring position."
+    },
+    910: {
+        name: "Parting Blade",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [0.4, 6, 7],
+        range: 3,
+        prob: 70,
+        desc: "Reduce magic and breath damages taken by self and adjacent familiars."
+    },
+    911: {
+        name: "Trident Fist",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.6, 3, 0.25],
+        range: 19,
+        prob: 30,
+        ward: 3,
+        sac: 1,
+        desc: "Deal heavy WIS-based damage and sometimes freeze four random foes, ignoring position."
+    },
+    912: {
+        name: "Devouring Whirl",
+        type: 2,
+        func: 33,
+        calc: 1,
+        args: [1.85, 2, 1, 0.14],
+        range: 43,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal heavy ATK-based damage and lower DEF of three random foes in the front line."
+    },
+    913: {
+        name: "Fin Slap",
+        type: 2,
+        func: 3,
+        calc: 3,
+        args: [1.3, 3, 0.2],
+        range: 19,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal AGI-based damage and sometimes freeze four random foes."
+    },
+    914: {
+        name: "Claw of the Beast",
+        type: 2,
+        func: 4,
+        calc: 3,
+        args: [1.8, 7, 0.3, 1, 1],
+        range: 16,
+        prob: 30,
+        ward: 2,
+        desc: "Heavy AGI-based damage & sometimes blind three random foes for one turn, ignoring position."
+    },
+    915: {
+        name: "Thorn of Beauty",
+        type: 2,
+        func: 34,
+        calc: 3,
+        args: [1.8, 3, 0.3, 0.14],
+        range: 16,
+        prob: 30,
+        ward: 2,
+        desc: "Heavy AGI-based damage and sometimes lower WIS of three random foes, ignoring position."
+    },
+    916: {
+        name: "Crashing Waves",
+        type: 2,
+        func: 34,
+        calc: 2,
+        args: [1.3, 4, 0.2, 0.06],
+        range: 8,
+        prob: 30,
+        ward: 2,
+        desc: "Deal WIS-based damage and sometimes lower AGI of all foes, ignoring position."
+    },
+    917: {
+        name: "Veil of Brine",
+        type: 3,
+        func: 11,
+        calc: 1,
+        args: [1],
+        range: 36,
+        prob: 50,
+        desc: "Heal self and an ally on the right for the amount of damage taken."
+    },
     10001: {
         name: "Standard Action",
         type: 2,
@@ -17454,6 +17681,30 @@ var SkillDatabase = {
         ward: 1,
         isAutoAttack: true,
         desc: "ATK-based damage and drain HP from target."
+    },
+    10123: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [0.6, 8, 0.2, 2000],
+        range: 6,
+        prob: 100,
+        ward: 2,
+        isAutoAttack: true,
+        desc: "WIS-based damage to up to 2 foes and sometimes burn targets."
+    },
+    10125: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.2],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
     },
     9001: {
         name: "Abject Horror",
