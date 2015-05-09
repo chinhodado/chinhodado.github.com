@@ -1859,6 +1859,7 @@ var ENUM;
         StatusType[StatusType["REMAIN_HP_ATK_DEF_AGI_UP"] = 27] = "REMAIN_HP_ATK_DEF_AGI_UP";
         StatusType[StatusType["REMAIN_HP_DEF_WIS_AGI_UP"] = 28] = "REMAIN_HP_DEF_WIS_AGI_UP";
         StatusType[StatusType["REMAIN_HP_ATK_WIS_AGI_UP"] = 29] = "REMAIN_HP_ATK_WIS_AGI_UP";
+        StatusType[StatusType["WILL_ATTACK_AGAIN_PASSIVE"] = 30] = "WILL_ATTACK_AGAIN_PASSIVE";
     })(ENUM.StatusType || (ENUM.StatusType = {}));
     var StatusType = ENUM.StatusType;
     (function (BuffStatusType) {
@@ -7881,6 +7882,66 @@ var famDatabase = {
         rarity: 5,
         evo: 2,
         fullName: "Amphitrite, Nereid Queen II"
+    },
+    11627: {
+        name: "Charon",
+        stats: [16681, 6689, 10525, 17095, 16950],
+        skills: [919],
+        autoAttack: 10007,
+        img: "3ae",
+        rarity: 4,
+        evo: 4,
+        fullName: "Charon, Greedy Ferryman II"
+    },
+    21627: {
+        name: "Charon",
+        stats: [13680, 8285, 9585, 14503, 9964],
+        skills: [920],
+        autoAttack: 10007,
+        img: "430",
+        rarity: 4,
+        evo: 2,
+        fullName: "Charon, Darksun Ferryman II"
+    },
+    11631: {
+        name: "Nessus",
+        stats: [13803, 7906, 9635, 13965, 10245],
+        skills: [925],
+        autoAttack: 10007,
+        img: "13e",
+        rarity: 4,
+        evo: 4,
+        fullName: "Nessus, Centaur Gaoler II"
+    },
+    21625: {
+        name: "Belial",
+        stats: [21873, 19096, 20100, 9309, 18105],
+        skills: [918],
+        autoAttack: 10044,
+        img: "3af",
+        rarity: 5,
+        evo: 3,
+        fullName: "Belial, Lord of Vices"
+    },
+    11629: {
+        name: "Midas",
+        stats: [14048, 7819, 11275, 18013, 17374],
+        skills: [923, 924],
+        autoAttack: 10007,
+        img: "2a6",
+        rarity: 4,
+        evo: 2,
+        fullName: "Midas, the Wailing King II"
+    },
+    11628: {
+        name: "Beatrice",
+        stats: [18858, 7895, 15251, 21328, 18165],
+        skills: [921, 922],
+        autoAttack: 10007,
+        img: "26a",
+        rarity: 5,
+        evo: 2,
+        fullName: "Beatrice, the Luminescent II"
     },
 };
 var FamProvider = (function () {
@@ -16649,6 +16710,96 @@ var SkillDatabase = {
         range: 36,
         prob: 50,
         desc: "Heal self and an ally on the right for the amount of damage taken."
+    },
+    918: {
+        name: "Arms of the Beast",
+        type: 2,
+        func: 3,
+        calc: 3,
+        args: [1.95, 2, 0.3],
+        range: 16,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal heavy AGI-based damage, sometimes paralyze three random foes."
+    },
+    919: {
+        name: "Ferryman's Toll",
+        type: 2,
+        func: 34,
+        calc: 2,
+        args: [1.65, 1, 0.25, 0.07],
+        range: 314,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Heavy WIS-based dmg  and sometimes reduce ATK up to four foes. Increased if fewer foes."
+    },
+    920: {
+        name: "Oar Master",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [2],
+        range: 23,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal massive WIS-based damage to two random foes, ignoring position."
+    },
+    921: {
+        name: "Light of Negation",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.2, 7, 0.15, 1, 0.9],
+        range: 20,
+        prob: 30,
+        ward: 2,
+        desc: "Deal WIS-based damage and sometimes blind five random foes, ignoring position."
+    },
+    922: {
+        name: "Light of Guidance",
+        type: 1,
+        func: 44,
+        calc: 0,
+        args: [0.2, 3, 0, 0, 0, 0.08, 8],
+        range: 3,
+        prob: 70,
+        desc: "Raise WIS of self/adjacent familiars based on 20% of her WIS, and skill trigger rates by 8%."
+    },
+    923: {
+        name: "Gold Dust Storm",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [2],
+        range: 16,
+        prob: 30,
+        ward: 2,
+        desc: "Deal massive WIS-based damage to three random foes, ignoring position."
+    },
+    924: {
+        name: "Gold Dust Gale",
+        type: 1,
+        func: 1,
+        calc: 0,
+        args: [1, 18],
+        range: 21,
+        prob: 70,
+        desc: "Allows self to perform an extra action during the next turn."
+    },
+    925: {
+        name: "Fleet of Hoof",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [2],
+        range: 23,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal massive WIS-based damage to two random foes, ignoring position."
     },
     10001: {
         name: "Standard Action",
