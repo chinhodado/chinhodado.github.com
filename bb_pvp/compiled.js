@@ -1,34 +1,3 @@
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var AfflictionFactory = (function () {
-    function AfflictionFactory() {
-    }
-    AfflictionFactory.getAffliction = function (type) {
-        switch (type) {
-            case 7 /* BLIND */:
-                return new BlindAffliction();
-            case 4 /* DISABLE */:
-                return new DisabledAffliction();
-            case 3 /* FROZEN */:
-                return new FrozenAffliction();
-            case 2 /* PARALYSIS */:
-                return new ParalysisAffliction();
-            case 1 /* POISON */:
-                return new PoisonAffliction();
-            case 5 /* SILENT */:
-                return new SilentAffliction();
-            case 8 /* BURN */:
-                return new BurnAffliction();
-            default:
-                throw new Error("Invalid affliction type!");
-        }
-    };
-    return AfflictionFactory;
-})();
 var Affliction = (function () {
     function Affliction(type) {
         this.type = type;
@@ -79,100 +48,12 @@ var Affliction = (function () {
     };
     return Affliction;
 })();
-var PoisonAffliction = (function (_super) {
-    __extends(PoisonAffliction, _super);
-    function PoisonAffliction() {
-        _super.call(this, 1 /* POISON */);
-        this.percent = 0;
-        this.finished = false;
-    }
-    PoisonAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    PoisonAffliction.prototype.update = function (card) {
-        var damage = Math.floor(card.originalStats.hp * this.percent / 100);
-        if (damage > PoisonAffliction.MAX_DAMAGE) {
-            damage = PoisonAffliction.MAX_DAMAGE;
-        }
-        BattleModel.getInstance().damageToTargetDirectly(card, damage, "poison");
-    };
-    PoisonAffliction.prototype.add = function (option) {
-        var percent = option.percent;
-        if (!percent) {
-            percent = PoisonAffliction.DEFAULT_PERCENT;
-        }
-        this.percent += percent;
-        var maxPercent = percent * PoisonAffliction.MAX_STACK_NUM;
-        if (this.percent > maxPercent) {
-            this.percent = maxPercent;
-        }
-    };
-    PoisonAffliction.DEFAULT_PERCENT = 5;
-    PoisonAffliction.MAX_STACK_NUM = 2;
-    PoisonAffliction.MAX_DAMAGE = 99999;
-    return PoisonAffliction;
-})(Affliction);
-var ParalysisAffliction = (function (_super) {
-    __extends(ParalysisAffliction, _super);
-    function ParalysisAffliction() {
-        _super.call(this, 2 /* PARALYSIS */);
-    }
-    ParalysisAffliction.prototype.canAttack = function () {
-        return this.isFinished();
-    };
-    ParalysisAffliction.prototype.update = function () {
-        this.clear();
-    };
-    return ParalysisAffliction;
-})(Affliction);
-var FrozenAffliction = (function (_super) {
-    __extends(FrozenAffliction, _super);
-    function FrozenAffliction() {
-        _super.call(this, 3 /* FROZEN */);
-    }
-    FrozenAffliction.prototype.canAttack = function () {
-        return this.isFinished();
-    };
-    FrozenAffliction.prototype.update = function () {
-        this.clear();
-    };
-    return FrozenAffliction;
-})(Affliction);
-var DisabledAffliction = (function (_super) {
-    __extends(DisabledAffliction, _super);
-    function DisabledAffliction() {
-        _super.call(this, 4 /* DISABLE */);
-    }
-    DisabledAffliction.prototype.canAttack = function () {
-        return this.isFinished();
-    };
-    DisabledAffliction.prototype.update = function () {
-        this.clear();
-    };
-    return DisabledAffliction;
-})(Affliction);
-var SilentAffliction = (function (_super) {
-    __extends(SilentAffliction, _super);
-    function SilentAffliction() {
-        _super.call(this, 5 /* SILENT */);
-        this.validTurnNum = 0;
-    }
-    SilentAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    SilentAffliction.prototype.canUseSkill = function () {
-        return this.isFinished();
-    };
-    SilentAffliction.prototype.update = function () {
-        if (--this.validTurnNum <= 0) {
-            this.clear();
-        }
-    };
-    SilentAffliction.prototype.add = function (option) {
-        this.validTurnNum = option.turnNum;
-    };
-    return SilentAffliction;
-})(Affliction);
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
 var BlindAffliction = (function (_super) {
     __extends(BlindAffliction, _super);
     function BlindAffliction() {
@@ -225,6 +106,125 @@ var BurnAffliction = (function (_super) {
     BurnAffliction.STACK_NUM = 3;
     return BurnAffliction;
 })(Affliction);
+var DisabledAffliction = (function (_super) {
+    __extends(DisabledAffliction, _super);
+    function DisabledAffliction() {
+        _super.call(this, 4 /* DISABLE */);
+    }
+    DisabledAffliction.prototype.canAttack = function () {
+        return this.isFinished();
+    };
+    DisabledAffliction.prototype.update = function () {
+        this.clear();
+    };
+    return DisabledAffliction;
+})(Affliction);
+var FrozenAffliction = (function (_super) {
+    __extends(FrozenAffliction, _super);
+    function FrozenAffliction() {
+        _super.call(this, 3 /* FROZEN */);
+    }
+    FrozenAffliction.prototype.canAttack = function () {
+        return this.isFinished();
+    };
+    FrozenAffliction.prototype.update = function () {
+        this.clear();
+    };
+    return FrozenAffliction;
+})(Affliction);
+var ParalysisAffliction = (function (_super) {
+    __extends(ParalysisAffliction, _super);
+    function ParalysisAffliction() {
+        _super.call(this, 2 /* PARALYSIS */);
+    }
+    ParalysisAffliction.prototype.canAttack = function () {
+        return this.isFinished();
+    };
+    ParalysisAffliction.prototype.update = function () {
+        this.clear();
+    };
+    return ParalysisAffliction;
+})(Affliction);
+var PoisonAffliction = (function (_super) {
+    __extends(PoisonAffliction, _super);
+    function PoisonAffliction() {
+        _super.call(this, 1 /* POISON */);
+        this.percent = 0;
+        this.finished = false;
+    }
+    PoisonAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    PoisonAffliction.prototype.update = function (card) {
+        var damage = Math.floor(card.originalStats.hp * this.percent / 100);
+        if (damage > PoisonAffliction.MAX_DAMAGE) {
+            damage = PoisonAffliction.MAX_DAMAGE;
+        }
+        BattleModel.getInstance().damageToTargetDirectly(card, damage, "poison");
+    };
+    PoisonAffliction.prototype.add = function (option) {
+        var percent = option.percent;
+        if (!percent) {
+            percent = PoisonAffliction.DEFAULT_PERCENT;
+        }
+        this.percent += percent;
+        var maxPercent = percent * PoisonAffliction.MAX_STACK_NUM;
+        if (this.percent > maxPercent) {
+            this.percent = maxPercent;
+        }
+    };
+    PoisonAffliction.DEFAULT_PERCENT = 5;
+    PoisonAffliction.MAX_STACK_NUM = 2;
+    PoisonAffliction.MAX_DAMAGE = 99999;
+    return PoisonAffliction;
+})(Affliction);
+var SilentAffliction = (function (_super) {
+    __extends(SilentAffliction, _super);
+    function SilentAffliction() {
+        _super.call(this, 5 /* SILENT */);
+        this.validTurnNum = 0;
+    }
+    SilentAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    SilentAffliction.prototype.canUseSkill = function () {
+        return this.isFinished();
+    };
+    SilentAffliction.prototype.update = function () {
+        if (--this.validTurnNum <= 0) {
+            this.clear();
+        }
+    };
+    SilentAffliction.prototype.add = function (option) {
+        this.validTurnNum = option.turnNum;
+    };
+    return SilentAffliction;
+})(Affliction);
+var AfflictionFactory = (function () {
+    function AfflictionFactory() {
+    }
+    AfflictionFactory.getAffliction = function (type) {
+        switch (type) {
+            case 7 /* BLIND */:
+                return new BlindAffliction();
+            case 4 /* DISABLE */:
+                return new DisabledAffliction();
+            case 3 /* FROZEN */:
+                return new FrozenAffliction();
+            case 2 /* PARALYSIS */:
+                return new ParalysisAffliction();
+            case 1 /* POISON */:
+                return new PoisonAffliction();
+            case 5 /* SILENT */:
+                return new SilentAffliction();
+            case 8 /* BURN */:
+                return new BurnAffliction();
+            default:
+                throw new Error("Invalid affliction type!");
+        }
+    };
+    return AfflictionFactory;
+})();
 var BattleBackground = (function () {
     function BattleBackground() {
     }
@@ -337,6 +337,27 @@ var BattleBackground = (function () {
         "4a5/48645b3ae0106d4f96fa0bf3ad6239b8"
     ];
     return BattleBackground;
+})();
+var Status = (function () {
+    function Status() {
+        this.atk = 0;
+        this.def = 0;
+        this.wis = 0;
+        this.agi = 0;
+        this.attackResistance = 0;
+        this.magicResistance = 0;
+        this.breathResistance = 0;
+        this.skillProbability = 0;
+        this.remainHpAtkUp = 0;
+        this.remainHpDefUp = 0;
+        this.remainHpWisUp = 0;
+        this.remainHpAgiUp = 0;
+        this.actionOnDeath = 0;
+        this.hpShield = 0;
+        this.willAttackAgain = 0;
+        this.isNewLogic = {};
+    }
+    return Status;
 })();
 var BattleDebugger = (function () {
     function BattleDebugger() {
@@ -1049,7 +1070,7 @@ var BattleGraphic = (function () {
                     displayText = "Revive On";
                 }
                 else if (data.status.type === 8 /* SKILL_PROBABILITY */) {
-                    displayText = "Prob. Up";
+                    displayText = "Prob." + (data.amount < 0 ? " Down" : " Up");
                 }
                 else if (data.status.type === 17 /* HP_SHIELD */) {
                     displayText = "HP Up";
@@ -1797,8 +1818,10 @@ var ENUM;
         SkillFunc[SkillFunc["MULTI_DEBUFF"] = 45] = "MULTI_DEBUFF";
         SkillFunc[SkillFunc["DEBUFF_AFFLICTION"] = 46] = "DEBUFF_AFFLICTION";
         SkillFunc[SkillFunc["ABSORB"] = 51] = "ABSORB";
+        SkillFunc[SkillFunc["PROTECT_COUNTER_DEBUFF"] = 56] = "PROTECT_COUNTER_DEBUFF";
         SkillFunc[SkillFunc["DAMAGE_PASSIVE"] = 1001] = "DAMAGE_PASSIVE";
         SkillFunc[SkillFunc["DEFENSE_PASSIVE"] = 1002] = "DEFENSE_PASSIVE";
+        SkillFunc[SkillFunc["EXTRA_TURN_PASSIVE"] = 1006] = "EXTRA_TURN_PASSIVE";
     })(ENUM.SkillFunc || (ENUM.SkillFunc = {}));
     var SkillFunc = ENUM.SkillFunc;
     (function (SkillCalcType) {
@@ -2084,6 +2107,16 @@ var ENUM;
     })(ENUM.RarityType || (ENUM.RarityType = {}));
     var RarityType = ENUM.RarityType;
 })(ENUM || (ENUM = {}));
+var Stats = (function () {
+    function Stats(hp, atk, def, wis, agi) {
+        this.hp = hp;
+        this.atk = atk;
+        this.def = def;
+        this.wis = wis;
+        this.agi = agi;
+    }
+    return Stats;
+})();
 var Card = (function () {
     function Card(dbId, player, nth, skills) {
         this.bcAddedProb = 0;
@@ -2405,7 +2438,8 @@ var Card = (function () {
                     this.status.remainHpAgiUp = amount;
                 break;
             case 18 /* WILL_ATTACK_AGAIN */:
-                this.status.willAttackAgain = amount;
+                if (this.status.willAttackAgain < amount)
+                    this.status.willAttackAgain = amount;
                 break;
             case 16 /* ACTION_ON_DEATH */:
                 var skill = new Skill(amount);
@@ -2578,37 +2612,6 @@ var Card = (function () {
     };
     Card.NEW_DEBUFF_LOW_LIMIT_FACTOR = 0.4;
     return Card;
-})();
-var Stats = (function () {
-    function Stats(hp, atk, def, wis, agi) {
-        this.hp = hp;
-        this.atk = atk;
-        this.def = def;
-        this.wis = wis;
-        this.agi = agi;
-    }
-    return Stats;
-})();
-var Status = (function () {
-    function Status() {
-        this.atk = 0;
-        this.def = 0;
-        this.wis = 0;
-        this.agi = 0;
-        this.attackResistance = 0;
-        this.magicResistance = 0;
-        this.breathResistance = 0;
-        this.skillProbability = 0;
-        this.remainHpAtkUp = 0;
-        this.remainHpDefUp = 0;
-        this.remainHpWisUp = 0;
-        this.remainHpAgiUp = 0;
-        this.actionOnDeath = 0;
-        this.hpShield = 0;
-        this.willAttackAgain = 0;
-        this.isNewLogic = {};
-    }
-    return Status;
 })();
 var CardManager = (function () {
     function CardManager() {
@@ -7943,6 +7946,146 @@ var famDatabase = {
         evo: 2,
         fullName: "Beatrice, the Luminescent II"
     },
+    11644: {
+        name: "Nidhogg",
+        stats: [24752, 16128, 22130, 23246, 18035],
+        skills: [935, 936],
+        passiveSkills: [9004],
+        autoAttack: 10126,
+        img: "151",
+        rarity: 6,
+        evo: 2,
+        fullName: "Nidhogg, Iceclad Dragon II"
+    },
+    11637: {
+        name: "Minos",
+        stats: [15511, 17244, 15002, 6292, 16204],
+        skills: [939, 940],
+        img: "399",
+        rarity: 4,
+        evo: 2,
+        fullName: "Minos, Judgment King II"
+    },
+    11638: {
+        name: "Pasiphae",
+        stats: [18501, 18999, 15002, 10192, 17309],
+        skills: [945, 946],
+        autoAttack: 10125,
+        img: "3dc",
+        rarity: 5,
+        evo: 2,
+        fullName: "Pasiphae, the Brass Bull II"
+    },
+    11583: {
+        name: "Kalevan",
+        stats: [15153, 15803, 14222, 6855, 17006],
+        skills: [947, 948],
+        autoAttack: 10051,
+        img: "187",
+        rarity: 4,
+        evo: 2,
+        fullName: "Kalevan, Swap II"
+    },
+    11634: {
+        name: "Mammon",
+        stats: [16010, 7895, 13010, 14999, 15999],
+        skills: [944],
+        autoAttack: 10129,
+        img: "274",
+        rarity: 4,
+        evo: 4,
+        fullName: "Mammon, Raven Claw II"
+    },
+    21636: {
+        name: "Moloch",
+        stats: [15002, 8003, 12987, 16800, 17201],
+        skills: [942, 943],
+        autoAttack: 10128,
+        img: "1e8",
+        rarity: 4,
+        evo: 2,
+        fullName: "Moloch, Soul Reaper II"
+    },
+    11636: {
+        name: "Moloch",
+        stats: [12001, 6602, 10001, 15207, 12999],
+        skills: [941],
+        autoAttack: 10016,
+        img: "356",
+        rarity: 4,
+        evo: 4,
+        fullName: "Moloch, the Infernal Axe II"
+    },
+    11641: {
+        name: "Aslaug",
+        stats: [15121, 16486, 13496, 6389, 17103],
+        skills: [952],
+        autoAttack: 10130,
+        img: "2c8",
+        rarity: 4,
+        evo: 2,
+        fullName: "Aslaug, the Lyre Bow II"
+    },
+    21578: {
+        name: "Zeruel",
+        stats: [22841, 21478, 18303, 12038, 18128],
+        skills: [954, 955],
+        autoAttack: 10015,
+        img: "3b0",
+        rarity: 5,
+        evo: 3,
+        fullName: "Zeruel Angel of War, Swap"
+    },
+    11639: {
+        name: "Fafnir",
+        stats: [25012, 23538, 20754, 14092, 18349],
+        skills: [950],
+        autoAttack: 10061,
+        img: "257",
+        rarity: 6,
+        evo: 2,
+        fullName: "Fafnir, Fireclad Dragon II"
+    },
+    11643: {
+        name: "Alberich",
+        stats: [15964, 17120, 16523, 15427, 4237],
+        skills: [953],
+        autoAttack: 10131,
+        img: "376",
+        rarity: 4,
+        evo: 4,
+        fullName: "Alberich, the Ceratophrys II"
+    },
+    11640: {
+        name: "Waltraute",
+        stats: [19552, 18100, 16854, 8480, 18046],
+        skills: [951],
+        autoAttack: 10044,
+        img: "24d",
+        rarity: 5,
+        evo: 2,
+        fullName: "Waltraute, Valiant Valkyrie II"
+    },
+    11632: {
+        name: "Azazel",
+        stats: [19010, 17331, 15002, 11492, 18165],
+        skills: [937, 938],
+        autoAttack: 10125,
+        img: "2ef",
+        rarity: 5,
+        evo: 2,
+        fullName: "Azazel, the Temptress II"
+    },
+    11175: {
+        name: "Taotie",
+        stats: [14850, 15803, 13106, 9141, 14720],
+        skills: [949],
+        autoAttack: 10005,
+        img: "2ef",
+        rarity: 4,
+        evo: 2,
+        fullName: "Taotie, the Gluttonous II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -8170,14 +8313,15 @@ function setFamOptions() {
         }
     }
     famIdArray.sort(function (a, b) { return famDatabase[a].fullName.localeCompare(famDatabase[b].fullName); });
-    for (var i = 0; i < famSelects.length; i++) {
-        for (var index = 0; index < famIdArray.length; index++) {
-            key = famIdArray[index];
-            var option = document.createElement("option");
-            option.value = key;
-            option.text = famDatabase[key].fullName;
-            famSelects[i].add(option);
-        }
+    for (var index = 0; index < famIdArray.length; index++) {
+        key = famIdArray[index];
+        var option = document.createElement("option");
+        option.value = key;
+        option.text = famDatabase[key].fullName;
+        famSelects[0].add(option);
+    }
+    for (var i = 1; i < famSelects.length; i++) {
+        famSelects[i].innerHTML = famSelects[0].innerHTML;
     }
     ;
 }
@@ -8185,14 +8329,15 @@ function setSkillOptions() {
     var skillSelects = document.getElementsByClassName("skillSelect");
     var skillIdArray = SkillProvider.getAvailableSkillsForSelect();
     skillIdArray.sort(function (a, b) { return SkillDatabase[a].name.localeCompare(SkillDatabase[b].name); });
-    for (var i = 0; i < skillSelects.length; i++) {
-        for (var index = 0; index < skillIdArray.length; index++) {
-            var key = skillIdArray[index];
-            var option = document.createElement("option");
-            option.value = key + "";
-            option.text = SkillDatabase[key].name;
-            skillSelects[i].add(option);
-        }
+    for (var index = 0; index < skillIdArray.length; index++) {
+        var key = skillIdArray[index];
+        var option = document.createElement("option");
+        option.value = key + "";
+        option.text = SkillDatabase[key].name;
+        skillSelects[0].add(option);
+    }
+    for (var i = 1; i < skillSelects.length; i++) {
+        skillSelects[i].innerHTML = skillSelects[0].innerHTML;
     }
     ;
 }
@@ -8555,6 +8700,1148 @@ var Player = (function () {
     }
     return Player;
 })();
+var SkillLogic = (function () {
+    function SkillLogic() {
+        this.battleModel = BattleModel.getInstance();
+        this.logger = BattleLogger.getInstance();
+        this.cardManager = CardManager.getInstance();
+    }
+    SkillLogic.prototype.willBeExecuted = function (data) {
+        var deadCond = (data.executor.isDead && data.skill.skillType === 16 /* ACTION_ON_DEATH */) || (!data.executor.isDead && data.skill.skillType !== 16 /* ACTION_ON_DEATH */);
+        if (data.noProbCheck) {
+            var probCond = true;
+        }
+        else {
+            probCond = (Math.random() * 100) <= (data.skill.maxProbability + data.executor.status.skillProbability * 100 + data.executor.bcAddedProb);
+        }
+        return (deadCond && data.executor.canAttack() && data.executor.canUseSkill() && probCond);
+    };
+    SkillLogic.prototype.execute = function (data) {
+        throw new Error("Implement this");
+    };
+    SkillLogic.prototype.clearAllCardsDamagePhaseData = function () {
+        var allCards = this.cardManager.getAllCurrentMainCards();
+        for (var i = 0; i < allCards.length; i++) {
+            allCards[i].clearDamagePhaseData();
+        }
+    };
+    SkillLogic.prototype.getComponentStatus = function (type) {
+        switch (type) {
+            case 9 /* ALL_STATUS */:
+                return [1 /* ATK */, 2 /* DEF */, 3 /* WIS */, 4 /* AGI */];
+            case 15 /* REMAIN_HP_ALL_STATUS_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 20 /* REMAIN_HP_ATK_DEF_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */];
+            case 21 /* REMAIN_HP_ATK_WIS_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 13 /* REMAIN_HP_WIS_UP */];
+            case 22 /* REMAIN_HP_ATK_AGI_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 23 /* REMAIN_HP_DEF_WIS_UP */:
+                return [12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */];
+            case 24 /* REMAIN_HP_DEF_AGI_UP */:
+                return [12 /* REMAIN_HP_DEF_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 25 /* REMAIN_HP_WIS_AGI_UP */:
+                return [13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 26 /* REMAIN_HP_ATK_DEF_WIS_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */];
+            case 27 /* REMAIN_HP_ATK_DEF_AGI_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 28 /* REMAIN_HP_DEF_WIS_AGI_UP */:
+                return [12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            case 29 /* REMAIN_HP_ATK_WIS_AGI_UP */:
+                return [11 /* REMAIN_HP_ATK_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
+            default:
+                return null;
+        }
+    };
+    return SkillLogic;
+})();
+var AbsorbSkillLogic = (function (_super) {
+    __extends(AbsorbSkillLogic, _super);
+    function AbsorbSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    AbsorbSkillLogic.prototype.execute = function (data) {
+        var skill = data.skill;
+        var executor = data.executor;
+        skill.getReady(executor);
+        var target;
+        var statusToBuff = AbsorbSkillLogic.getComponentStatusFromBuffStatusType(skill.skillFuncArg2);
+        var debuffMulti = skill.skillFuncArg3;
+        while (target = skill.getTarget(executor)) {
+            for (var j = 0; j < statusToBuff.length; j++) {
+                var statusType = statusToBuff[j];
+                console.assert(skill.skillFuncArg4 === 2 /* WIS */, "Non WIS-based debuff unimplemented!");
+                console.assert(skill.skillFuncArg6 === 1, "Absorb doesn't have 100% probability - unimplemented!");
+                var isNewLogic = false;
+                var debuffAmount = Math.floor(executor.getWIS() * debuffMulti);
+                var lowStatLimit = target.getOriginalStat(ENUM.StatusType[statusType]) * Card.NEW_DEBUFF_LOW_LIMIT_FACTOR;
+                var currentStat = target.getStat(ENUM.StatusType[statusType]);
+                var maxDebuffLimit = lowStatLimit > currentStat ? 0 : currentStat - lowStatLimit;
+                if (debuffAmount > maxDebuffLimit) {
+                    debuffAmount = maxDebuffLimit;
+                }
+                target.changeStatus(statusType, -debuffAmount, isNewLogic);
+                this.logger.addMinorEvent({
+                    executorId: executor.id,
+                    targetId: target.id,
+                    type: 2 /* STATUS */,
+                    status: {
+                        type: statusType,
+                        isNewLogic: isNewLogic
+                    },
+                    description: target.name + "'s " + ENUM.StatusType[statusType] + " decreased by " + Math.abs(debuffAmount),
+                    amount: -debuffAmount,
+                    skillId: skill.id
+                });
+                var buffAmount = Math.floor(Math.abs(debuffAmount) * skill.skillFuncArg5);
+                executor.changeStatus(statusType, buffAmount, false);
+                this.logger.addMinorEvent({
+                    executorId: executor.id,
+                    targetId: executor.id,
+                    type: 2 /* STATUS */,
+                    status: {
+                        type: statusType,
+                        isAllUp: skill.skillFuncArg2 === 9 /* ALL_STATUS */
+                    },
+                    description: executor.name + "'s " + ENUM.StatusType[statusType] + " increased by " + buffAmount,
+                    amount: buffAmount,
+                    skillId: skill.id
+                });
+            }
+        }
+    };
+    AbsorbSkillLogic.getComponentStatusFromBuffStatusType = function (type) {
+        switch (type) {
+            case 1 /* ATK */:
+                return [1 /* ATK */];
+            case 2 /* DEF */:
+                return [2 /* DEF */];
+            case 3 /* WIS */:
+                return [3 /* WIS */];
+            case 4 /* AGI */:
+                return [4 /* AGI */];
+            case 5 /* ATK_DEF */:
+                return [1 /* ATK */, 2 /* DEF */];
+            case 6 /* ATK_WIS */:
+                return [1 /* ATK */, 3 /* WIS */];
+            case 7 /* ATK_AGI */:
+                return [1 /* ATK */, 4 /* AGI */];
+            case 8 /* DEF_WIS */:
+                return [2 /* DEF */, 3 /* WIS */];
+            case 9 /* DEF_AGI */:
+                return [2 /* DEF */, 4 /* AGI */];
+            case 10 /* WIS_AGI */:
+                return [3 /* WIS */, 4 /* AGI */];
+            case 11 /* ATK_DEF_WIS */:
+                return [1 /* ATK */, 2 /* DEF */, 3 /* WIS */];
+            case 12 /* ATK_DEF_AGI */:
+                return [1 /* ATK */, 2 /* DEF */, 4 /* AGI */];
+            case 13 /* DEF_WIS_AGI */:
+                return [2 /* DEF */, 3 /* WIS */, 4 /* AGI */];
+            case 14 /* ALL_STATUS */:
+                return [1 /* ATK */, 2 /* DEF */, 3 /* WIS */, 4 /* AGI */];
+            default:
+                return [3 /* WIS */];
+        }
+    };
+    return AbsorbSkillLogic;
+})(SkillLogic);
+var AfflictionSkillLogic = (function (_super) {
+    __extends(AfflictionSkillLogic, _super);
+    function AfflictionSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    AfflictionSkillLogic.prototype.execute = function (data) {
+        data.skill.getReady(data.executor);
+        var target;
+        while (target = data.skill.getTarget(data.executor)) {
+            this.battleModel.processAffliction(data.executor, target, data.skill);
+        }
+    };
+    return AfflictionSkillLogic;
+})(SkillLogic);
+var AttackSkillLogic = (function (_super) {
+    __extends(AttackSkillLogic, _super);
+    function AttackSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    AttackSkillLogic.prototype.willBeExecuted = function (data) {
+        var hasTarget = data.skill.range.hasValidTarget(data.executor);
+        return _super.prototype.willBeExecuted.call(this, data) && hasTarget;
+    };
+    AttackSkillLogic.prototype.execute = function (data) {
+        var skill = data.skill;
+        skill.getReady(data.executor);
+        var targets = skill.range.targets;
+        if (RangeFactory.isEnemyScaledRange(skill.skillRange)) {
+            data.scaledRatio = RangeFactory.getScaledRatio(skill.skillRange, targets.length);
+        }
+        if (!RangeFactory.isEnemyRandomRange(data.skill.skillRange) && data.skill.isIndirectSkill()) {
+            this.executeAoeAttack(data, targets);
+        }
+        else {
+            this.executeNonAoeAttack(data);
+        }
+    };
+    AttackSkillLogic.prototype.executeNonAoeAttack = function (data) {
+        var target;
+        var attackCount = 0;
+        while ((target = data.skill.getTarget(data.executor)) && !data.executor.isDead && data.executor.canAttack()) {
+            if (RangeFactory.isEnemyVaryingRange(data.skill.skillRange)) {
+                var varyingRatio = RangeFactory.getVaryingRatio(data.skill.skillRange, attackCount);
+            }
+            this.processAttackAgainstSingleTarget(data.executor, target, data.skill, data.scaledRatio, varyingRatio);
+            attackCount++;
+        }
+    };
+    AttackSkillLogic.prototype.executeAoeAttack = function (data, targets) {
+        var skill = data.skill;
+        var executor = data.executor;
+        if (skill.isIndirectSkill()) {
+            shuffle(targets);
+            var aoeReactiveSkillActivated = false;
+            var targetsAttacked = [];
+            for (var i = 0; i < targets.length; i++) {
+                var targetCard = targets[i];
+                if (targetCard.isDead) {
+                    continue;
+                }
+                var protectSkillActivated = false;
+                if (!aoeReactiveSkillActivated && !targetsAttacked[targetCard.id]) {
+                    var protectData = this.battleModel.processProtect(executor, targetCard, skill, targetsAttacked, data.scaledRatio);
+                    protectSkillActivated = protectData.activated;
+                    if (protectSkillActivated) {
+                        aoeReactiveSkillActivated = true;
+                    }
+                }
+                if (!protectSkillActivated && !targetsAttacked[targetCard.id]) {
+                    var defenseSkill = targetCard.getRandomDefenseSkill();
+                    var defenseData = {
+                        executor: targetCard,
+                        skill: defenseSkill,
+                        attacker: executor,
+                    };
+                    this.battleModel.processDamagePhase({
+                        attacker: executor,
+                        target: targetCard,
+                        skill: skill,
+                        scaledRatio: data.scaledRatio
+                    });
+                    targetsAttacked[targetCard.id] = true;
+                    if (!executor.justMissed && !targetCard.justEvaded && !targetCard.isDead) {
+                        if (Skill.isDebuffAttackSkill(skill.id)) {
+                            if (Math.random() <= skill.skillFuncArg3) {
+                                this.battleModel.processDebuff(executor, targetCard, skill);
+                            }
+                        }
+                        else if (skill.skillFunc === 3 /* ATTACK */ || skill.skillFunc === 4 /* MAGIC */) {
+                            this.battleModel.processAffliction(executor, targetCard, skill);
+                        }
+                    }
+                    if (defenseSkill && defenseSkill.willBeExecuted(defenseData) && !aoeReactiveSkillActivated) {
+                        defenseSkill.execute(defenseData);
+                        aoeReactiveSkillActivated = true;
+                    }
+                }
+                if (skill.skillFunc === 36 /* DRAIN_ATTACK */ || skill.skillFunc === 37 /* DRAIN_MAGIC */) {
+                    this.processDrainPhase(executor, skill);
+                }
+                this.clearAllCardsDamagePhaseData();
+            }
+        }
+    };
+    AttackSkillLogic.prototype.processAttackAgainstSingleTarget = function (executor, target, skill, scaledRatio, varyingRatio) {
+        var protectData = this.battleModel.processProtect(executor, target, skill, null, scaledRatio, varyingRatio);
+        if (!protectData.activated) {
+            var defenseSkill = target.getRandomDefenseSkill();
+            var defenseData = {
+                executor: target,
+                skill: defenseSkill,
+                attacker: executor,
+            };
+            this.battleModel.processDamagePhase({
+                attacker: executor,
+                target: target,
+                skill: skill,
+                scaledRatio: scaledRatio,
+                varyingRatio: varyingRatio
+            });
+            if (!executor.justMissed && !target.justEvaded && !target.isDead) {
+                if (Skill.isDebuffAttackSkill(skill.id)) {
+                    if (Math.random() <= skill.skillFuncArg3) {
+                        this.battleModel.processDebuff(executor, target, skill);
+                    }
+                }
+                else if (skill.skillFunc === 3 /* ATTACK */ || skill.skillFunc === 4 /* MAGIC */) {
+                    this.battleModel.processAffliction(executor, target, skill);
+                }
+            }
+            if (defenseSkill && defenseSkill.willBeExecuted(defenseData)) {
+                defenseSkill.execute(defenseData);
+            }
+        }
+        if (skill.skillFunc === 36 /* DRAIN_ATTACK */ || skill.skillFunc === 37 /* DRAIN_MAGIC */) {
+            this.processDrainPhase(executor, skill);
+        }
+        this.clearAllCardsDamagePhaseData();
+    };
+    AttackSkillLogic.prototype.processDrainPhase = function (executor, skill) {
+        var healRange = RangeFactory.getRange(skill.skillFuncArg4);
+        healRange.getReady(executor, function (card) { return !card.isFullHealth(); });
+        console.assert(!(healRange instanceof RandomRange), "can't do this with random ranges!");
+        if (healRange.targets.length === 0) {
+            return;
+        }
+        var healAmount = Math.floor((executor.lastBattleDamageDealt * skill.skillFuncArg2) / healRange.targets.length);
+        var target;
+        while (target = healRange.getTarget(executor)) {
+            this.battleModel.damageToTargetDirectly(target, -1 * healAmount, " healing");
+        }
+    };
+    return AttackSkillLogic;
+})(SkillLogic);
+var BuffSkillLogic = (function (_super) {
+    __extends(BuffSkillLogic, _super);
+    function BuffSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    BuffSkillLogic.prototype.willBeExecuted = function (data) {
+        var hasTarget = data.skill.range.hasValidTarget(data.executor);
+        return _super.prototype.willBeExecuted.call(this, data) && hasTarget;
+    };
+    BuffSkillLogic.prototype.execute = function (data) {
+        var skill = data.skill;
+        var executor = data.executor;
+        skill.getReady(executor);
+        if (this.getComponentStatus(skill.skillFuncArg2) == null) {
+            var statusToBuff = [skill.skillFuncArg2];
+            if (skill.skillFuncArg3 !== 0 && skill.skillFuncArg2 !== 17 /* HP_SHIELD */) {
+                statusToBuff.push(skill.skillFuncArg3);
+            }
+        }
+        else {
+            statusToBuff = this.getComponentStatus(skill.skillFuncArg2);
+        }
+        var basedOnStatType = ENUM.SkillCalcType[skill.skillCalcType];
+        var baseStat = skill.skillFunc === 39 /* ONHIT_BUFF */ ? 0 : executor.getStat(basedOnStatType);
+        var target;
+        while (target = skill.getTarget(executor)) {
+            for (var j = 0; j < statusToBuff.length; j++) {
+                var statusType = statusToBuff[j];
+                switch (statusType) {
+                    case 1 /* ATK */:
+                    case 2 /* DEF */:
+                    case 3 /* WIS */:
+                    case 4 /* AGI */:
+                        var skillMod = skill.skillFuncArg1;
+                        if (skill.skillFunc === 39 /* ONHIT_BUFF */) {
+                            if (skill.skillFuncArg4 === 0) {
+                                throw new Error("Not sure what needs to happen here when arg4 = 0 for onhit buff. Check the manual.");
+                            }
+                            else {
+                                var buffAmount = Math.round(skillMod * skill.skillFuncArg4 * 100);
+                            }
+                        }
+                        else {
+                            if (skill.skillFuncArg2 !== 9 /* ALL_STATUS */) {
+                                baseStat = executor.getStat(basedOnStatType);
+                            }
+                            buffAmount = Math.round(skillMod * baseStat);
+                        }
+                        break;
+                    case 5 /* ATTACK_RESISTANCE */:
+                    case 6 /* MAGIC_RESISTANCE */:
+                    case 7 /* BREATH_RESISTANCE */:
+                    case 8 /* SKILL_PROBABILITY */:
+                    case 18 /* WILL_ATTACK_AGAIN */:
+                    case 16 /* ACTION_ON_DEATH */:
+                    case 11 /* REMAIN_HP_ATK_UP */:
+                    case 12 /* REMAIN_HP_DEF_UP */:
+                    case 13 /* REMAIN_HP_WIS_UP */:
+                    case 14 /* REMAIN_HP_AGI_UP */:
+                        buffAmount = skill.skillFuncArg1;
+                        break;
+                    case 17 /* HP_SHIELD */:
+                        skillMod = skill.skillFuncArg1;
+                        buffAmount = Math.round(skillMod * baseStat);
+                        var maxValue = ~~(target.getOriginalHP() * skill.skillFuncArg3);
+                        break;
+                    default:
+                        throw new Error("Wrong status type or not implemented");
+                }
+                target.changeStatus(statusType, buffAmount, false, maxValue);
+                this.logger.addMinorEvent({
+                    executorId: executor.id,
+                    targetId: target.id,
+                    type: 2 /* STATUS */,
+                    status: {
+                        type: statusType,
+                        isAllUp: skill.skillFuncArg2 === 9 /* ALL_STATUS */
+                    },
+                    description: target.name + "'s " + ENUM.StatusType[statusType] + " increased by " + buffAmount,
+                    amount: buffAmount,
+                    skillId: skill.id
+                });
+            }
+        }
+    };
+    return BuffSkillLogic;
+})(SkillLogic);
+var ClearStatusSkillLogic = (function (_super) {
+    __extends(ClearStatusSkillLogic, _super);
+    function ClearStatusSkillLogic() {
+        _super.apply(this, arguments);
+        this.condFunc = function (x) { return true; };
+        this.isDispelled = false;
+    }
+    ClearStatusSkillLogic.prototype.willBeExecuted = function (data) {
+        var hasValidTarget = data.skill.range.hasValidTarget(data.executor, this.getCondFunc());
+        return _super.prototype.willBeExecuted.call(this, data) && hasValidTarget;
+    };
+    ClearStatusSkillLogic.prototype.getCondFunc = function () {
+        var _this = this;
+        return function (card) { return card.hasStatus(_this.condFunc); };
+    };
+    ClearStatusSkillLogic.prototype.execute = function (data) {
+        data.skill.getReady(data.executor);
+        var target;
+        while (target = data.skill.getTarget(data.executor)) {
+            target.clearAllStatus(this.condFunc);
+            this.logger.addMinorEvent({
+                executorId: data.executor.id,
+                targetId: target.id,
+                type: 2 /* STATUS */,
+                status: {
+                    type: 0,
+                    isDispelled: this.isDispelled,
+                    isClearDebuff: !this.isDispelled
+                },
+                description: target.name + (this.isDispelled ? " is dispelled." : " is cleared of debuffs."),
+                skillId: data.skill.id
+            });
+        }
+    };
+    return ClearStatusSkillLogic;
+})(SkillLogic);
+var DispellSkillLogic = (function (_super) {
+    __extends(DispellSkillLogic, _super);
+    function DispellSkillLogic() {
+        _super.call(this);
+        this.condFunc = function (x) { return x > 0; };
+        this.isDispelled = true;
+    }
+    return DispellSkillLogic;
+})(ClearStatusSkillLogic);
+var ClearDebuffSkillLogic = (function (_super) {
+    __extends(ClearDebuffSkillLogic, _super);
+    function ClearDebuffSkillLogic() {
+        _super.call(this);
+        this.condFunc = function (x) { return x < 0; };
+        this.isDispelled = false;
+    }
+    return ClearDebuffSkillLogic;
+})(ClearStatusSkillLogic);
+var CounterSkillLogic = (function (_super) {
+    __extends(CounterSkillLogic, _super);
+    function CounterSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    CounterSkillLogic.prototype.willBeExecuted = function (data) {
+        return _super.prototype.willBeExecuted.call(this, data) && !data.attacker.isDead;
+    };
+    CounterSkillLogic.prototype.execute = function (data) {
+        this.logger.addMinorEvent({
+            executorId: data.executor.id,
+            type: 5 /* DESCRIPTION */,
+            description: data.executor.name + " procs " + data.skill.name + ". ",
+            skillId: data.skill.id
+        });
+        this.battleModel.processDamagePhase({
+            attacker: data.executor,
+            target: data.attacker,
+            skill: data.skill,
+            additionalDescription: data.executor.name + " counters " + data.attacker.name + "! ",
+        });
+        if (!data.executor.justMissed && !data.attacker.justEvaded && !data.attacker.isDead && data.skill.skillFunc === 13 /* COUNTER */) {
+            this.battleModel.processAffliction(data.executor, data.attacker, data.skill);
+        }
+    };
+    return CounterSkillLogic;
+})(SkillLogic);
+var CounterDebuffSkillLogic = (function (_super) {
+    __extends(CounterDebuffSkillLogic, _super);
+    function CounterDebuffSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    CounterDebuffSkillLogic.prototype.execute = function (data) {
+        _super.prototype.execute.call(this, data);
+        var protector = data.executor;
+        if (!protector.isDead && protector.canUseSkill() && !data.attacker.isDead && Math.random() <= data.skill.skillFuncArg3) {
+            this.battleModel.processDebuff(protector, data.attacker, data.skill);
+        }
+    };
+    return CounterDebuffSkillLogic;
+})(CounterSkillLogic);
+var ProtectSkillLogic = (function (_super) {
+    __extends(ProtectSkillLogic, _super);
+    function ProtectSkillLogic() {
+        _super.apply(this, arguments);
+        this.counter = false;
+    }
+    ProtectSkillLogic.prototype.willBeExecuted = function (data) {
+        data.skill.getReady(data.executor);
+        if (this.cardManager.isSameCard(data.targetCard, data.executor) && data.skill.skillRange !== 21 /* MYSELF */) {
+            return false;
+        }
+        console.assert(!(data.skill.range instanceof RandomRange), "can't do this with random ranges!");
+        return _super.prototype.willBeExecuted.call(this, data) && this.cardManager.isCardInList(data.targetCard, data.skill.range.targets);
+    };
+    ProtectSkillLogic.prototype.execute = function (data) {
+        return this.executeProtectPhase(data);
+    };
+    ProtectSkillLogic.prototype.executeProtectPhase = function (data, noProtectLog) {
+        var protector = data.executor;
+        var protectSkill = data.skill;
+        var attackSkill = data.attackSkill;
+        var toReturn = {};
+        if (!noProtectLog) {
+            this.logger.addMinorEvent({
+                executorId: protector.id,
+                type: 4 /* PROTECT */,
+                protect: {
+                    protectedId: data.targetCard.id,
+                    counter: this.counter,
+                    counteredSkillId: attackSkill.id,
+                    attackerId: data.attacker.id
+                },
+                description: protector.name + " procs " + protectSkill.name + " to protect " + data.targetCard.name + ". ",
+                skillId: protectSkill.id
+            });
+        }
+        if (protectSkill.skillFunc === 28 /* PROTECT_REFLECT */) {
+            var dmgRatio = protectSkill.skillFuncArg5;
+        }
+        this.battleModel.processDamagePhase({
+            attacker: data.attacker,
+            target: protector,
+            skill: attackSkill,
+            scaledRatio: data.scaledRatio,
+            varyingRatio: data.varyingRatio,
+            dmgRatio: dmgRatio
+        });
+        if (protectSkill.skillFunc === 28 /* PROTECT_REFLECT */) {
+            toReturn.dmgTaken = protector.lastBattleDamageTaken;
+        }
+        if (!data.attacker.justMissed && !protector.isDead) {
+            if (attackSkill.skillFunc === 3 /* ATTACK */ || attackSkill.skillFunc === 4 /* MAGIC */) {
+                this.battleModel.processAffliction(data.attacker, protector, attackSkill);
+            }
+            else if (Skill.isDebuffAttackSkill(attackSkill.id)) {
+                if (Math.random() <= attackSkill.skillFuncArg3) {
+                    this.battleModel.processDebuff(data.attacker, protector, attackSkill);
+                }
+            }
+        }
+        if (data.targetsAttacked) {
+            data.targetsAttacked[protector.id] = true;
+        }
+        this.clearAllCardsDamagePhaseData();
+        return toReturn;
+    };
+    return ProtectSkillLogic;
+})(SkillLogic);
+var CounterDispellSkillLogic = (function (_super) {
+    __extends(CounterDispellSkillLogic, _super);
+    function CounterDispellSkillLogic() {
+        _super.apply(this, arguments);
+        this.condFunc = function (x) { return x > 0; };
+    }
+    CounterDispellSkillLogic.prototype.willBeExecuted = function (data) {
+        var range = RangeFactory.getRange(data.skill.skillFuncArg3);
+        var hasValidtarget = range.hasValidTarget(data.executor, this.getCondFunc());
+        return _super.prototype.willBeExecuted.call(this, data) && hasValidtarget;
+    };
+    CounterDispellSkillLogic.prototype.getCondFunc = function () {
+        var _this = this;
+        return function (card) { return card.hasStatus(_this.condFunc); };
+    };
+    CounterDispellSkillLogic.prototype.execute = function (data) {
+        var toReturn = this.executeProtectPhase(data, true);
+        if (data.executor.isDead || !data.executor.canUseSkill()) {
+            return toReturn;
+        }
+        this.logger.addMinorEvent({
+            executorId: data.executor.id,
+            type: 5 /* DESCRIPTION */,
+            description: data.executor.name + " procs " + data.skill.name,
+            skillId: data.skill.id
+        });
+        var range = RangeFactory.getRange(data.skill.skillFuncArg3);
+        range.getReady(data.executor, this.getCondFunc());
+        var target;
+        while (target = range.getTarget(data.executor)) {
+            target.clearAllStatus(this.condFunc);
+            this.logger.addMinorEvent({
+                executorId: data.executor.id,
+                targetId: target.id,
+                type: 2 /* STATUS */,
+                status: {
+                    type: 0,
+                    isDispelled: true,
+                },
+                description: target.name + " is dispelled.",
+                skillId: data.skill.id
+            });
+        }
+        return toReturn;
+    };
+    return CounterDispellSkillLogic;
+})(ProtectSkillLogic);
+var DebuffAfflictionSkillLogic = (function (_super) {
+    __extends(DebuffAfflictionSkillLogic, _super);
+    function DebuffAfflictionSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    DebuffAfflictionSkillLogic.prototype.execute = function (data) {
+        var tempDebuffSkillLogic = new DebuffSkillLogic();
+        tempDebuffSkillLogic.execute(data);
+        var tempSkill = new Skill(data.skill.id);
+        tempSkill.skillFuncArg1 = 0;
+        tempSkill.skillFuncArg2 = tempSkill.skillFuncArg6;
+        tempSkill.skillFuncArg3 = tempSkill.skillFuncArg7;
+        tempSkill.skillFuncArg4 = tempSkill.skillFuncArg8;
+        tempSkill.skillFuncArg5 = tempSkill.skillFuncArg9;
+        var tempAfflictionSkillLogic = new AfflictionSkillLogic();
+        data.skill = tempSkill;
+        tempAfflictionSkillLogic.execute(data);
+    };
+    return DebuffAfflictionSkillLogic;
+})(SkillLogic);
+var DebuffSkillLogic = (function (_super) {
+    __extends(DebuffSkillLogic, _super);
+    function DebuffSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    DebuffSkillLogic.prototype.execute = function (data) {
+        var skill = data.skill;
+        var executor = data.executor;
+        skill.getReady(executor);
+        var target;
+        while (target = skill.getTarget(executor)) {
+            this.battleModel.processDebuff(executor, target, skill);
+        }
+    };
+    return DebuffSkillLogic;
+})(SkillLogic);
+var DrainSkillLogic = (function (_super) {
+    __extends(DrainSkillLogic, _super);
+    function DrainSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    DrainSkillLogic.prototype.willBeExecuted = function (data) {
+        var hasValidTarget = data.skill.range.hasValidTarget(data.executor, this.getCondFunc());
+        return _super.prototype.willBeExecuted.call(this, data) && hasValidTarget;
+    };
+    DrainSkillLogic.prototype.getCondFunc = function () {
+        return function (card) { return !card.isFullHealth(); };
+    };
+    DrainSkillLogic.prototype.execute = function (data) {
+        var skill = data.skill;
+        skill.range.getReady(data.executor, this.getCondFunc());
+        var target;
+        this.logger.addMinorEvent({
+            executorId: data.executor.id,
+            type: 5 /* DESCRIPTION */,
+            description: data.executor.name + " procs " + skill.name + ". ",
+            skillId: skill.id
+        });
+        console.assert(!(skill.range instanceof RandomRange), "can't do this with random ranges!");
+        var eachTargetHealAmount = Math.floor(data.executor.lastBattleDamageTaken / skill.range.targets.length);
+        while (target = skill.getTarget(data.executor)) {
+            this.battleModel.damageToTargetDirectly(target, -1 * eachTargetHealAmount, " healing");
+        }
+    };
+    return DrainSkillLogic;
+})(SkillLogic);
+var EvadeSkillLogic = (function (_super) {
+    __extends(EvadeSkillLogic, _super);
+    function EvadeSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    EvadeSkillLogic.prototype.willBeExecuted = function (data) {
+        var skill = data.skill;
+        skill.getReady(data.executor);
+        if (this.cardManager.isSameCard(data.targetCard, data.executor) && skill.skillRange !== 21 /* MYSELF */) {
+            return false;
+        }
+        var canEvade = Skill.canProtectFromCalcType(skill.skillFuncArg2, data.attackSkill) && Skill.canProtectFromAttackType(skill.skillFuncArg1, data.attackSkill);
+        console.assert(!(skill.range instanceof RandomRange), "can't do this with random ranges!");
+        return _super.prototype.willBeExecuted.call(this, data) && this.cardManager.isCardInList(data.targetCard, skill.range.targets) && canEvade;
+    };
+    EvadeSkillLogic.prototype.execute = function (data) {
+        data.executor.justEvaded = true;
+        this.logger.addMinorEvent({
+            executorId: data.executor.id,
+            type: 5 /* DESCRIPTION */,
+            noProcEffect: true,
+            description: data.executor.name + " procs " + data.skill.name,
+            skillId: data.skill.id
+        });
+        this.battleModel.processDamagePhase({
+            attacker: data.attacker,
+            target: data.executor,
+            skill: data.attackSkill,
+            scaledRatio: data.scaledRatio,
+            varyingRatio: data.varyingRatio
+        });
+        if (data.targetsAttacked) {
+            data.targetsAttacked[data.executor.id] = true;
+        }
+        this.clearAllCardsDamagePhaseData();
+        return {};
+    };
+    return EvadeSkillLogic;
+})(SkillLogic);
+var HealSkillLogic = (function (_super) {
+    __extends(HealSkillLogic, _super);
+    function HealSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    HealSkillLogic.prototype.willBeExecuted = function (data) {
+        var hasValidTarget = data.skill.range.hasValidTarget(data.executor, this.getCondFunc());
+        return _super.prototype.willBeExecuted.call(this, data) && hasValidTarget;
+    };
+    HealSkillLogic.prototype.getCondFunc = function () {
+        return function (card) { return !card.isFullHealth(); };
+    };
+    HealSkillLogic.prototype.execute = function (data) {
+        data.skill.range.getReady(data.executor, this.getCondFunc());
+        var baseHealAmount = getHealAmount(data.executor);
+        var multiplier = data.skill.skillFuncArg1;
+        var healAmount = Math.floor(multiplier * baseHealAmount);
+        var target;
+        while (target = data.skill.getTarget(data.executor)) {
+            if (data.skill.skillFuncArg2 === 1) {
+                healAmount = multiplier * target.getOriginalHP();
+            }
+            this.battleModel.damageToTargetDirectly(target, -1 * healAmount, " healing");
+        }
+    };
+    return HealSkillLogic;
+})(SkillLogic);
+var MultiBuffSkillLogic = (function (_super) {
+    __extends(MultiBuffSkillLogic, _super);
+    function MultiBuffSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    MultiBuffSkillLogic.prototype.execute = function (data) {
+        _super.prototype.execute.call(this, data);
+        var tempSkill = new Skill(data.skill.id);
+        tempSkill.skillFuncArg1 = tempSkill.skillFuncArg6;
+        tempSkill.skillFuncArg2 = tempSkill.skillFuncArg7;
+        tempSkill.skillFuncArg3 = tempSkill.skillFuncArg8;
+        tempSkill.skillFuncArg4 = tempSkill.skillFuncArg9;
+        tempSkill.skillFuncArg5 = tempSkill.skillFuncArg10;
+        data.skill = tempSkill;
+        _super.prototype.execute.call(this, data);
+    };
+    return MultiBuffSkillLogic;
+})(BuffSkillLogic);
+var MultiDebuffSkillLogic = (function (_super) {
+    __extends(MultiDebuffSkillLogic, _super);
+    function MultiDebuffSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    MultiDebuffSkillLogic.prototype.execute = function (data) {
+        _super.prototype.execute.call(this, data);
+        var tempSkill = new Skill(data.skill.id);
+        tempSkill.skillFuncArg1 = tempSkill.skillFuncArg6;
+        tempSkill.skillFuncArg2 = tempSkill.skillFuncArg7;
+        tempSkill.skillFuncArg3 = tempSkill.skillFuncArg8;
+        tempSkill.skillFuncArg4 = tempSkill.skillFuncArg9;
+        tempSkill.skillFuncArg5 = tempSkill.skillFuncArg10;
+        data.skill = tempSkill;
+        _super.prototype.execute.call(this, data);
+    };
+    return MultiDebuffSkillLogic;
+})(DebuffSkillLogic);
+var OnHitBuffSkillLogic = (function (_super) {
+    __extends(OnHitBuffSkillLogic, _super);
+    function OnHitBuffSkillLogic() {
+        _super.apply(this, arguments);
+        this.executionLeft = OnHitBuffSkillLogic.UNINITIALIZED_VALUE;
+    }
+    OnHitBuffSkillLogic.prototype.willBeExecuted = function (data) {
+        if (this.executionLeft === OnHitBuffSkillLogic.UNINITIALIZED_VALUE) {
+            this.executionLeft = data.skill.skillFuncArg5;
+        }
+        if (this.executionLeft === 0)
+            return false;
+        var success = _super.prototype.willBeExecuted.call(this, data);
+        if (success) {
+            this.executionLeft--;
+            return true;
+        }
+        else
+            return false;
+    };
+    OnHitBuffSkillLogic.prototype.execute = function (data) {
+        this.logger.addMinorEvent({
+            executorId: data.executor.id,
+            type: 5 /* DESCRIPTION */,
+            description: data.executor.name + " procs " + data.skill.name + ". ",
+            skillId: data.skill.id
+        });
+        _super.prototype.execute.call(this, data);
+    };
+    OnHitBuffSkillLogic.UNINITIALIZED_VALUE = -1234;
+    return OnHitBuffSkillLogic;
+})(BuffSkillLogic);
+var OnHitDebuffSkillLogic = (function (_super) {
+    __extends(OnHitDebuffSkillLogic, _super);
+    function OnHitDebuffSkillLogic() {
+        _super.apply(this, arguments);
+        this.executionLeft = OnHitDebuffSkillLogic.UNINITIALIZED_VALUE;
+    }
+    OnHitDebuffSkillLogic.prototype.willBeExecuted = function (data) {
+        var hasTarget = data.skill.range.hasValidTarget(data.executor);
+        if (this.executionLeft === OnHitDebuffSkillLogic.UNINITIALIZED_VALUE) {
+            this.executionLeft = data.skill.skillFuncArg5;
+        }
+        if (this.executionLeft === 0)
+            return false;
+        var success = _super.prototype.willBeExecuted.call(this, data) && hasTarget;
+        if (success) {
+            this.executionLeft--;
+            return true;
+        }
+        else
+            return false;
+    };
+    OnHitDebuffSkillLogic.prototype.execute = function (data) {
+        data.skill.getReady(data.executor);
+        var target;
+        this.logger.addMinorEvent({
+            executorId: data.executor.id,
+            type: 5 /* DESCRIPTION */,
+            description: data.executor.name + " procs " + data.skill.name + ". ",
+            skillId: data.skill.id
+        });
+        while (target = data.skill.getTarget(data.executor)) {
+            this.battleModel.processDebuff(data.executor, target, data.skill);
+        }
+    };
+    OnHitDebuffSkillLogic.UNINITIALIZED_VALUE = -1234;
+    return OnHitDebuffSkillLogic;
+})(SkillLogic);
+var ProtectCounterSkillLogic = (function (_super) {
+    __extends(ProtectCounterSkillLogic, _super);
+    function ProtectCounterSkillLogic() {
+        _super.call(this);
+        this.counter = true;
+    }
+    ProtectCounterSkillLogic.prototype.execute = function (data) {
+        var toReturn = this.executeProtectPhase(data);
+        var protector = data.executor;
+        if (!protector.isDead && protector.canAttack() && !data.attacker.isDead) {
+            this.battleModel.processDamagePhase({
+                attacker: protector,
+                target: data.attacker,
+                skill: data.skill,
+                additionalDescription: protector.name + " counters " + data.attacker.name + "! ",
+            });
+        }
+        return toReturn;
+    };
+    return ProtectCounterSkillLogic;
+})(ProtectSkillLogic);
+var ProtectCounterDebuffSkillLogic = (function (_super) {
+    __extends(ProtectCounterDebuffSkillLogic, _super);
+    function ProtectCounterDebuffSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    ProtectCounterDebuffSkillLogic.prototype.execute = function (data) {
+        var toReturn = _super.prototype.execute.call(this, data);
+        var protector = data.executor;
+        if (!protector.isDead && protector.canUseSkill() && !data.attacker.isDead && Math.random() <= data.skill.skillFuncArg3) {
+            this.battleModel.processDebuff(protector, data.attacker, data.skill);
+        }
+        return toReturn;
+    };
+    return ProtectCounterDebuffSkillLogic;
+})(ProtectCounterSkillLogic);
+var ProtectReflectSkillLogic = (function (_super) {
+    __extends(ProtectReflectSkillLogic, _super);
+    function ProtectReflectSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    ProtectReflectSkillLogic.prototype.willBeExecuted = function (data) {
+        var skill = data.skill;
+        var canProtect = Skill.canProtectFromCalcType(skill.skillFuncArg2, data.attackSkill) && Skill.canProtectFromAttackType(skill.skillFuncArg4, data.attackSkill);
+        return _super.prototype.willBeExecuted.call(this, data) && canProtect;
+    };
+    ProtectReflectSkillLogic.prototype.execute = function (data) {
+        var toReturn = this.executeProtectPhase(data);
+        if (data.executor.isDead || !data.executor.canUseSkill()) {
+            return toReturn;
+        }
+        var range = RangeFactory.getRange(data.skill.skillFuncArg3);
+        range.getReady(data.executor);
+        var target;
+        while (target = range.getTarget(data.executor)) {
+            this.battleModel.processDamagePhase({
+                attacker: data.executor,
+                target: target,
+                skill: data.skill,
+                scaledRatio: data.scaledRatio,
+                varyingRatio: data.varyingRatio,
+                oriAttacker: data.attacker,
+                oriAtkSkill: data.attackSkill,
+                oriDmg: toReturn.dmgTaken / data.skill.skillFuncArg5
+            });
+            if (data.attackSkill.skillFunc === 3 /* ATTACK */ || data.attackSkill.skillFunc === 4 /* MAGIC */) {
+                this.battleModel.processAffliction(data.executor, target, data.attackSkill, ProtectReflectSkillLogic.REFLECT_AFFLICTION_PROBABILITY);
+            }
+            this.clearAllCardsDamagePhaseData();
+        }
+        return toReturn;
+    };
+    ProtectReflectSkillLogic.REFLECT_AFFLICTION_PROBABILITY = 0.2;
+    return ProtectReflectSkillLogic;
+})(ProtectSkillLogic);
+var RandomSkillLogic = (function (_super) {
+    __extends(RandomSkillLogic, _super);
+    function RandomSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    RandomSkillLogic.prototype.execute = function (data) {
+        var randSkillsId = SkillDatabase[data.skill.id].randSkills;
+        shuffle(randSkillsId);
+        data.noProbCheck = true;
+        for (var i = 0; i < randSkillsId.length; i++) {
+            var skill = new Skill(randSkillsId[i]);
+            data.skill = skill;
+            if (skill.willBeExecuted(data)) {
+                this.logger.addMinorEvent({
+                    executorId: data.executor.id,
+                    type: 5 /* DESCRIPTION */,
+                    description: data.executor.name + " procs " + data.skill.name + ". ",
+                    skillId: data.skill.id
+                });
+                skill.execute(data);
+                break;
+            }
+        }
+    };
+    return RandomSkillLogic;
+})(SkillLogic);
+var ReviveSkillLogic = (function (_super) {
+    __extends(ReviveSkillLogic, _super);
+    function ReviveSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    ReviveSkillLogic.prototype.willBeExecuted = function (data) {
+        var hasValidTarget = data.skill.range.hasValidTarget(data.executor);
+        return _super.prototype.willBeExecuted.call(this, data) && hasValidTarget;
+    };
+    ReviveSkillLogic.prototype.execute = function (data) {
+        data.skill.getReady(data.executor);
+        var hpRatio = data.skill.skillFuncArg1;
+        var target;
+        while (target = data.skill.getTarget(data.executor)) {
+            target.revive(hpRatio);
+            this.logger.addMinorEvent({
+                executorId: data.executor.id,
+                targetId: target.id,
+                type: 7 /* REVIVE */,
+                reviveHPRatio: hpRatio,
+                description: target.name + " is revived with " + hpRatio * 100 + "% HP!",
+                skillId: data.skill.id
+            });
+        }
+    };
+    return ReviveSkillLogic;
+})(SkillLogic);
+var SurviveSkillLogic = (function (_super) {
+    __extends(SurviveSkillLogic, _super);
+    function SurviveSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    SurviveSkillLogic.prototype.willBeExecuted = function (data) {
+        var hpRatio = data.executor.getHpRatio();
+        return _super.prototype.willBeExecuted.call(this, data) && (hpRatio > data.skill.skillFuncArg1) && (data.wouldBeDamage >= data.executor.getHP());
+    };
+    SurviveSkillLogic.prototype.execute = function (data) {
+        this.logger.addMinorEvent({
+            executorId: data.executor.id,
+            type: 5 /* DESCRIPTION */,
+            noProcEffect: true,
+            description: data.executor.name + " procs " + data.skill.name + ". ",
+            skillId: data.skill.id
+        });
+    };
+    return SurviveSkillLogic;
+})(SkillLogic);
+var TurnOrderChangeSkillLogic = (function (_super) {
+    __extends(TurnOrderChangeSkillLogic, _super);
+    function TurnOrderChangeSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    TurnOrderChangeSkillLogic.prototype.willBeExecuted = function (data) {
+        return _super.prototype.willBeExecuted.call(this, data) && !this.battleModel.turnOrderChanged;
+    };
+    TurnOrderChangeSkillLogic.prototype.execute = function (data) {
+        this.battleModel.turnOrderChanged = true;
+        this.battleModel.turnOrderBase = data.skill.skillFuncArg1;
+        this.battleModel.turnOrderChangeEffectiveTurns = data.skill.skillFuncArg2;
+        this.logger.addMinorEvent({
+            executorId: data.executor.id,
+            type: 51 /* BATTLE_DESCRIPTION */,
+            description: "Turn order is now based on " + ENUM.BattleTurnOrderType[data.skill.skillFuncArg1] + " for " + data.skill.skillFuncArg2 + " turn(s).",
+            skillId: data.skill.id,
+            battleDesc: "Turn Order Changed"
+        });
+    };
+    return TurnOrderChangeSkillLogic;
+})(SkillLogic);
+var BasePassiveSkillLogic = (function (_super) {
+    __extends(BasePassiveSkillLogic, _super);
+    function BasePassiveSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    BasePassiveSkillLogic.prototype.willBeExecuted = function (data) {
+        throw new Error("This is undefined for passive skills (except for extra turn passive)!");
+    };
+    BasePassiveSkillLogic.prototype.execute = function (data) {
+        throw new Error("There's nothing to execute for passive skills!");
+    };
+    BasePassiveSkillLogic.prototype.getEffectRatio = function (executor, comparator, passiveSkill) {
+        throw new Error("Implement this!");
+    };
+    return BasePassiveSkillLogic;
+})(SkillLogic);
+var DamagePassiveSkillLogic = (function (_super) {
+    __extends(DamagePassiveSkillLogic, _super);
+    function DamagePassiveSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    DamagePassiveSkillLogic.prototype.getEffectRatio = function (executor, target, passiveSkill) {
+        if (executor.rarity > target.rarity) {
+            return 1 + passiveSkill.skillFuncArg1;
+        }
+        else {
+            return 1;
+        }
+    };
+    return DamagePassiveSkillLogic;
+})(BasePassiveSkillLogic);
+var DefensePassiveSkillLogic = (function (_super) {
+    __extends(DefensePassiveSkillLogic, _super);
+    function DefensePassiveSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    DefensePassiveSkillLogic.prototype.getEffectRatio = function (executor, attacker, passiveSkill) {
+        if (executor.rarity > attacker.rarity) {
+            return 1 - passiveSkill.skillFuncArg1;
+        }
+        else {
+            return 1;
+        }
+    };
+    return DefensePassiveSkillLogic;
+})(BasePassiveSkillLogic);
+var ExtraTurnPassiveSkillLogic = (function (_super) {
+    __extends(ExtraTurnPassiveSkillLogic, _super);
+    function ExtraTurnPassiveSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    ExtraTurnPassiveSkillLogic.prototype.willBeExecuted = function (data) {
+        return Math.random() <= data.skill.skillFuncArg1;
+    };
+    return ExtraTurnPassiveSkillLogic;
+})(BasePassiveSkillLogic);
+var SkillLogicFactory = (function () {
+    function SkillLogicFactory() {
+    }
+    SkillLogicFactory.getSkillLogic = function (skillFunc) {
+        switch (skillFunc) {
+            case 1 /* BUFF */:
+                return new BuffSkillLogic();
+            case 44 /* MULTI_BUFF */:
+                return new MultiBuffSkillLogic();
+            case 2 /* DEBUFF */:
+            case 32 /* CASTER_BASED_DEBUFF */:
+                return new DebuffSkillLogic();
+            case 45 /* MULTI_DEBUFF */:
+                return new MultiDebuffSkillLogic();
+            case 46 /* DEBUFF_AFFLICTION */:
+                return new DebuffAfflictionSkillLogic();
+            case 39 /* ONHIT_BUFF */:
+                return new OnHitBuffSkillLogic();
+            case 38 /* ONHIT_DEBUFF */:
+                return new OnHitDebuffSkillLogic();
+            case 16 /* DISPELL */:
+                return new DispellSkillLogic();
+            case 19 /* AFFLICTION */:
+                return new AfflictionSkillLogic();
+            case 3 /* ATTACK */:
+            case 4 /* MAGIC */:
+            case 21 /* DEBUFFATTACK */:
+            case 22 /* DEBUFFINDIRECT */:
+            case 36 /* DRAIN_ATTACK */:
+            case 37 /* DRAIN_MAGIC */:
+            case 33 /* CASTER_BASED_DEBUFF_ATTACK */:
+            case 34 /* CASTER_BASED_DEBUFF_MAGIC */:
+            case 7 /* KILL */:
+                return new AttackSkillLogic();
+            case 12 /* PROTECT */:
+                return new ProtectSkillLogic();
+            case 27 /* EVADE */:
+                return new EvadeSkillLogic();
+            case 14 /* PROTECT_COUNTER */:
+                return new ProtectCounterSkillLogic();
+            case 56 /* PROTECT_COUNTER_DEBUFF */:
+                return new ProtectCounterDebuffSkillLogic();
+            case 28 /* PROTECT_REFLECT */:
+                return new ProtectReflectSkillLogic();
+            case 13 /* COUNTER */:
+            case 41 /* COUNTER_INDIRECT */:
+                return new CounterSkillLogic();
+            case 29 /* COUNTER_DISPELL */:
+                return new CounterDispellSkillLogic();
+            case 42 /* COUNTER_DEBUFF */:
+            case 43 /* COUNTER_DEBUFF_INDIRECT */:
+                return new CounterDebuffSkillLogic();
+            case 40 /* CLEAR_DEBUFF */:
+                return new ClearDebuffSkillLogic();
+            case 11 /* DRAIN */:
+                return new DrainSkillLogic();
+            case 20 /* SURVIVE */:
+                return new SurviveSkillLogic();
+            case 18 /* HEAL */:
+                return new HealSkillLogic();
+            case 6 /* REVIVE */:
+                return new ReviveSkillLogic();
+            case 31 /* TURN_ORDER_CHANGE */:
+                return new TurnOrderChangeSkillLogic();
+            case 24 /* RANDOM */:
+                return new RandomSkillLogic();
+            case 51 /* ABSORB */:
+                return new AbsorbSkillLogic();
+            case 1001 /* DAMAGE_PASSIVE */:
+                return new DamagePassiveSkillLogic();
+            case 1002 /* DEFENSE_PASSIVE */:
+                return new DefensePassiveSkillLogic();
+            case 1006 /* EXTRA_TURN_PASSIVE */:
+                return new ExtraTurnPassiveSkillLogic();
+            default:
+                throw new Error("Invalid skillFunc or not implemented");
+        }
+    };
+    return SkillLogicFactory;
+})();
 var Skill = (function () {
     function Skill(skillId) {
         var skillData = SkillDatabase[skillId];
@@ -8596,6 +9883,7 @@ var Skill = (function () {
             case 42 /* COUNTER_DEBUFF */:
             case 43 /* COUNTER_DEBUFF_INDIRECT */:
             case 14 /* PROTECT_COUNTER */:
+            case 56 /* PROTECT_COUNTER_DEBUFF */:
             case 21 /* DEBUFFATTACK */:
             case 22 /* DEBUFFINDIRECT */:
             case 33 /* CASTER_BASED_DEBUFF_ATTACK */:
@@ -8616,6 +9904,7 @@ var Skill = (function () {
             case 13 /* COUNTER */:
             case 42 /* COUNTER_DEBUFF */:
             case 14 /* PROTECT_COUNTER */:
+            case 56 /* PROTECT_COUNTER_DEBUFF */:
             case 28 /* PROTECT_REFLECT */:
             case 21 /* DEBUFFATTACK */:
             case 33 /* CASTER_BASED_DEBUFF_ATTACK */:
@@ -8697,6 +9986,7 @@ var Skill = (function () {
             case 34 /* CASTER_BASED_DEBUFF_MAGIC */:
             case 42 /* COUNTER_DEBUFF */:
             case 43 /* COUNTER_DEBUFF_INDIRECT */:
+            case 56 /* PROTECT_COUNTER_DEBUFF */:
                 isDebuffAttack = true;
                 break;
             default:
@@ -8729,6 +10019,7 @@ var Skill = (function () {
             case 46 /* DEBUFF_AFFLICTION */:
             case 42 /* COUNTER_DEBUFF */:
             case 43 /* COUNTER_DEBUFF_INDIRECT */:
+            case 56 /* PROTECT_COUNTER_DEBUFF */:
                 statuses.push(skillInfo.args[1]);
                 break;
             case 45 /* MULTI_DEBUFF */:
@@ -8771,9 +10062,9 @@ var Skill = (function () {
     Skill.canProtectFromAttackType = function (type, attackSkill) {
         switch (type) {
             case 2 /* SKILL */:
-                return (attackSkill.skillFunc !== 13 /* COUNTER */ && attackSkill.skillFunc !== 14 /* PROTECT_COUNTER */ && attackSkill.skillFunc !== 41 /* COUNTER_INDIRECT */ && attackSkill.id !== 10000);
+                return (attackSkill.skillFunc !== 13 /* COUNTER */ && attackSkill.skillFunc !== 14 /* PROTECT_COUNTER */ && attackSkill.skillFunc !== 56 /* PROTECT_COUNTER_DEBUFF */ && attackSkill.skillFunc !== 41 /* COUNTER_INDIRECT */ && attackSkill.id !== 10000);
             case 3 /* NOT_COUNTER */:
-                return (attackSkill.skillFunc !== 13 /* COUNTER */ && attackSkill.skillFunc !== 14 /* PROTECT_COUNTER */ && attackSkill.skillFunc !== 41 /* COUNTER_INDIRECT */);
+                return (attackSkill.skillFunc !== 13 /* COUNTER */ && attackSkill.skillFunc !== 14 /* PROTECT_COUNTER */ && attackSkill.skillFunc !== 56 /* PROTECT_COUNTER_DEBUFF */ && attackSkill.skillFunc !== 41 /* COUNTER_INDIRECT */);
             default:
                 throw new Error("Unimplemented ProtectAttackType");
         }
@@ -16801,6 +18092,237 @@ var SkillDatabase = {
         sac: 1,
         desc: "Deal massive WIS-based damage to two random foes, ignoring position."
     },
+    935: {
+        name: "Blizzard Breath",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.1],
+        range: 17,
+        prob: 30,
+        ward: 2,
+        desc: "Deal WIS-based damage to six random foes, ignoring position."
+    },
+    936: {
+        name: "Ice Cuirass",
+        type: 1,
+        func: 44,
+        calc: 2,
+        args: [0.15, 3, 0, 0, 0, 0.05, 4],
+        range: 3,
+        prob: 70,
+        desc: "Raise WIS/AGI of self and adjacent familiars on 15% and 5% of its WIS respectively."
+    },
+    937: {
+        name: "Life Siphon Claws",
+        type: 2,
+        func: 37,
+        calc: 3,
+        args: [1.75, 0.2, 27, 21],
+        range: 19,
+        prob: 30,
+        ward: 2,
+        desc: "Drains HP from four random foes while dealing heavy AGI-based damage, ignoring position."
+    },
+    938: {
+        name: "Sensual Wing",
+        type: 1,
+        func: 44,
+        calc: 0,
+        args: [0.5, 17, 1.25, 0, 0, 0.3, 6],
+        range: 3,
+        prob: 70,
+        desc: "Raise HP and reduce magic damage taken by self and adjacent familiars."
+    },
+    939: {
+        name: "Axe of Judgment",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1.45],
+        range: 19,
+        prob: 30,
+        ward: 1,
+        desc: "Deal ATK-based damage to four random foes."
+    },
+    940: {
+        name: "Verdict",
+        type: 5,
+        func: 56,
+        calc: 1,
+        args: [1.55, 1, 1, 0.2],
+        range: 4,
+        prob: 50,
+        ward: 1,
+        desc: "Take heavy damage in place of any ally and counter, greatly lower ATK."
+    },
+    941: {
+        name: "Infernal Strike",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.9],
+        range: 23,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal heavy WIS-based damage to two random foes, ignoring position."
+    },
+    942: {
+        name: "Soul Slasher",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [2.2, 8, 0.3, 2000],
+        range: 16,
+        prob: 30,
+        ward: 2,
+        desc: "Massive WIS-based damage and sometimes burn three random foes, ignoring position."
+    },
+    943: {
+        name: "Infernal Rampart",
+        type: 1,
+        func: 44,
+        calc: 0,
+        args: [0.1, 2, 0, 0, 0, 0.1, 3],
+        range: 3,
+        prob: 70,
+        desc: "Raise DEF/WIS of self and adjacent familiars based on 10% of his WIS respectively."
+    },
+    944: {
+        name: "Fellfeather Dart",
+        type: 2,
+        func: 34,
+        calc: 2,
+        args: [1.5, 2, 0.25, 0.08],
+        range: 315,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Heavy WIS-based DMG and sometimes lower DEF of up to five foes. Increased if fewer foes."
+    },
+    945: {
+        name: "Raging Bull",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.65],
+        range: 314,
+        prob: 30,
+        ward: 1,
+        desc: "Heavy ATK-based DMG to up to four foes. Increased if fewer foes, ignoring position."
+    },
+    946: {
+        name: "Lasso",
+        type: 1,
+        func: 2,
+        calc: 0,
+        args: [0.05, 8],
+        range: 7,
+        prob: 70,
+        desc: "Lower the skill trigger rate of up to three foes by 5%."
+    },
+    947: {
+        name: "Spear & Fang",
+        type: 2,
+        func: 4,
+        calc: 3,
+        args: [1.3],
+        range: 20,
+        prob: 30,
+        ward: 2,
+        desc: "Deal AGI-based damage to five random foes, ignoring position."
+    },
+    948: {
+        name: "Winds of the Wood",
+        type: 1,
+        func: 32,
+        calc: 0,
+        args: [0.3, 4],
+        range: 7,
+        prob: 70,
+        desc: "Greatly lower AGI of up to three foes."
+    },
+    949: {
+        name: "Devour",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.45],
+        range: 315,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal ATK-based damage to up to five foes. Increased if fewer foes, ignoring position."
+    },
+    950: {
+        name: "Greedy Flame",
+        type: 2,
+        func: 34,
+        calc: 3,
+        args: [1.7, 2, 0.25, 0.2],
+        range: 8,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Deal heavy AGI-based damage and sometimes lower DEF of all foes, ignoring position."
+    },
+    951: {
+        name: "Valiant Spear",
+        type: 2,
+        func: 33,
+        calc: 3,
+        args: [1, 4, 0.2, 0.15],
+        range: 17,
+        prob: 30,
+        ward: 1,
+        sac: 1,
+        desc: "Deal AGI-based damage to six random foes and sometimes lower AGI."
+    },
+    952: {
+        name: "Virtuoso Volley",
+        type: 2,
+        func: 4,
+        calc: 3,
+        args: [1.6],
+        range: 314,
+        prob: 30,
+        ward: 2,
+        sac: 1,
+        desc: "Heavy AGI-based damage to up to four foes, ignoring position. Increased if fewer foes."
+    },
+    953: {
+        name: "Grace of the Ring",
+        type: 1,
+        func: 44,
+        calc: 0,
+        args: [0.2, 17, 0.4, 0, 0, 0.2, 2],
+        range: 3,
+        prob: 70,
+        sac: 1,
+        desc: "Raise HP/DEF of self and adjacent familiars based on 20% of his WIS respectively."
+    },
+    954: {
+        name: "Brutal Sanction",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1.35, 5, 0.25, 1],
+        range: 19,
+        prob: 30,
+        ward: 1,
+        desc: "Deal ATK-based damage and sometimes silence four random foes."
+    },
+    955: {
+        name: "Light of Justice",
+        type: 16,
+        func: 6,
+        calc: 0,
+        args: [1],
+        range: 121,
+        prob: 50,
+        desc: "Revive and fully restore HP of one random ally upon her death."
+    },
     10001: {
         name: "Standard Action",
         type: 2,
@@ -17857,6 +19379,78 @@ var SkillDatabase = {
         isAutoAttack: true,
         desc: "ATK-based damage to one foe."
     },
+    10126: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.2, 3, 0.3],
+        range: 5,
+        prob: 100,
+        ward: 2,
+        isAutoAttack: true,
+        desc: "WIS-based damage and sometimes freeze target."
+    },
+    10127: {
+        name: "Standard Action",
+        type: 2,
+        func: 3,
+        calc: 1,
+        args: [1],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
+    10128: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.4],
+        range: 5,
+        prob: 100,
+        ward: 2,
+        isAutoAttack: true,
+        desc: "WIS-based damage to one foe."
+    },
+    10129: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 2,
+        args: [1.2],
+        range: 5,
+        prob: 100,
+        ward: 2,
+        isAutoAttack: true,
+        desc: "WIS-based damage to one foe."
+    },
+    10130: {
+        name: "Standard Action",
+        type: 2,
+        func: 34,
+        calc: 1,
+        args: [1.2, 3, 1, 0.15],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage and lower WIS of target."
+    },
+    10131: {
+        name: "Standard Action",
+        type: 2,
+        func: 4,
+        calc: 1,
+        args: [1.4],
+        range: 5,
+        prob: 100,
+        ward: 1,
+        isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
     9001: {
         name: "Abject Horror",
         type: 20,
@@ -17876,1121 +19470,18 @@ var SkillDatabase = {
         range: 0,
         prob: 100,
         desc: "Increase damage to lower rarities by up to 20%."
-    }
+    },
+    9004: {
+        name: "Coldblood Claw",
+        type: 20,
+        func: 1006,
+        calc: 0,
+        args: [0.1],
+        range: 0,
+        prob: 100,
+        desc: "Up to 10% chance to reproduce the previous attack action."
+    },
 };
-var SkillLogicFactory = (function () {
-    function SkillLogicFactory() {
-    }
-    SkillLogicFactory.getSkillLogic = function (skillFunc) {
-        switch (skillFunc) {
-            case 1 /* BUFF */:
-                return new BuffSkillLogic();
-            case 44 /* MULTI_BUFF */:
-                return new MultiBuffSkillLogic();
-            case 2 /* DEBUFF */:
-            case 32 /* CASTER_BASED_DEBUFF */:
-                return new DebuffSkillLogic();
-            case 45 /* MULTI_DEBUFF */:
-                return new MultiDebuffSkillLogic();
-            case 46 /* DEBUFF_AFFLICTION */:
-                return new DebuffAfflictionSkillLogic();
-            case 39 /* ONHIT_BUFF */:
-                return new OnHitBuffSkillLogic();
-            case 38 /* ONHIT_DEBUFF */:
-                return new OnHitDebuffSkillLogic();
-            case 16 /* DISPELL */:
-                return new DispellSkillLogic();
-            case 19 /* AFFLICTION */:
-                return new AfflictionSkillLogic();
-            case 3 /* ATTACK */:
-            case 4 /* MAGIC */:
-            case 21 /* DEBUFFATTACK */:
-            case 22 /* DEBUFFINDIRECT */:
-            case 36 /* DRAIN_ATTACK */:
-            case 37 /* DRAIN_MAGIC */:
-            case 33 /* CASTER_BASED_DEBUFF_ATTACK */:
-            case 34 /* CASTER_BASED_DEBUFF_MAGIC */:
-            case 7 /* KILL */:
-                return new AttackSkillLogic();
-            case 12 /* PROTECT */:
-                return new ProtectSkillLogic();
-            case 27 /* EVADE */:
-                return new EvadeSkillLogic();
-            case 14 /* PROTECT_COUNTER */:
-                return new ProtectCounterSkillLogic();
-            case 28 /* PROTECT_REFLECT */:
-                return new ProtectReflectSkillLogic();
-            case 13 /* COUNTER */:
-            case 41 /* COUNTER_INDIRECT */:
-                return new CounterSkillLogic();
-            case 29 /* COUNTER_DISPELL */:
-                return new CounterDispellSkillLogic();
-            case 42 /* COUNTER_DEBUFF */:
-            case 43 /* COUNTER_DEBUFF_INDIRECT */:
-                return new CounterDebuffSkillLogic();
-            case 40 /* CLEAR_DEBUFF */:
-                return new ClearDebuffSkillLogic();
-            case 11 /* DRAIN */:
-                return new DrainSkillLogic();
-            case 20 /* SURVIVE */:
-                return new SurviveSkillLogic();
-            case 18 /* HEAL */:
-                return new HealSkillLogic();
-            case 6 /* REVIVE */:
-                return new ReviveSkillLogic();
-            case 31 /* TURN_ORDER_CHANGE */:
-                return new TurnOrderChangeSkillLogic();
-            case 24 /* RANDOM */:
-                return new RandomSkillLogic();
-            case 51 /* ABSORB */:
-                return new AbsorbSkillLogic();
-            case 1001 /* DAMAGE_PASSIVE */:
-                return new DamagePassiveSkillLogic();
-            case 1002 /* DEFENSE_PASSIVE */:
-                return new DefensePassiveSkillLogic();
-            default:
-                throw new Error("Invalid skillFunc or not implemented");
-        }
-    };
-    return SkillLogicFactory;
-})();
-var SkillLogic = (function () {
-    function SkillLogic() {
-        this.battleModel = BattleModel.getInstance();
-        this.logger = BattleLogger.getInstance();
-        this.cardManager = CardManager.getInstance();
-    }
-    SkillLogic.prototype.willBeExecuted = function (data) {
-        var deadCond = (data.executor.isDead && data.skill.skillType === 16 /* ACTION_ON_DEATH */) || (!data.executor.isDead && data.skill.skillType !== 16 /* ACTION_ON_DEATH */);
-        if (data.noProbCheck) {
-            var probCond = true;
-        }
-        else {
-            probCond = (Math.random() * 100) <= (data.skill.maxProbability + data.executor.status.skillProbability * 100 + data.executor.bcAddedProb);
-        }
-        return (deadCond && data.executor.canAttack() && data.executor.canUseSkill() && probCond);
-    };
-    SkillLogic.prototype.execute = function (data) {
-        throw new Error("Implement this");
-    };
-    SkillLogic.prototype.clearAllCardsDamagePhaseData = function () {
-        var allCards = this.cardManager.getAllCurrentMainCards();
-        for (var i = 0; i < allCards.length; i++) {
-            allCards[i].clearDamagePhaseData();
-        }
-    };
-    SkillLogic.prototype.getComponentStatus = function (type) {
-        switch (type) {
-            case 9 /* ALL_STATUS */:
-                return [1 /* ATK */, 2 /* DEF */, 3 /* WIS */, 4 /* AGI */];
-            case 15 /* REMAIN_HP_ALL_STATUS_UP */:
-                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
-            case 20 /* REMAIN_HP_ATK_DEF_UP */:
-                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */];
-            case 21 /* REMAIN_HP_ATK_WIS_UP */:
-                return [11 /* REMAIN_HP_ATK_UP */, 13 /* REMAIN_HP_WIS_UP */];
-            case 22 /* REMAIN_HP_ATK_AGI_UP */:
-                return [11 /* REMAIN_HP_ATK_UP */, 14 /* REMAIN_HP_AGI_UP */];
-            case 23 /* REMAIN_HP_DEF_WIS_UP */:
-                return [12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */];
-            case 24 /* REMAIN_HP_DEF_AGI_UP */:
-                return [12 /* REMAIN_HP_DEF_UP */, 14 /* REMAIN_HP_AGI_UP */];
-            case 25 /* REMAIN_HP_WIS_AGI_UP */:
-                return [13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
-            case 26 /* REMAIN_HP_ATK_DEF_WIS_UP */:
-                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */];
-            case 27 /* REMAIN_HP_ATK_DEF_AGI_UP */:
-                return [11 /* REMAIN_HP_ATK_UP */, 12 /* REMAIN_HP_DEF_UP */, 14 /* REMAIN_HP_AGI_UP */];
-            case 28 /* REMAIN_HP_DEF_WIS_AGI_UP */:
-                return [12 /* REMAIN_HP_DEF_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
-            case 29 /* REMAIN_HP_ATK_WIS_AGI_UP */:
-                return [11 /* REMAIN_HP_ATK_UP */, 13 /* REMAIN_HP_WIS_UP */, 14 /* REMAIN_HP_AGI_UP */];
-            default:
-                return null;
-        }
-    };
-    return SkillLogic;
-})();
-var BuffSkillLogic = (function (_super) {
-    __extends(BuffSkillLogic, _super);
-    function BuffSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    BuffSkillLogic.prototype.willBeExecuted = function (data) {
-        var hasTarget = data.skill.range.hasValidTarget(data.executor);
-        return _super.prototype.willBeExecuted.call(this, data) && hasTarget;
-    };
-    BuffSkillLogic.prototype.execute = function (data) {
-        var skill = data.skill;
-        var executor = data.executor;
-        skill.getReady(executor);
-        if (this.getComponentStatus(skill.skillFuncArg2) == null) {
-            var statusToBuff = [skill.skillFuncArg2];
-            if (skill.skillFuncArg3 !== 0 && skill.skillFuncArg2 !== 17 /* HP_SHIELD */) {
-                statusToBuff.push(skill.skillFuncArg3);
-            }
-        }
-        else {
-            statusToBuff = this.getComponentStatus(skill.skillFuncArg2);
-        }
-        var basedOnStatType = ENUM.SkillCalcType[skill.skillCalcType];
-        var baseStat = skill.skillFunc === 39 /* ONHIT_BUFF */ ? 0 : executor.getStat(basedOnStatType);
-        var target;
-        while (target = skill.getTarget(executor)) {
-            for (var j = 0; j < statusToBuff.length; j++) {
-                var statusType = statusToBuff[j];
-                switch (statusType) {
-                    case 1 /* ATK */:
-                    case 2 /* DEF */:
-                    case 3 /* WIS */:
-                    case 4 /* AGI */:
-                        var skillMod = skill.skillFuncArg1;
-                        if (skill.skillFunc === 39 /* ONHIT_BUFF */) {
-                            if (skill.skillFuncArg4 === 0) {
-                                throw new Error("Not sure what needs to happen here when arg4 = 0 for onhit buff. Check the manual.");
-                            }
-                            else {
-                                var buffAmount = Math.round(skillMod * skill.skillFuncArg4 * 100);
-                            }
-                        }
-                        else {
-                            if (skill.skillFuncArg2 !== 9 /* ALL_STATUS */) {
-                                baseStat = executor.getStat(basedOnStatType);
-                            }
-                            buffAmount = Math.round(skillMod * baseStat);
-                        }
-                        break;
-                    case 5 /* ATTACK_RESISTANCE */:
-                    case 6 /* MAGIC_RESISTANCE */:
-                    case 7 /* BREATH_RESISTANCE */:
-                    case 8 /* SKILL_PROBABILITY */:
-                    case 18 /* WILL_ATTACK_AGAIN */:
-                    case 16 /* ACTION_ON_DEATH */:
-                    case 11 /* REMAIN_HP_ATK_UP */:
-                    case 12 /* REMAIN_HP_DEF_UP */:
-                    case 13 /* REMAIN_HP_WIS_UP */:
-                    case 14 /* REMAIN_HP_AGI_UP */:
-                        buffAmount = skill.skillFuncArg1;
-                        break;
-                    case 17 /* HP_SHIELD */:
-                        skillMod = skill.skillFuncArg1;
-                        buffAmount = Math.round(skillMod * baseStat);
-                        var maxValue = ~~(target.getOriginalHP() * skill.skillFuncArg3);
-                        break;
-                    default:
-                        throw new Error("Wrong status type or not implemented");
-                }
-                target.changeStatus(statusType, buffAmount, false, maxValue);
-                this.logger.addMinorEvent({
-                    executorId: executor.id,
-                    targetId: target.id,
-                    type: 2 /* STATUS */,
-                    status: {
-                        type: statusType,
-                        isAllUp: skill.skillFuncArg2 === 9 /* ALL_STATUS */
-                    },
-                    description: target.name + "'s " + ENUM.StatusType[statusType] + " increased by " + buffAmount,
-                    amount: buffAmount,
-                    skillId: skill.id
-                });
-            }
-        }
-    };
-    return BuffSkillLogic;
-})(SkillLogic);
-var MultiBuffSkillLogic = (function (_super) {
-    __extends(MultiBuffSkillLogic, _super);
-    function MultiBuffSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    MultiBuffSkillLogic.prototype.execute = function (data) {
-        _super.prototype.execute.call(this, data);
-        var tempSkill = new Skill(data.skill.id);
-        tempSkill.skillFuncArg1 = tempSkill.skillFuncArg6;
-        tempSkill.skillFuncArg2 = tempSkill.skillFuncArg7;
-        tempSkill.skillFuncArg3 = tempSkill.skillFuncArg8;
-        tempSkill.skillFuncArg4 = tempSkill.skillFuncArg9;
-        tempSkill.skillFuncArg5 = tempSkill.skillFuncArg10;
-        data.skill = tempSkill;
-        _super.prototype.execute.call(this, data);
-    };
-    return MultiBuffSkillLogic;
-})(BuffSkillLogic);
-var DebuffSkillLogic = (function (_super) {
-    __extends(DebuffSkillLogic, _super);
-    function DebuffSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    DebuffSkillLogic.prototype.execute = function (data) {
-        var skill = data.skill;
-        var executor = data.executor;
-        skill.getReady(executor);
-        var target;
-        while (target = skill.getTarget(executor)) {
-            this.battleModel.processDebuff(executor, target, skill);
-        }
-    };
-    return DebuffSkillLogic;
-})(SkillLogic);
-var MultiDebuffSkillLogic = (function (_super) {
-    __extends(MultiDebuffSkillLogic, _super);
-    function MultiDebuffSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    MultiDebuffSkillLogic.prototype.execute = function (data) {
-        _super.prototype.execute.call(this, data);
-        var tempSkill = new Skill(data.skill.id);
-        tempSkill.skillFuncArg1 = tempSkill.skillFuncArg6;
-        tempSkill.skillFuncArg2 = tempSkill.skillFuncArg7;
-        tempSkill.skillFuncArg3 = tempSkill.skillFuncArg8;
-        tempSkill.skillFuncArg4 = tempSkill.skillFuncArg9;
-        tempSkill.skillFuncArg5 = tempSkill.skillFuncArg10;
-        data.skill = tempSkill;
-        _super.prototype.execute.call(this, data);
-    };
-    return MultiDebuffSkillLogic;
-})(DebuffSkillLogic);
-var DebuffAfflictionSkillLogic = (function (_super) {
-    __extends(DebuffAfflictionSkillLogic, _super);
-    function DebuffAfflictionSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    DebuffAfflictionSkillLogic.prototype.execute = function (data) {
-        var tempDebuffSkillLogic = new DebuffSkillLogic();
-        tempDebuffSkillLogic.execute(data);
-        var tempSkill = new Skill(data.skill.id);
-        tempSkill.skillFuncArg1 = 0;
-        tempSkill.skillFuncArg2 = tempSkill.skillFuncArg6;
-        tempSkill.skillFuncArg3 = tempSkill.skillFuncArg7;
-        tempSkill.skillFuncArg4 = tempSkill.skillFuncArg8;
-        tempSkill.skillFuncArg5 = tempSkill.skillFuncArg9;
-        var tempAfflictionSkillLogic = new AfflictionSkillLogic();
-        data.skill = tempSkill;
-        tempAfflictionSkillLogic.execute(data);
-    };
-    return DebuffAfflictionSkillLogic;
-})(SkillLogic);
-var AbsorbSkillLogic = (function (_super) {
-    __extends(AbsorbSkillLogic, _super);
-    function AbsorbSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    AbsorbSkillLogic.prototype.execute = function (data) {
-        var skill = data.skill;
-        var executor = data.executor;
-        skill.getReady(executor);
-        var target;
-        var statusToBuff = AbsorbSkillLogic.getComponentStatusFromBuffStatusType(skill.skillFuncArg2);
-        var debuffMulti = skill.skillFuncArg3;
-        while (target = skill.getTarget(executor)) {
-            for (var j = 0; j < statusToBuff.length; j++) {
-                var statusType = statusToBuff[j];
-                console.assert(skill.skillFuncArg4 === 2 /* WIS */, "Non WIS-based debuff unimplemented!");
-                console.assert(skill.skillFuncArg6 === 1, "Absorb doesn't have 100% probability - unimplemented!");
-                var isNewLogic = false;
-                var debuffAmount = Math.floor(executor.getWIS() * debuffMulti);
-                var lowStatLimit = target.getOriginalStat(ENUM.StatusType[statusType]) * Card.NEW_DEBUFF_LOW_LIMIT_FACTOR;
-                var currentStat = target.getStat(ENUM.StatusType[statusType]);
-                var maxDebuffLimit = lowStatLimit > currentStat ? 0 : currentStat - lowStatLimit;
-                if (debuffAmount > maxDebuffLimit) {
-                    debuffAmount = maxDebuffLimit;
-                }
-                target.changeStatus(statusType, -debuffAmount, isNewLogic);
-                this.logger.addMinorEvent({
-                    executorId: executor.id,
-                    targetId: target.id,
-                    type: 2 /* STATUS */,
-                    status: {
-                        type: statusType,
-                        isNewLogic: isNewLogic
-                    },
-                    description: target.name + "'s " + ENUM.StatusType[statusType] + " decreased by " + Math.abs(debuffAmount),
-                    amount: -debuffAmount,
-                    skillId: skill.id
-                });
-                var buffAmount = Math.floor(Math.abs(debuffAmount) * skill.skillFuncArg5);
-                executor.changeStatus(statusType, buffAmount, false);
-                this.logger.addMinorEvent({
-                    executorId: executor.id,
-                    targetId: executor.id,
-                    type: 2 /* STATUS */,
-                    status: {
-                        type: statusType,
-                        isAllUp: skill.skillFuncArg2 === 9 /* ALL_STATUS */
-                    },
-                    description: executor.name + "'s " + ENUM.StatusType[statusType] + " increased by " + buffAmount,
-                    amount: buffAmount,
-                    skillId: skill.id
-                });
-            }
-        }
-    };
-    AbsorbSkillLogic.getComponentStatusFromBuffStatusType = function (type) {
-        switch (type) {
-            case 1 /* ATK */:
-                return [1 /* ATK */];
-            case 2 /* DEF */:
-                return [2 /* DEF */];
-            case 3 /* WIS */:
-                return [3 /* WIS */];
-            case 4 /* AGI */:
-                return [4 /* AGI */];
-            case 5 /* ATK_DEF */:
-                return [1 /* ATK */, 2 /* DEF */];
-            case 6 /* ATK_WIS */:
-                return [1 /* ATK */, 3 /* WIS */];
-            case 7 /* ATK_AGI */:
-                return [1 /* ATK */, 4 /* AGI */];
-            case 8 /* DEF_WIS */:
-                return [2 /* DEF */, 3 /* WIS */];
-            case 9 /* DEF_AGI */:
-                return [2 /* DEF */, 4 /* AGI */];
-            case 10 /* WIS_AGI */:
-                return [3 /* WIS */, 4 /* AGI */];
-            case 11 /* ATK_DEF_WIS */:
-                return [1 /* ATK */, 2 /* DEF */, 3 /* WIS */];
-            case 12 /* ATK_DEF_AGI */:
-                return [1 /* ATK */, 2 /* DEF */, 4 /* AGI */];
-            case 13 /* DEF_WIS_AGI */:
-                return [2 /* DEF */, 3 /* WIS */, 4 /* AGI */];
-            case 14 /* ALL_STATUS */:
-                return [1 /* ATK */, 2 /* DEF */, 3 /* WIS */, 4 /* AGI */];
-            default:
-                return [3 /* WIS */];
-        }
-    };
-    return AbsorbSkillLogic;
-})(SkillLogic);
-var ClearStatusSkillLogic = (function (_super) {
-    __extends(ClearStatusSkillLogic, _super);
-    function ClearStatusSkillLogic() {
-        _super.apply(this, arguments);
-        this.condFunc = function (x) { return true; };
-        this.isDispelled = false;
-    }
-    ClearStatusSkillLogic.prototype.willBeExecuted = function (data) {
-        var hasValidTarget = data.skill.range.hasValidTarget(data.executor, this.getCondFunc());
-        return _super.prototype.willBeExecuted.call(this, data) && hasValidTarget;
-    };
-    ClearStatusSkillLogic.prototype.getCondFunc = function () {
-        var _this = this;
-        return function (card) { return card.hasStatus(_this.condFunc); };
-    };
-    ClearStatusSkillLogic.prototype.execute = function (data) {
-        data.skill.getReady(data.executor);
-        var target;
-        while (target = data.skill.getTarget(data.executor)) {
-            target.clearAllStatus(this.condFunc);
-            this.logger.addMinorEvent({
-                executorId: data.executor.id,
-                targetId: target.id,
-                type: 2 /* STATUS */,
-                status: {
-                    type: 0,
-                    isDispelled: this.isDispelled,
-                    isClearDebuff: !this.isDispelled
-                },
-                description: target.name + (this.isDispelled ? " is dispelled." : " is cleared of debuffs."),
-                skillId: data.skill.id
-            });
-        }
-    };
-    return ClearStatusSkillLogic;
-})(SkillLogic);
-var DispellSkillLogic = (function (_super) {
-    __extends(DispellSkillLogic, _super);
-    function DispellSkillLogic() {
-        _super.call(this);
-        this.condFunc = function (x) { return x > 0; };
-        this.isDispelled = true;
-    }
-    return DispellSkillLogic;
-})(ClearStatusSkillLogic);
-var ClearDebuffSkillLogic = (function (_super) {
-    __extends(ClearDebuffSkillLogic, _super);
-    function ClearDebuffSkillLogic() {
-        _super.call(this);
-        this.condFunc = function (x) { return x < 0; };
-        this.isDispelled = false;
-    }
-    return ClearDebuffSkillLogic;
-})(ClearStatusSkillLogic);
-var AfflictionSkillLogic = (function (_super) {
-    __extends(AfflictionSkillLogic, _super);
-    function AfflictionSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    AfflictionSkillLogic.prototype.execute = function (data) {
-        data.skill.getReady(data.executor);
-        var target;
-        while (target = data.skill.getTarget(data.executor)) {
-            this.battleModel.processAffliction(data.executor, target, data.skill);
-        }
-    };
-    return AfflictionSkillLogic;
-})(SkillLogic);
-var AttackSkillLogic = (function (_super) {
-    __extends(AttackSkillLogic, _super);
-    function AttackSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    AttackSkillLogic.prototype.willBeExecuted = function (data) {
-        var hasTarget = data.skill.range.hasValidTarget(data.executor);
-        return _super.prototype.willBeExecuted.call(this, data) && hasTarget;
-    };
-    AttackSkillLogic.prototype.execute = function (data) {
-        var skill = data.skill;
-        skill.getReady(data.executor);
-        var targets = skill.range.targets;
-        if (RangeFactory.isEnemyScaledRange(skill.skillRange)) {
-            data.scaledRatio = RangeFactory.getScaledRatio(skill.skillRange, targets.length);
-        }
-        if (!RangeFactory.isEnemyRandomRange(data.skill.skillRange) && data.skill.isIndirectSkill()) {
-            this.executeAoeAttack(data, targets);
-        }
-        else {
-            this.executeNonAoeAttack(data);
-        }
-    };
-    AttackSkillLogic.prototype.executeNonAoeAttack = function (data) {
-        var target;
-        var attackCount = 0;
-        while ((target = data.skill.getTarget(data.executor)) && !data.executor.isDead && data.executor.canAttack()) {
-            if (RangeFactory.isEnemyVaryingRange(data.skill.skillRange)) {
-                var varyingRatio = RangeFactory.getVaryingRatio(data.skill.skillRange, attackCount);
-            }
-            this.processAttackAgainstSingleTarget(data.executor, target, data.skill, data.scaledRatio, varyingRatio);
-            attackCount++;
-        }
-    };
-    AttackSkillLogic.prototype.executeAoeAttack = function (data, targets) {
-        var skill = data.skill;
-        var executor = data.executor;
-        if (skill.isIndirectSkill()) {
-            shuffle(targets);
-            var aoeReactiveSkillActivated = false;
-            var targetsAttacked = [];
-            for (var i = 0; i < targets.length; i++) {
-                var targetCard = targets[i];
-                if (targetCard.isDead) {
-                    continue;
-                }
-                var protectSkillActivated = false;
-                if (!aoeReactiveSkillActivated && !targetsAttacked[targetCard.id]) {
-                    var protectData = this.battleModel.processProtect(executor, targetCard, skill, targetsAttacked, data.scaledRatio);
-                    protectSkillActivated = protectData.activated;
-                    if (protectSkillActivated) {
-                        aoeReactiveSkillActivated = true;
-                    }
-                }
-                if (!protectSkillActivated && !targetsAttacked[targetCard.id]) {
-                    var defenseSkill = targetCard.getRandomDefenseSkill();
-                    var defenseData = {
-                        executor: targetCard,
-                        skill: defenseSkill,
-                        attacker: executor,
-                    };
-                    this.battleModel.processDamagePhase({
-                        attacker: executor,
-                        target: targetCard,
-                        skill: skill,
-                        scaledRatio: data.scaledRatio
-                    });
-                    targetsAttacked[targetCard.id] = true;
-                    if (!executor.justMissed && !targetCard.justEvaded && !targetCard.isDead) {
-                        if (Skill.isDebuffAttackSkill(skill.id)) {
-                            if (Math.random() <= skill.skillFuncArg3) {
-                                this.battleModel.processDebuff(executor, targetCard, skill);
-                            }
-                        }
-                        else if (skill.skillFunc === 3 /* ATTACK */ || skill.skillFunc === 4 /* MAGIC */) {
-                            this.battleModel.processAffliction(executor, targetCard, skill);
-                        }
-                    }
-                    if (defenseSkill && defenseSkill.willBeExecuted(defenseData) && !aoeReactiveSkillActivated) {
-                        defenseSkill.execute(defenseData);
-                        aoeReactiveSkillActivated = true;
-                    }
-                }
-                if (skill.skillFunc === 36 /* DRAIN_ATTACK */ || skill.skillFunc === 37 /* DRAIN_MAGIC */) {
-                    this.processDrainPhase(executor, skill);
-                }
-                this.clearAllCardsDamagePhaseData();
-            }
-        }
-    };
-    AttackSkillLogic.prototype.processAttackAgainstSingleTarget = function (executor, target, skill, scaledRatio, varyingRatio) {
-        var protectData = this.battleModel.processProtect(executor, target, skill, null, scaledRatio, varyingRatio);
-        if (!protectData.activated) {
-            var defenseSkill = target.getRandomDefenseSkill();
-            var defenseData = {
-                executor: target,
-                skill: defenseSkill,
-                attacker: executor,
-            };
-            this.battleModel.processDamagePhase({
-                attacker: executor,
-                target: target,
-                skill: skill,
-                scaledRatio: scaledRatio,
-                varyingRatio: varyingRatio
-            });
-            if (!executor.justMissed && !target.justEvaded && !target.isDead) {
-                if (Skill.isDebuffAttackSkill(skill.id)) {
-                    if (Math.random() <= skill.skillFuncArg3) {
-                        this.battleModel.processDebuff(executor, target, skill);
-                    }
-                }
-                else if (skill.skillFunc === 3 /* ATTACK */ || skill.skillFunc === 4 /* MAGIC */) {
-                    this.battleModel.processAffliction(executor, target, skill);
-                }
-            }
-            if (defenseSkill && defenseSkill.willBeExecuted(defenseData)) {
-                defenseSkill.execute(defenseData);
-            }
-        }
-        if (skill.skillFunc === 36 /* DRAIN_ATTACK */ || skill.skillFunc === 37 /* DRAIN_MAGIC */) {
-            this.processDrainPhase(executor, skill);
-        }
-        this.clearAllCardsDamagePhaseData();
-    };
-    AttackSkillLogic.prototype.processDrainPhase = function (executor, skill) {
-        var healRange = RangeFactory.getRange(skill.skillFuncArg4);
-        healRange.getReady(executor, function (card) { return !card.isFullHealth(); });
-        console.assert(!(healRange instanceof RandomRange), "can't do this with random ranges!");
-        if (healRange.targets.length === 0) {
-            return;
-        }
-        var healAmount = Math.floor((executor.lastBattleDamageDealt * skill.skillFuncArg2) / healRange.targets.length);
-        var target;
-        while (target = healRange.getTarget(executor)) {
-            this.battleModel.damageToTargetDirectly(target, -1 * healAmount, " healing");
-        }
-    };
-    return AttackSkillLogic;
-})(SkillLogic);
-var ProtectSkillLogic = (function (_super) {
-    __extends(ProtectSkillLogic, _super);
-    function ProtectSkillLogic() {
-        _super.apply(this, arguments);
-        this.counter = false;
-    }
-    ProtectSkillLogic.prototype.willBeExecuted = function (data) {
-        data.skill.getReady(data.executor);
-        if (this.cardManager.isSameCard(data.targetCard, data.executor) && data.skill.skillRange !== 21 /* MYSELF */) {
-            return false;
-        }
-        console.assert(!(data.skill.range instanceof RandomRange), "can't do this with random ranges!");
-        return _super.prototype.willBeExecuted.call(this, data) && this.cardManager.isCardInList(data.targetCard, data.skill.range.targets);
-    };
-    ProtectSkillLogic.prototype.execute = function (data) {
-        return this.executeProtectPhase(data);
-    };
-    ProtectSkillLogic.prototype.executeProtectPhase = function (data, noProtectLog) {
-        var protector = data.executor;
-        var protectSkill = data.skill;
-        var attackSkill = data.attackSkill;
-        var toReturn = {};
-        if (!noProtectLog) {
-            this.logger.addMinorEvent({
-                executorId: protector.id,
-                type: 4 /* PROTECT */,
-                protect: {
-                    protectedId: data.targetCard.id,
-                    counter: this.counter,
-                    counteredSkillId: attackSkill.id,
-                    attackerId: data.attacker.id
-                },
-                description: protector.name + " procs " + protectSkill.name + " to protect " + data.targetCard.name + ". ",
-                skillId: protectSkill.id
-            });
-        }
-        if (protectSkill.skillFunc === 28 /* PROTECT_REFLECT */) {
-            var dmgRatio = protectSkill.skillFuncArg5;
-        }
-        this.battleModel.processDamagePhase({
-            attacker: data.attacker,
-            target: protector,
-            skill: attackSkill,
-            scaledRatio: data.scaledRatio,
-            varyingRatio: data.varyingRatio,
-            dmgRatio: dmgRatio
-        });
-        if (protectSkill.skillFunc === 28 /* PROTECT_REFLECT */) {
-            toReturn.dmgTaken = protector.lastBattleDamageTaken;
-        }
-        if (!data.attacker.justMissed && !protector.isDead) {
-            if (attackSkill.skillFunc === 3 /* ATTACK */ || attackSkill.skillFunc === 4 /* MAGIC */) {
-                this.battleModel.processAffliction(data.attacker, protector, attackSkill);
-            }
-            else if (Skill.isDebuffAttackSkill(attackSkill.id)) {
-                if (Math.random() <= attackSkill.skillFuncArg3) {
-                    this.battleModel.processDebuff(data.attacker, protector, attackSkill);
-                }
-            }
-        }
-        if (data.targetsAttacked) {
-            data.targetsAttacked[protector.id] = true;
-        }
-        this.clearAllCardsDamagePhaseData();
-        return toReturn;
-    };
-    return ProtectSkillLogic;
-})(SkillLogic);
-var EvadeSkillLogic = (function (_super) {
-    __extends(EvadeSkillLogic, _super);
-    function EvadeSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    EvadeSkillLogic.prototype.willBeExecuted = function (data) {
-        var skill = data.skill;
-        skill.getReady(data.executor);
-        if (this.cardManager.isSameCard(data.targetCard, data.executor) && skill.skillRange !== 21 /* MYSELF */) {
-            return false;
-        }
-        var canEvade = Skill.canProtectFromCalcType(skill.skillFuncArg2, data.attackSkill) && Skill.canProtectFromAttackType(skill.skillFuncArg1, data.attackSkill);
-        console.assert(!(skill.range instanceof RandomRange), "can't do this with random ranges!");
-        return _super.prototype.willBeExecuted.call(this, data) && this.cardManager.isCardInList(data.targetCard, skill.range.targets) && canEvade;
-    };
-    EvadeSkillLogic.prototype.execute = function (data) {
-        data.executor.justEvaded = true;
-        this.logger.addMinorEvent({
-            executorId: data.executor.id,
-            type: 5 /* DESCRIPTION */,
-            noProcEffect: true,
-            description: data.executor.name + " procs " + data.skill.name,
-            skillId: data.skill.id
-        });
-        this.battleModel.processDamagePhase({
-            attacker: data.attacker,
-            target: data.executor,
-            skill: data.attackSkill,
-            scaledRatio: data.scaledRatio,
-            varyingRatio: data.varyingRatio
-        });
-        if (data.targetsAttacked) {
-            data.targetsAttacked[data.executor.id] = true;
-        }
-        this.clearAllCardsDamagePhaseData();
-        return {};
-    };
-    return EvadeSkillLogic;
-})(SkillLogic);
-var ProtectCounterSkillLogic = (function (_super) {
-    __extends(ProtectCounterSkillLogic, _super);
-    function ProtectCounterSkillLogic() {
-        _super.call(this);
-        this.counter = true;
-    }
-    ProtectCounterSkillLogic.prototype.execute = function (data) {
-        var toReturn = this.executeProtectPhase(data);
-        var protector = data.executor;
-        if (!protector.isDead && protector.canAttack() && !data.attacker.isDead) {
-            this.battleModel.processDamagePhase({
-                attacker: protector,
-                target: data.attacker,
-                skill: data.skill,
-                additionalDescription: protector.name + " counters " + data.attacker.name + "! ",
-            });
-        }
-        return toReturn;
-    };
-    return ProtectCounterSkillLogic;
-})(ProtectSkillLogic);
-var ProtectReflectSkillLogic = (function (_super) {
-    __extends(ProtectReflectSkillLogic, _super);
-    function ProtectReflectSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    ProtectReflectSkillLogic.prototype.willBeExecuted = function (data) {
-        var skill = data.skill;
-        var canProtect = Skill.canProtectFromCalcType(skill.skillFuncArg2, data.attackSkill) && Skill.canProtectFromAttackType(skill.skillFuncArg4, data.attackSkill);
-        return _super.prototype.willBeExecuted.call(this, data) && canProtect;
-    };
-    ProtectReflectSkillLogic.prototype.execute = function (data) {
-        var toReturn = this.executeProtectPhase(data);
-        if (data.executor.isDead || !data.executor.canUseSkill()) {
-            return toReturn;
-        }
-        var range = RangeFactory.getRange(data.skill.skillFuncArg3);
-        range.getReady(data.executor);
-        var target;
-        while (target = range.getTarget(data.executor)) {
-            this.battleModel.processDamagePhase({
-                attacker: data.executor,
-                target: target,
-                skill: data.skill,
-                scaledRatio: data.scaledRatio,
-                varyingRatio: data.varyingRatio,
-                oriAttacker: data.attacker,
-                oriAtkSkill: data.attackSkill,
-                oriDmg: toReturn.dmgTaken / data.skill.skillFuncArg5
-            });
-            if (data.attackSkill.skillFunc === 3 /* ATTACK */ || data.attackSkill.skillFunc === 4 /* MAGIC */) {
-                this.battleModel.processAffliction(data.executor, target, data.attackSkill, ProtectReflectSkillLogic.REFLECT_AFFLICTION_PROBABILITY);
-            }
-            this.clearAllCardsDamagePhaseData();
-        }
-        return toReturn;
-    };
-    ProtectReflectSkillLogic.REFLECT_AFFLICTION_PROBABILITY = 0.2;
-    return ProtectReflectSkillLogic;
-})(ProtectSkillLogic);
-var CounterSkillLogic = (function (_super) {
-    __extends(CounterSkillLogic, _super);
-    function CounterSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    CounterSkillLogic.prototype.willBeExecuted = function (data) {
-        return _super.prototype.willBeExecuted.call(this, data) && !data.attacker.isDead;
-    };
-    CounterSkillLogic.prototype.execute = function (data) {
-        this.logger.addMinorEvent({
-            executorId: data.executor.id,
-            type: 5 /* DESCRIPTION */,
-            description: data.executor.name + " procs " + data.skill.name + ". ",
-            skillId: data.skill.id
-        });
-        this.battleModel.processDamagePhase({
-            attacker: data.executor,
-            target: data.attacker,
-            skill: data.skill,
-            additionalDescription: data.executor.name + " counters " + data.attacker.name + "! ",
-        });
-        if (!data.executor.justMissed && !data.attacker.justEvaded && !data.attacker.isDead && data.skill.skillFunc === 13 /* COUNTER */) {
-            this.battleModel.processAffliction(data.executor, data.attacker, data.skill);
-        }
-    };
-    return CounterSkillLogic;
-})(SkillLogic);
-var CounterDispellSkillLogic = (function (_super) {
-    __extends(CounterDispellSkillLogic, _super);
-    function CounterDispellSkillLogic() {
-        _super.apply(this, arguments);
-        this.condFunc = function (x) { return x > 0; };
-    }
-    CounterDispellSkillLogic.prototype.willBeExecuted = function (data) {
-        var range = RangeFactory.getRange(data.skill.skillFuncArg3);
-        var hasValidtarget = range.hasValidTarget(data.executor, this.getCondFunc());
-        return _super.prototype.willBeExecuted.call(this, data) && hasValidtarget;
-    };
-    CounterDispellSkillLogic.prototype.getCondFunc = function () {
-        var _this = this;
-        return function (card) { return card.hasStatus(_this.condFunc); };
-    };
-    CounterDispellSkillLogic.prototype.execute = function (data) {
-        var toReturn = this.executeProtectPhase(data, true);
-        if (data.executor.isDead || !data.executor.canUseSkill()) {
-            return toReturn;
-        }
-        this.logger.addMinorEvent({
-            executorId: data.executor.id,
-            type: 5 /* DESCRIPTION */,
-            description: data.executor.name + " procs " + data.skill.name,
-            skillId: data.skill.id
-        });
-        var range = RangeFactory.getRange(data.skill.skillFuncArg3);
-        range.getReady(data.executor, this.getCondFunc());
-        var target;
-        while (target = range.getTarget(data.executor)) {
-            target.clearAllStatus(this.condFunc);
-            this.logger.addMinorEvent({
-                executorId: data.executor.id,
-                targetId: target.id,
-                type: 2 /* STATUS */,
-                status: {
-                    type: 0,
-                    isDispelled: true,
-                },
-                description: target.name + " is dispelled.",
-                skillId: data.skill.id
-            });
-        }
-        return toReturn;
-    };
-    return CounterDispellSkillLogic;
-})(ProtectSkillLogic);
-var CounterDebuffSkillLogic = (function (_super) {
-    __extends(CounterDebuffSkillLogic, _super);
-    function CounterDebuffSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    CounterDebuffSkillLogic.prototype.execute = function (data) {
-        _super.prototype.execute.call(this, data);
-        var protector = data.executor;
-        if (!protector.isDead && protector.canUseSkill() && !data.attacker.isDead && Math.random() <= data.skill.skillFuncArg3) {
-            this.battleModel.processDebuff(protector, data.attacker, data.skill);
-        }
-    };
-    return CounterDebuffSkillLogic;
-})(CounterSkillLogic);
-var OnHitBuffSkillLogic = (function (_super) {
-    __extends(OnHitBuffSkillLogic, _super);
-    function OnHitBuffSkillLogic() {
-        _super.apply(this, arguments);
-        this.executionLeft = OnHitBuffSkillLogic.UNINITIALIZED_VALUE;
-    }
-    OnHitBuffSkillLogic.prototype.willBeExecuted = function (data) {
-        if (this.executionLeft === OnHitBuffSkillLogic.UNINITIALIZED_VALUE) {
-            this.executionLeft = data.skill.skillFuncArg5;
-        }
-        if (this.executionLeft === 0)
-            return false;
-        var success = _super.prototype.willBeExecuted.call(this, data);
-        if (success) {
-            this.executionLeft--;
-            return true;
-        }
-        else
-            return false;
-    };
-    OnHitBuffSkillLogic.prototype.execute = function (data) {
-        this.logger.addMinorEvent({
-            executorId: data.executor.id,
-            type: 5 /* DESCRIPTION */,
-            description: data.executor.name + " procs " + data.skill.name + ". ",
-            skillId: data.skill.id
-        });
-        _super.prototype.execute.call(this, data);
-    };
-    OnHitBuffSkillLogic.UNINITIALIZED_VALUE = -1234;
-    return OnHitBuffSkillLogic;
-})(BuffSkillLogic);
-var OnHitDebuffSkillLogic = (function (_super) {
-    __extends(OnHitDebuffSkillLogic, _super);
-    function OnHitDebuffSkillLogic() {
-        _super.apply(this, arguments);
-        this.executionLeft = OnHitDebuffSkillLogic.UNINITIALIZED_VALUE;
-    }
-    OnHitDebuffSkillLogic.prototype.willBeExecuted = function (data) {
-        var hasTarget = data.skill.range.hasValidTarget(data.executor);
-        if (this.executionLeft === OnHitDebuffSkillLogic.UNINITIALIZED_VALUE) {
-            this.executionLeft = data.skill.skillFuncArg5;
-        }
-        if (this.executionLeft === 0)
-            return false;
-        var success = _super.prototype.willBeExecuted.call(this, data) && hasTarget;
-        if (success) {
-            this.executionLeft--;
-            return true;
-        }
-        else
-            return false;
-    };
-    OnHitDebuffSkillLogic.prototype.execute = function (data) {
-        data.skill.getReady(data.executor);
-        var target;
-        this.logger.addMinorEvent({
-            executorId: data.executor.id,
-            type: 5 /* DESCRIPTION */,
-            description: data.executor.name + " procs " + data.skill.name + ". ",
-            skillId: data.skill.id
-        });
-        while (target = data.skill.getTarget(data.executor)) {
-            this.battleModel.processDebuff(data.executor, target, data.skill);
-        }
-    };
-    OnHitDebuffSkillLogic.UNINITIALIZED_VALUE = -1234;
-    return OnHitDebuffSkillLogic;
-})(SkillLogic);
-var DrainSkillLogic = (function (_super) {
-    __extends(DrainSkillLogic, _super);
-    function DrainSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    DrainSkillLogic.prototype.willBeExecuted = function (data) {
-        var hasValidTarget = data.skill.range.hasValidTarget(data.executor, this.getCondFunc());
-        return _super.prototype.willBeExecuted.call(this, data) && hasValidTarget;
-    };
-    DrainSkillLogic.prototype.getCondFunc = function () {
-        return function (card) { return !card.isFullHealth(); };
-    };
-    DrainSkillLogic.prototype.execute = function (data) {
-        var skill = data.skill;
-        skill.range.getReady(data.executor, this.getCondFunc());
-        var target;
-        this.logger.addMinorEvent({
-            executorId: data.executor.id,
-            type: 5 /* DESCRIPTION */,
-            description: data.executor.name + " procs " + skill.name + ". ",
-            skillId: skill.id
-        });
-        console.assert(!(skill.range instanceof RandomRange), "can't do this with random ranges!");
-        var eachTargetHealAmount = Math.floor(data.executor.lastBattleDamageTaken / skill.range.targets.length);
-        while (target = skill.getTarget(data.executor)) {
-            this.battleModel.damageToTargetDirectly(target, -1 * eachTargetHealAmount, " healing");
-        }
-    };
-    return DrainSkillLogic;
-})(SkillLogic);
-var SurviveSkillLogic = (function (_super) {
-    __extends(SurviveSkillLogic, _super);
-    function SurviveSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    SurviveSkillLogic.prototype.willBeExecuted = function (data) {
-        var hpRatio = data.executor.getHpRatio();
-        return _super.prototype.willBeExecuted.call(this, data) && (hpRatio > data.skill.skillFuncArg1) && (data.wouldBeDamage >= data.executor.getHP());
-    };
-    SurviveSkillLogic.prototype.execute = function (data) {
-        this.logger.addMinorEvent({
-            executorId: data.executor.id,
-            type: 5 /* DESCRIPTION */,
-            noProcEffect: true,
-            description: data.executor.name + " procs " + data.skill.name + ". ",
-            skillId: data.skill.id
-        });
-    };
-    return SurviveSkillLogic;
-})(SkillLogic);
-var HealSkillLogic = (function (_super) {
-    __extends(HealSkillLogic, _super);
-    function HealSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    HealSkillLogic.prototype.willBeExecuted = function (data) {
-        var hasValidTarget = data.skill.range.hasValidTarget(data.executor, this.getCondFunc());
-        return _super.prototype.willBeExecuted.call(this, data) && hasValidTarget;
-    };
-    HealSkillLogic.prototype.getCondFunc = function () {
-        return function (card) { return !card.isFullHealth(); };
-    };
-    HealSkillLogic.prototype.execute = function (data) {
-        data.skill.range.getReady(data.executor, this.getCondFunc());
-        var baseHealAmount = getHealAmount(data.executor);
-        var multiplier = data.skill.skillFuncArg1;
-        var healAmount = Math.floor(multiplier * baseHealAmount);
-        var target;
-        while (target = data.skill.getTarget(data.executor)) {
-            if (data.skill.skillFuncArg2 === 1) {
-                healAmount = multiplier * target.getOriginalHP();
-            }
-            this.battleModel.damageToTargetDirectly(target, -1 * healAmount, " healing");
-        }
-    };
-    return HealSkillLogic;
-})(SkillLogic);
-var ReviveSkillLogic = (function (_super) {
-    __extends(ReviveSkillLogic, _super);
-    function ReviveSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    ReviveSkillLogic.prototype.willBeExecuted = function (data) {
-        var hasValidTarget = data.skill.range.hasValidTarget(data.executor);
-        return _super.prototype.willBeExecuted.call(this, data) && hasValidTarget;
-    };
-    ReviveSkillLogic.prototype.execute = function (data) {
-        data.skill.getReady(data.executor);
-        var hpRatio = data.skill.skillFuncArg1;
-        var target;
-        while (target = data.skill.getTarget(data.executor)) {
-            target.revive(hpRatio);
-            this.logger.addMinorEvent({
-                executorId: data.executor.id,
-                targetId: target.id,
-                type: 7 /* REVIVE */,
-                reviveHPRatio: hpRatio,
-                description: target.name + " is revived with " + hpRatio * 100 + "% HP!",
-                skillId: data.skill.id
-            });
-        }
-    };
-    return ReviveSkillLogic;
-})(SkillLogic);
-var TurnOrderChangeSkillLogic = (function (_super) {
-    __extends(TurnOrderChangeSkillLogic, _super);
-    function TurnOrderChangeSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    TurnOrderChangeSkillLogic.prototype.willBeExecuted = function (data) {
-        return _super.prototype.willBeExecuted.call(this, data) && !this.battleModel.turnOrderChanged;
-    };
-    TurnOrderChangeSkillLogic.prototype.execute = function (data) {
-        this.battleModel.turnOrderChanged = true;
-        this.battleModel.turnOrderBase = data.skill.skillFuncArg1;
-        this.battleModel.turnOrderChangeEffectiveTurns = data.skill.skillFuncArg2;
-        this.logger.addMinorEvent({
-            executorId: data.executor.id,
-            type: 51 /* BATTLE_DESCRIPTION */,
-            description: "Turn order is now based on " + ENUM.BattleTurnOrderType[data.skill.skillFuncArg1] + " for " + data.skill.skillFuncArg2 + " turn(s).",
-            skillId: data.skill.id,
-            battleDesc: "Turn Order Changed"
-        });
-    };
-    return TurnOrderChangeSkillLogic;
-})(SkillLogic);
-var RandomSkillLogic = (function (_super) {
-    __extends(RandomSkillLogic, _super);
-    function RandomSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    RandomSkillLogic.prototype.execute = function (data) {
-        var randSkillsId = SkillDatabase[data.skill.id].randSkills;
-        shuffle(randSkillsId);
-        data.noProbCheck = true;
-        for (var i = 0; i < randSkillsId.length; i++) {
-            var skill = new Skill(randSkillsId[i]);
-            data.skill = skill;
-            if (skill.willBeExecuted(data)) {
-                this.logger.addMinorEvent({
-                    executorId: data.executor.id,
-                    type: 5 /* DESCRIPTION */,
-                    description: data.executor.name + " procs " + data.skill.name + ". ",
-                    skillId: data.skill.id
-                });
-                skill.execute(data);
-                break;
-            }
-        }
-    };
-    return RandomSkillLogic;
-})(SkillLogic);
-var BasePassiveSkillLogic = (function (_super) {
-    __extends(BasePassiveSkillLogic, _super);
-    function BasePassiveSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    BasePassiveSkillLogic.prototype.willBeExecuted = function (data) {
-        throw new Error("This is undefined for passive skills!");
-    };
-    BasePassiveSkillLogic.prototype.execute = function (data) {
-        throw new Error("There's nothing to execute for passive skills!");
-    };
-    BasePassiveSkillLogic.prototype.getEffectRatio = function (executor, comparator, passiveSkill) {
-        throw new Error("Implement this!");
-    };
-    return BasePassiveSkillLogic;
-})(SkillLogic);
-var DamagePassiveSkillLogic = (function (_super) {
-    __extends(DamagePassiveSkillLogic, _super);
-    function DamagePassiveSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    DamagePassiveSkillLogic.prototype.getEffectRatio = function (executor, target, passiveSkill) {
-        if (executor.rarity > target.rarity) {
-            return 1 + passiveSkill.skillFuncArg1;
-        }
-        else {
-            return 1;
-        }
-    };
-    return DamagePassiveSkillLogic;
-})(BasePassiveSkillLogic);
-var DefensePassiveSkillLogic = (function (_super) {
-    __extends(DefensePassiveSkillLogic, _super);
-    function DefensePassiveSkillLogic() {
-        _super.apply(this, arguments);
-    }
-    DefensePassiveSkillLogic.prototype.getEffectRatio = function (executor, attacker, passiveSkill) {
-        if (executor.rarity > attacker.rarity) {
-            return 1 - passiveSkill.skillFuncArg1;
-        }
-        else {
-            return 1;
-        }
-    };
-    return DefensePassiveSkillLogic;
-})(BasePassiveSkillLogic);
 var SkillProvider = (function () {
     function SkillProvider() {
     }
@@ -20319,6 +20810,7 @@ var BattleModel = (function () {
             case 34 /* CASTER_BASED_DEBUFF_MAGIC */:
             case 42 /* COUNTER_DEBUFF */:
             case 43 /* COUNTER_DEBUFF_INDIRECT */:
+            case 56 /* PROTECT_COUNTER_DEBUFF */:
                 status = skill.skillFuncArg2;
                 multi = skill.skillFuncArg4;
                 isNewLogic = true;
@@ -20335,16 +20827,21 @@ var BattleModel = (function () {
             default:
                 throw new Error("Wrong skill to use with processDebuff()");
         }
-        if (isFlat) {
-            var baseAmount = -100;
-        }
-        else if (!isNewLogic) {
-            baseAmount = getDebuffAmount(executor, target);
+        if (status === 8 /* SKILL_PROBABILITY */) {
+            var amount = -1 * skill.skillFuncArg1;
         }
         else {
-            baseAmount = getCasterBasedDebuffAmount(executor);
+            if (isFlat) {
+                var baseAmount = -100;
+            }
+            else if (!isNewLogic) {
+                baseAmount = getDebuffAmount(executor, target);
+            }
+            else {
+                baseAmount = getCasterBasedDebuffAmount(executor);
+            }
+            amount = Math.floor(baseAmount * multi);
         }
-        var amount = Math.floor(baseAmount * multi);
         target.changeStatus(status, amount, isNewLogic);
         var description = target.name + "'s " + ENUM.StatusType[status] + " decreased by " + Math.abs(amount);
         this.logger.addMinorEvent({
@@ -20429,11 +20926,23 @@ var BattleModel = (function () {
                 this.processActivePhase(currentCard, "FIRST");
                 if (this.isFinished)
                     break;
+                var passiveSkill = currentCard.getPassiveSkill();
                 if (!currentCard.isDead && currentCard.status.willAttackAgain !== 0) {
                     this.processActivePhase(currentCard, "FIRST");
                     currentCard.status.willAttackAgain = 0;
                     if (this.isFinished)
                         break;
+                }
+                else if (!currentCard.isDead && passiveSkill && passiveSkill.skillFunc === 1006 /* EXTRA_TURN_PASSIVE */) {
+                    if (passiveSkill.willBeExecuted({ executor: currentCard, skill: passiveSkill })) {
+                        this.logger.addMinorEvent({
+                            description: currentCard.name + " gets an extra turn!",
+                            type: 6 /* TEXT */
+                        });
+                        this.processActivePhase(currentCard, "FIRST");
+                        if (this.isFinished)
+                            break;
+                    }
                 }
                 if (!currentCard.isDead) {
                     if (currentCard.getAfflictionType() !== 8 /* BURN */) {
