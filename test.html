@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="js/jquery.min.js"></script>
+</head>
+
+<body>
+    <textarea rows="10" cols="50" id="text"></textarea>
+    <br>
+    <button onclick="send()">Send</button>
+    <script>
+        document.getElementById('text').value = JSON.stringify({"voter": "foo", "familiar": "bar", "score": 1});
+        function send() {
+            $.ajax({
+                url: "https://bloodbrothers-chinhodado.rhcloud.com/vote/",
+                type: "POST",
+                crossDomain: true,
+                data: document.getElementById('text').value,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var resp = JSON.stringify(response)
+                    alert(resp);
+                },
+                error: function (xhr, status) {
+                    alert("error");
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
