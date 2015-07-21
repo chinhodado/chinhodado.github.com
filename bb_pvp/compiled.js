@@ -6687,6 +6687,124 @@ var famDatabase = {
         img: "1bd", rarity: 4, evo: 4,
         fullName: "Mizuchi, the Maelstrom II"
     },
+    11733: {
+        name: "Paris", stats: [16854, 16356, 11318, 7895, 17363],
+        skills: [1003, 1004],
+        autoAttack: 10061,
+        img: "4ce", rarity: 4, evo: 2,
+        fullName: "Paris, Trueshot II"
+    },
+    21731: {
+        name: "Siege Horse", stats: [13442, 8101, 9282, 14200, 11069],
+        skills: [1000],
+        img: "20c", rarity: 4, evo: 2,
+        fullName: "Dark-Imbued Siege Horse II"
+    },
+    11691: {
+        name: "Laola", stats: [18382, 8068, 17439, 19129, 18241],
+        skills: [996, 997],
+        autoAttack: 10142,
+        img: "3a1", rarity: 5, evo: 2,
+        fullName: "Laola, Demiwyrm Spearbearer II"
+    },
+    11732: {
+        name: "Helen", stats: [19660, 7039, 15186, 21404, 18208],
+        skills: [1001, 1002],
+        autoAttack: 10007,
+        img: "10d", rarity: 5, evo: 2,
+        fullName: "Helen, Swan Queen II"
+    },
+    11731: {
+        name: "Siege Horse", stats: [16013, 13269, 12049, 9246, 17340],
+        skills: [999],
+        autoAttack: 10021,
+        img: "11e", rarity: 4, evo: 4,
+        fullName: "Vengeful Siege Horse II"
+    },
+    21729: {
+        name: "Menelaus", stats: [22446, 17883, 23414, 17989, 6719],
+        skills: [998],
+        autoAttack: 10144,
+        img: "3f4", rarity: 5, evo: 3,
+        fullName: "Menelaus, Vengeful King"
+    },
+    11738: {
+        name: "Eric", stats: [15999, 16303, 14096, 6051, 16803],
+        skills: [1020],
+        autoAttack: 10146,
+        img: "35d", rarity: 4, evo: 4,
+        fullName: "Eric, Bloodaxe King II"
+    },
+    11717: {
+        name: "Rex", stats: [15002, 6097, 14005, 16009, 17992],
+        skills: [1024, 1025],
+        autoAttack: 10001,
+        img: "3a3", rarity: 4, evo: 2,
+        fullName: "Crystallus Rex II"
+    },
+    21658: {
+        name: "Oenone", stats: [22132, 9543, 17878, 22445, 18273],
+        skills: [1006, 1007],
+        autoAttack: 10121,
+        img: "1a3", rarity: 5, evo: 3,
+        fullName: "Oenone, the Hailstorm"
+    },
+    11740: {
+        name: "Eviscerating Hafgufa", stats: [13013, 12999, 12001, 7003, 11770],
+        skills: [1023],
+        autoAttack: 10005,
+        img: "407", rarity: 4, evo: 4,
+        fullName: "Eviscerating Hafgufa II"
+    },
+    11735: {
+        name: "Cassandra", stats: [13013, 7492, 10087, 13889, 11063],
+        skills: [1005],
+        autoAttack: 10007,
+        img: "39b", rarity: 4, evo: 4,
+        fullName: "Cassandra, the Tragic II"
+    },
+    11736: {
+        name: "Gunhild", stats: [20007, 19508, 16540, 8491, 18057],
+        skills: [1018, 1019],
+        autoAttack: 10145,
+        img: "494", rarity: 5, evo: 2,
+        fullName: "Gunhild, Brass Pincers II"
+    },
+    11819: {
+        name: "Shisen", stats: [16657, 15498, 13052, 6092, 17499],
+        skills: [1034],
+        autoAttack: 10137,
+        img: "1c6", rarity: 4, evo: 4,
+        fullName: "Shisen, the Flitting Bolt II"
+    },
+    11720: {
+        name: "Laned", stats: [24578, 23549, 21523, 13853, 18349],
+        skills: [1031],
+        autoAttack: 10153,
+        img: "22f", rarity: 6, evo: 2,
+        fullName: "Laned, the Piercing Fist II"
+    },
+    11705: {
+        name: "Dryas", stats: [21025, 21632, 15901, 7072, 18100],
+        skills: [1032],
+        autoAttack: 10113,
+        img: "15c", rarity: 5, evo: 2,
+        fullName: "Dryas, Centaur Knight II"
+    },
+    11662: {
+        name: "Feng", stats: [16215, 17569, 13637, 6227, 16399],
+        skills: [1033],
+        autoAttack: 10147,
+        img: "342", rarity: 4, evo: 2,
+        fullName: "Feng, Sanjiegun Master II"
+    },
+    21740: {
+        name: "Ravaging Hafgufa", stats: [16800, 17244, 14005, 5999, 17201],
+        skills: [1021, 1022],
+        autoAttack: 10133,
+        img: "392", rarity: 4, evo: 2,
+        fullName: "Ravaging Hafgufa II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -13600,6 +13718,174 @@ var SkillDatabase = {
         range: 3, prob: 70,
         desc: "Allow self and adjacent familiars to perform an extra action during the next turn."
     },
+    996: {
+        name: "Spear & Tail", type: 2, func: 4, calc: 2,
+        args: [1.4, 2, 0.2],
+        range: 20, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage and sometimes paralyze five random foes, ignoring position."
+    },
+    997: {
+        name: "Dragon's Might", type: 1, func: 44, calc: 2,
+        args: [0.08, 4, 0, 0, 0, 2, 13],
+        range: 3, prob: 70,
+        desc: "Buff self and adjacent familiars. Raise AGI at start of battle, WIS increase as HP decrease."
+    },
+    998: {
+        name: "Plunder", type: 5, func: 56, calc: 1,
+        args: [1.7, 1, 1, 0.07],
+        range: 4, prob: 50, ward: 1, sac: 1,
+        desc: "Take damage in place of any ally and unleash a heavy counter attack, lowering ATK of target."
+    },
+    999: {
+        name: "Nefarious Neigh", type: 2, func: 34, calc: 3,
+        args: [1.6, 4, 0.25, 0.09],
+        range: 314, prob: 30, ward: 2, sac: 1,
+        desc: "Heavy AGI-based DMG and sometimes reduce AGI of up to 4 foes. Increased if fewer foes."
+    },
+    1000: {
+        name: "Trample", type: 2, func: 4, calc: 2,
+        args: [2.15],
+        range: 23, prob: 30, ward: 2, sac: 1,
+        desc: "Deal massive WIS-based damage to two random foes, ignoring position."
+    },
+    1001: {
+        name: "Rain of Feathers", type: 2, func: 4, calc: 2,
+        args: [1, 5, 0.2, 1],
+        range: 17, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage and sometimes silence six random foes, ignoring position."
+    },
+    1002: {
+        name: "Veil of Feathers", type: 1, func: 44, calc: 0,
+        args: [0.15, 1, 0, 0, 0, 0.15, 3],
+        range: 3, prob: 70,
+        desc: "Raise ATK and WIS of self and adjacent familiars by 15% of its WIS."
+    },
+    1003: {
+        name: "Storm of Arrows", type: 2, func: 4, calc: 1,
+        args: [1.75],
+        range: 19, prob: 30, ward: 1,
+        desc: "Deal heavy ATK-based damage to four random foes, ignoring position."
+    },
+    1004: {
+        name: "Gift of the Goddess", type: 1, func: 44, calc: 0,
+        args: [0.25, 1, 0, 0, 0, 0.25, 2],
+        range: 3, prob: 70,
+        desc: "Raise ATK and DEF of self and adjacent familiars by 25% of its WIS."
+    },
+    1005: {
+        name: "Nemesis of Fate", type: 2, func: 4, calc: 2,
+        args: [2],
+        range: 23, prob: 30, ward: 2, sac: 1,
+        desc: "Deal massive WIS-based damage to two random foes, ignoring position."
+    },
+    1006: {
+        name: "Hail Belch", type: 2, func: 4, calc: 2,
+        args: [1.25, 3, 0.25],
+        range: 20, prob: 30, ward: 3,
+        desc: "Deal WIS-based damage and sometimes freeze five random foes, ignoring position."
+    },
+    1007: {
+        name: "Icemelt Rhapsody", type: 1, func: 44, calc: 0,
+        args: [0.27, 3, 0, 0, 0, 1008, 16],
+        range: 36, prob: 70,
+        desc: "Raise WIS by 27%/Revive with full HP after being killed, self and an ally on the right."
+    },
+    1008: {
+        name: "Glacial Renascence", type: 16, func: 6, calc: 0,
+        args: [1],
+        range: 21, prob: 100,
+        desc: "-"
+    },
+    1018: {
+        name: "Chain Snip", type: 2, func: 7, calc: 1,
+        args: [1.35, 0.08],
+        range: 19, prob: 30, ward: 1,
+        desc: "ATK-based damage to four random foes. Chance to kill targets."
+    },
+    1019: {
+        name: "Bubble of Oil", type: 1, func: 1, calc: 1,
+        args: [0.3, 17, 1.25],
+        range: 3, prob: 70,
+        desc: "Raise HP of self and adjacent familiars, based on 30% of her ATK."
+    },
+    1020: {
+        name: "Bloodsucking Axe", type: 3, func: 39, calc: 6,
+        args: [1, 1, 2, 20, 3],
+        range: 21, prob: 50, sac: 1,
+        desc: "Chance to increase ATK and DEF of self when being attacked."
+    },
+    1021: {
+        name: "Sticking Tentacles", type: 2, func: 34, calc: 1,
+        args: [2.1, 2, 0.3, 0.2],
+        range: 16, prob: 30, ward: 1,
+        desc: "Massive ATK-based DMG, sometimes reduce DEF of three random foes, ignoring position."
+    },
+    1022: {
+        name: "Replace", type: 5, func: 28, calc: 7,
+        args: [0.45, 2, 23, 2, 0.1],
+        range: 21, prob: 50,
+        desc: "Reflect 90% of WIS-based damage back to two random foes."
+    },
+    1023: {
+        name: "Dissecting Claw", type: 2, func: 4, calc: 1,
+        args: [1.55],
+        range: 16, prob: 30, ward: 1, sac: 1,
+        desc: "Deal heavy ATK-based damage to three random foes, ignoring position."
+    },
+    1024: {
+        name: "Icy Crystal", type: 2, func: 4, calc: 2,
+        args: [1.2, 2, 0.25],
+        range: 17, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage and sometimes paralyze six random foes, ignoring position."
+    },
+    1025: {
+        name: "Glittering Crystal", type: 1, func: 44, calc: 0,
+        args: [0.15, 3, 0, 0, 0, 0.3, 6],
+        range: 3, prob: 70,
+        desc: "Raise WIS and reduce magical damage taken by self and adjacent familiars."
+    },
+    1028: {
+        name: "Chaotic World", type: 1, func: 19, calc: 0,
+        args: [0, 6, 1, 2, 1],
+        range: 5, prob: 100,
+        desc: "Confuse one foe at start of battle."
+    },
+    1029: {
+        name: "Wind of Lust", type: 2, func: 4, calc: 2,
+        args: [2.1],
+        range: 20, prob: 30, ward: 2,
+        desc: "Deal massive WIS-based damage to five random foes, ignoring position."
+    },
+    1030: {
+        name: "Blade Ward 3", type: 1, func: 1, calc: 0,
+        args: [1, 5],
+        range: 4, prob: 100,
+        desc: "Reduce physical damage taken by all allies."
+    },
+    1031: {
+        name: "Overwhelm", type: 2, func: 33, calc: 3,
+        args: [1.2, 1, 0.2, 0.18],
+        range: 17, prob: 30, ward: 1, sac: 1,
+        desc: "Deal AGI-based damage to six random foes and sometimes lower ATK."
+    },
+    1032: {
+        name: "Galloping Slash", type: 2, func: 33, calc: 1,
+        args: [1.6, 4, 0.3, 0.18],
+        range: 7, prob: 30, ward: 1, sac: 1,
+        desc: "Deal heavy ATK-based damage to up to three foes and sometimes lower AGI."
+    },
+    1033: {
+        name: "Cyclone Strike", type: 2, func: 4, calc: 1,
+        args: [1.3],
+        range: 8, prob: 30, ward: 1, sac: 1,
+        desc: "Deal ATK-based damage to all foes, ignoring position."
+    },
+    1034: {
+        name: "Thunder Whorl", type: 2, func: 33, calc: 3,
+        args: [0.9, 1, 0.2, 0.28],
+        range: 17, prob: 30, ward: 1, sac: 1,
+        desc: "Deal AGI-based damage to six random foes and sometimes lower ATK."
+    },
     10001: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
         args: [1],
@@ -14224,11 +14510,47 @@ var SkillDatabase = {
         range: 6, prob: 100, ward: 1, isAutoAttack: true,
         desc: "ATK-based damage and sometimes paralyze up to two foes. "
     },
+    10142: {
+        name: "Standard Action", type: 2, func: 4, calc: 2,
+        args: [1],
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "WIS-based damage to one foe."
+    },
     10143: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
         args: [1, 8, 0.3, 2500],
         range: 5, prob: 100, ward: 2, isAutoAttack: true,
         desc: "WIS-based damage to one foe and sometimes burn target."
+    },
+    10144: {
+        name: "Standard Action", type: 2, func: 33, calc: 1,
+        args: [1.3, 2, 1, 0.07],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage and lower DEF of target."
+    },
+    10145: {
+        name: "Standard Action", type: 2, func: 3, calc: 1,
+        args: [1.3],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
+    10146: {
+        name: "Standard Action", type: 2, func: 36, calc: 1,
+        args: [0.9, 0.2, 27, 21],
+        range: 23, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "Drains HP from two random foes while dealing ATK-based damage."
+    },
+    10147: {
+        name: "Standard Action", type: 2, func: 34, calc: 1,
+        args: [1.2, 4, 1, 0.15],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe and lower AGI of target."
+    },
+    10153: {
+        name: "Standard Action", type: 2, func: 33, calc: 1,
+        args: [1.2, 1, 1, 0.09],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe and lower ATK of target."
     },
     9001: {
         name: "Abject Horror", type: 20, func: 1002, calc: 0,
