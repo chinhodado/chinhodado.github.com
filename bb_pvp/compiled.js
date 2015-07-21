@@ -48,190 +48,6 @@ var Affliction = (function () {
     };
     return Affliction;
 })();
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var BlindAffliction = (function (_super) {
-    __extends(BlindAffliction, _super);
-    function BlindAffliction() {
-        _super.call(this, ENUM.AfflictionType.BLIND);
-        this.missProb = 0;
-        this.finished = false;
-        this.validTurnNum = 0;
-    }
-    BlindAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    BlindAffliction.prototype.canMiss = function () {
-        return Math.random() <= this.missProb;
-    };
-    BlindAffliction.prototype.update = function () {
-        if (--this.validTurnNum <= 0) {
-            this.clear();
-        }
-    };
-    BlindAffliction.prototype.add = function (option) {
-        this.validTurnNum = option.turnNum;
-        this.missProb = option.missProb;
-    };
-    return BlindAffliction;
-})(Affliction);
-var BurnAffliction = (function (_super) {
-    __extends(BurnAffliction, _super);
-    function BurnAffliction() {
-        _super.call(this, ENUM.AfflictionType.BURN);
-        this.damage = 0;
-        this.values = [];
-    }
-    BurnAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    BurnAffliction.prototype.update = function (card) {
-        BattleModel.getInstance().damageToTargetDirectly(card, this.damage, "burn");
-    };
-    BurnAffliction.prototype.add = function (option) {
-        var arr = this.values;
-        arr.push(option.damage);
-        arr.sort(function (a, b) { return b - a; });
-        this.damage = 0;
-        for (var i = 0; i < BurnAffliction.STACK_NUM; i++) {
-            if (arr[i]) {
-                this.damage += arr[i];
-            }
-        }
-    };
-    BurnAffliction.STACK_NUM = 3;
-    return BurnAffliction;
-})(Affliction);
-var DisabledAffliction = (function (_super) {
-    __extends(DisabledAffliction, _super);
-    function DisabledAffliction() {
-        _super.call(this, ENUM.AfflictionType.DISABLE);
-    }
-    DisabledAffliction.prototype.canAttack = function () {
-        return this.isFinished();
-    };
-    DisabledAffliction.prototype.update = function () {
-        this.clear();
-    };
-    return DisabledAffliction;
-})(Affliction);
-var FrozenAffliction = (function (_super) {
-    __extends(FrozenAffliction, _super);
-    function FrozenAffliction() {
-        _super.call(this, ENUM.AfflictionType.FROZEN);
-    }
-    FrozenAffliction.prototype.canAttack = function () {
-        return this.isFinished();
-    };
-    FrozenAffliction.prototype.update = function () {
-        this.clear();
-    };
-    return FrozenAffliction;
-})(Affliction);
-var ParalysisAffliction = (function (_super) {
-    __extends(ParalysisAffliction, _super);
-    function ParalysisAffliction() {
-        _super.call(this, ENUM.AfflictionType.PARALYSIS);
-    }
-    ParalysisAffliction.prototype.canAttack = function () {
-        return this.isFinished();
-    };
-    ParalysisAffliction.prototype.update = function () {
-        this.clear();
-    };
-    return ParalysisAffliction;
-})(Affliction);
-var PoisonAffliction = (function (_super) {
-    __extends(PoisonAffliction, _super);
-    function PoisonAffliction() {
-        _super.call(this, ENUM.AfflictionType.POISON);
-        this.percent = 0;
-        this.finished = false;
-    }
-    PoisonAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    PoisonAffliction.prototype.update = function (card) {
-        var damage = Math.floor(card.originalStats.hp * this.percent / 100);
-        if (damage > PoisonAffliction.MAX_DAMAGE) {
-            damage = PoisonAffliction.MAX_DAMAGE;
-        }
-        BattleModel.getInstance().damageToTargetDirectly(card, damage, "poison");
-    };
-    PoisonAffliction.prototype.add = function (option) {
-        var percent = option.percent;
-        if (!percent) {
-            percent = PoisonAffliction.DEFAULT_PERCENT;
-        }
-        this.percent += percent;
-        var maxPercent = percent * PoisonAffliction.MAX_STACK_NUM;
-        if (this.percent > maxPercent) {
-            this.percent = maxPercent;
-        }
-    };
-    PoisonAffliction.DEFAULT_PERCENT = 5;
-    PoisonAffliction.MAX_STACK_NUM = 2;
-    PoisonAffliction.MAX_DAMAGE = 99999;
-    return PoisonAffliction;
-})(Affliction);
-var SilentAffliction = (function (_super) {
-    __extends(SilentAffliction, _super);
-    function SilentAffliction() {
-        _super.call(this, ENUM.AfflictionType.SILENT);
-        this.validTurnNum = 0;
-    }
-    SilentAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    SilentAffliction.prototype.canUseSkill = function () {
-        return this.isFinished();
-    };
-    SilentAffliction.prototype.update = function () {
-        if (--this.validTurnNum <= 0) {
-            this.clear();
-        }
-    };
-    SilentAffliction.prototype.add = function (option) {
-        this.validTurnNum = option.turnNum;
-    };
-    return SilentAffliction;
-})(Affliction);
-/// <reference path="BlindAffliction.ts"/>
-/// <reference path="BurnAffliction.ts"/>
-/// <reference path="DisabledAffliction.ts"/>
-/// <reference path="FrozenAffliction.ts"/>
-/// <reference path="ParalysisAffliction.ts"/>
-/// <reference path="PoisonAffliction.ts"/>
-/// <reference path="SilentAffliction.ts"/>
-var AfflictionFactory = (function () {
-    function AfflictionFactory() {
-    }
-    AfflictionFactory.getAffliction = function (type) {
-        switch (type) {
-            case ENUM.AfflictionType.BLIND:
-                return new BlindAffliction();
-            case ENUM.AfflictionType.DISABLE:
-                return new DisabledAffliction();
-            case ENUM.AfflictionType.FROZEN:
-                return new FrozenAffliction();
-            case ENUM.AfflictionType.PARALYSIS:
-                return new ParalysisAffliction();
-            case ENUM.AfflictionType.POISON:
-                return new PoisonAffliction();
-            case ENUM.AfflictionType.SILENT:
-                return new SilentAffliction();
-            case ENUM.AfflictionType.BURN:
-                return new BurnAffliction();
-            default:
-                throw new Error("Invalid affliction type!");
-        }
-    };
-    return AfflictionFactory;
-})();
 var BattleBackground = (function () {
     function BattleBackground() {
     }
@@ -2136,6 +1952,190 @@ var Stats = (function () {
         this.agi = agi;
     }
     return Stats;
+})();
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var BlindAffliction = (function (_super) {
+    __extends(BlindAffliction, _super);
+    function BlindAffliction() {
+        _super.call(this, ENUM.AfflictionType.BLIND);
+        this.missProb = 0;
+        this.finished = false;
+        this.validTurnNum = 0;
+    }
+    BlindAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    BlindAffliction.prototype.canMiss = function () {
+        return Math.random() <= this.missProb;
+    };
+    BlindAffliction.prototype.update = function () {
+        if (--this.validTurnNum <= 0) {
+            this.clear();
+        }
+    };
+    BlindAffliction.prototype.add = function (option) {
+        this.validTurnNum = option.turnNum;
+        this.missProb = option.missProb;
+    };
+    return BlindAffliction;
+})(Affliction);
+var BurnAffliction = (function (_super) {
+    __extends(BurnAffliction, _super);
+    function BurnAffliction() {
+        _super.call(this, ENUM.AfflictionType.BURN);
+        this.damage = 0;
+        this.values = [];
+    }
+    BurnAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    BurnAffliction.prototype.update = function (card) {
+        BattleModel.getInstance().damageToTargetDirectly(card, this.damage, "burn");
+    };
+    BurnAffliction.prototype.add = function (option) {
+        var arr = this.values;
+        arr.push(option.damage);
+        arr.sort(function (a, b) { return b - a; });
+        this.damage = 0;
+        for (var i = 0; i < BurnAffliction.STACK_NUM; i++) {
+            if (arr[i]) {
+                this.damage += arr[i];
+            }
+        }
+    };
+    BurnAffliction.STACK_NUM = 3;
+    return BurnAffliction;
+})(Affliction);
+var DisabledAffliction = (function (_super) {
+    __extends(DisabledAffliction, _super);
+    function DisabledAffliction() {
+        _super.call(this, ENUM.AfflictionType.DISABLE);
+    }
+    DisabledAffliction.prototype.canAttack = function () {
+        return this.isFinished();
+    };
+    DisabledAffliction.prototype.update = function () {
+        this.clear();
+    };
+    return DisabledAffliction;
+})(Affliction);
+var FrozenAffliction = (function (_super) {
+    __extends(FrozenAffliction, _super);
+    function FrozenAffliction() {
+        _super.call(this, ENUM.AfflictionType.FROZEN);
+    }
+    FrozenAffliction.prototype.canAttack = function () {
+        return this.isFinished();
+    };
+    FrozenAffliction.prototype.update = function () {
+        this.clear();
+    };
+    return FrozenAffliction;
+})(Affliction);
+var ParalysisAffliction = (function (_super) {
+    __extends(ParalysisAffliction, _super);
+    function ParalysisAffliction() {
+        _super.call(this, ENUM.AfflictionType.PARALYSIS);
+    }
+    ParalysisAffliction.prototype.canAttack = function () {
+        return this.isFinished();
+    };
+    ParalysisAffliction.prototype.update = function () {
+        this.clear();
+    };
+    return ParalysisAffliction;
+})(Affliction);
+var PoisonAffliction = (function (_super) {
+    __extends(PoisonAffliction, _super);
+    function PoisonAffliction() {
+        _super.call(this, ENUM.AfflictionType.POISON);
+        this.percent = 0;
+        this.finished = false;
+    }
+    PoisonAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    PoisonAffliction.prototype.update = function (card) {
+        var damage = Math.floor(card.originalStats.hp * this.percent / 100);
+        if (damage > PoisonAffliction.MAX_DAMAGE) {
+            damage = PoisonAffliction.MAX_DAMAGE;
+        }
+        BattleModel.getInstance().damageToTargetDirectly(card, damage, "poison");
+    };
+    PoisonAffliction.prototype.add = function (option) {
+        var percent = option.percent;
+        if (!percent) {
+            percent = PoisonAffliction.DEFAULT_PERCENT;
+        }
+        this.percent += percent;
+        var maxPercent = percent * PoisonAffliction.MAX_STACK_NUM;
+        if (this.percent > maxPercent) {
+            this.percent = maxPercent;
+        }
+    };
+    PoisonAffliction.DEFAULT_PERCENT = 5;
+    PoisonAffliction.MAX_STACK_NUM = 2;
+    PoisonAffliction.MAX_DAMAGE = 99999;
+    return PoisonAffliction;
+})(Affliction);
+var SilentAffliction = (function (_super) {
+    __extends(SilentAffliction, _super);
+    function SilentAffliction() {
+        _super.call(this, ENUM.AfflictionType.SILENT);
+        this.validTurnNum = 0;
+    }
+    SilentAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    SilentAffliction.prototype.canUseSkill = function () {
+        return this.isFinished();
+    };
+    SilentAffliction.prototype.update = function () {
+        if (--this.validTurnNum <= 0) {
+            this.clear();
+        }
+    };
+    SilentAffliction.prototype.add = function (option) {
+        this.validTurnNum = option.turnNum;
+    };
+    return SilentAffliction;
+})(Affliction);
+/// <reference path="BlindAffliction.ts"/>
+/// <reference path="BurnAffliction.ts"/>
+/// <reference path="DisabledAffliction.ts"/>
+/// <reference path="FrozenAffliction.ts"/>
+/// <reference path="ParalysisAffliction.ts"/>
+/// <reference path="PoisonAffliction.ts"/>
+/// <reference path="SilentAffliction.ts"/>
+var AfflictionFactory = (function () {
+    function AfflictionFactory() {
+    }
+    AfflictionFactory.getAffliction = function (type) {
+        switch (type) {
+            case ENUM.AfflictionType.BLIND:
+                return new BlindAffliction();
+            case ENUM.AfflictionType.DISABLE:
+                return new DisabledAffliction();
+            case ENUM.AfflictionType.FROZEN:
+                return new FrozenAffliction();
+            case ENUM.AfflictionType.PARALYSIS:
+                return new ParalysisAffliction();
+            case ENUM.AfflictionType.POISON:
+                return new PoisonAffliction();
+            case ENUM.AfflictionType.SILENT:
+                return new SilentAffliction();
+            case ENUM.AfflictionType.BURN:
+                return new BurnAffliction();
+            default:
+                throw new Error("Invalid affliction type!");
+        }
+    };
+    return AfflictionFactory;
 })();
 /// <reference path="Enums.ts"/>
 /// <reference path="Stats.ts"/>
@@ -6697,16 +6697,12 @@ var FamProvider = (function () {
             var allTierList = JSON.parse(allTierString);
             var tierArray = ["X+", "X", "S+", "S", "A+", "A", "B", "C"];
             for (var i = 0; i < tierArray.length; i++) {
-                var tierNameList = [];
                 var tier = tierArray[i];
-                for (var j = 0; j < allTierList[tier].length; j++) {
-                    tierNameList.push(allTierList[tier][j].name);
-                }
                 this.tierList[tier] = [];
                 for (var key in famDatabase) {
                     if (famDatabase.hasOwnProperty(key)) {
                         var name = famDatabase[key].fullName;
-                        if (tierNameList.indexOf(name) !== -1) {
+                        if (allTierList[tier].indexOf(name) !== -1) {
                             this.tierList[tier].push(key);
                         }
                     }
@@ -7211,21 +7207,6 @@ function prepareField() {
     img.src = rndBgLink;
 }
 function getTierList(whatToDoNext) {
-    if (whatToDoNext === "debug") {
-        var callback = "updateTierListThenDebug";
-    }
-    else if (whatToDoNext === "play") {
-        callback = "updateTierListThenPlay";
-    }
-    else if (whatToDoNext === "sim") {
-        callback = "updateTierListThenSim";
-    }
-    else if (whatToDoNext === "test") {
-        callback = "updateTierListThenTest";
-    }
-    else {
-        callback = "updateTierList";
-    }
     var needUpdate = false;
     var currentTime = new Date().getTime();
     var lastUpdatedTime = localStorage.getItem("lastTierUpdateTime");
@@ -7236,49 +7217,31 @@ function getTierList(whatToDoNext) {
         var elapsedTime = currentTime - lastUpdatedTime;
         needUpdate = elapsedTime >= 1000 * 60 * 60 * 24;
     }
+    function makeCallback(cb) {
+        return function (data) {
+            updateTierList(data);
+            if (cb) {
+                cb();
+            }
+        };
+    }
     if (!localStorage.getItem("tierList") || needUpdate) {
         console.log("Fetching tier list...");
         $.ajax({
-            "url": "https://www.kimonolabs.com/api/e67eckbg?apikey=ddafaf08128df7d12e4e0f8e044d2372",
+            "url": "http://bloodbrothers-chinhodado.rhcloud.com/getTier/",
             "crossDomain": true,
-            "dataType": "jsonp",
-            "jsonpCallback": callback
+            "dataType": "json",
+            "success": makeCallback(whatToDoNext)
         });
     }
     else {
-        if (whatToDoNext === "debug") {
-            playDebug();
-        }
-        else if (whatToDoNext === "play") {
-            playGame();
-        }
-        else if (whatToDoNext === "sim") {
-            playSim();
-        }
-        else if (whatToDoNext === "test") {
-            startTest();
-        }
+        if (whatToDoNext)
+            whatToDoNext();
     }
 }
 function updateTierList(data) {
-    localStorage.setItem("tierList", JSON.stringify(data.results));
+    localStorage.setItem("tierList", JSON.stringify(data));
     localStorage.setItem("lastTierUpdateTime", "" + new Date().getTime());
-}
-function updateTierListThenPlay(data) {
-    updateTierList(data);
-    playGame();
-}
-function updateTierListThenDebug(data) {
-    updateTierList(data);
-    playDebug();
-}
-function updateTierListThenSim(data) {
-    updateTierList(data);
-    playSim();
-}
-function updateTierListThenTest(data) {
-    updateTierList(data);
-    startTest();
 }
 function playGame() {
     prepareField();
