@@ -6805,6 +6805,74 @@ var famDatabase = {
         img: "392", rarity: 4, evo: 2,
         fullName: "Ravaging Hafgufa II"
     },
+    11654: {
+        name: "Ullr", stats: [19151, 16692, 17797, 9260, 18349],
+        skills: [1043, 1044],
+        autoAttack: 10152,
+        img: "1a6", rarity: 5, evo: 2,
+        fullName: "Ullr, Starshooter II"
+    },
+    11744: {
+        name: "Triton", stats: [20386, 18414, 16735, 10289, 18176],
+        skills: [1049, 1050],
+        autoAttack: 10151,
+        img: "299", rarity: 5, evo: 2,
+        fullName: "Triton, Lord of the Sea II"
+    },
+    21698: {
+        name: "Dionysus", stats: [23893, 10008, 23600, 22982, 8013],
+        skills: [1037, 1038],
+        autoAttack: 10148,
+        img: "1e3", rarity: 5, evo: 3,
+        fullName: "Dionysus, the Reveler"
+    },
+    11664: {
+        name: "Wyvern Gemwarden", stats: [15164, 5512, 14027, 16583, 17461],
+        skills: [1039],
+        autoAttack: 10149,
+        img: "229", rarity: 4, evo: 2,
+        fullName: "Wyvern Gemwarden II"
+    },
+    11821: {
+        name: "Jarn", stats: [13038, 17461, 14269, 7319, 17120],
+        skills: [1040],
+        autoAttack: 10150,
+        img: "1d2", rarity: 4, evo: 4,
+        fullName: "Jarn, the Bladed Wolf II"
+    },
+    11747: {
+        name: "Kuki", stats: [13196, 13049, 11880, 7223, 10256],
+        skills: [1053],
+        img: "46d", rarity: 4, evo: 4,
+        fullName: "Kuki, Pirate Busho II"
+    },
+    21743: {
+        name: "Vepar", stats: [13344, 13604, 11026, 7548, 10777],
+        skills: [1048],
+        img: "438", rarity: 4, evo: 2,
+        fullName: "Vepar, the Perpetual Night II"
+    },
+    11745: {
+        name: "Rusalka", stats: [16713, 5988, 11015, 17439, 17374],
+        skills: [1051, 1052],
+        autoAttack: 10003,
+        img: "4a8", rarity: 4, evo: 2,
+        fullName: "Rusalka, Spirit of Water II"
+    },
+    11743: {
+        name: "Vepar", stats: [16668, 16196, 13438, 5847, 17047],
+        skills: [1047],
+        autoAttack: 10145,
+        img: "451", rarity: 4, evo: 4,
+        fullName: "Vepar, the Roiling Sea II"
+    },
+    21741: {
+        name: "Walutahanga", stats: [22503, 8235, 17579, 22048, 18105],
+        skills: [1045, 1046],
+        autoAttack: 10126,
+        img: "28b", rarity: 5, evo: 3,
+        fullName: "Walutahanga, Guardian Dragon"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -13886,6 +13954,102 @@ var SkillDatabase = {
         range: 17, prob: 30, ward: 1, sac: 1,
         desc: "Deal AGI-based damage to six random foes and sometimes lower ATK."
     },
+    1037: {
+        name: "Medicinal Wine", type: 2, func: 18, calc: 4,
+        args: [1, 1],
+        range: 123, prob: 30,
+        desc: "Full restore HP of three party members."
+    },
+    1038: {
+        name: "Bacchanal", type: 3, func: 11, calc: 1,
+        args: [1],
+        range: 3, prob: 50,
+        desc: "Heal self and adjacent familiars for the amount of damage taken."
+    },
+    1039: {
+        name: "Diamond Flame", type: 2, func: 4, calc: 2,
+        args: [1.4, 8, 0.2, 2000],
+        range: 8, prob: 30, ward: 2, sac: 1,
+        desc: "Deal WIS-based damage to all foes and sometimes burn targets, ignoring position."
+    },
+    1040: {
+        name: "Poison Claws", type: 2, func: 3, calc: 1,
+        args: [0.9, 1, 0.1, 20],
+        range: 17, prob: 30, ward: 1, sac: 1,
+        desc: "Deal ATK-based damage and sometimes poison six random foes."
+    },
+    1041: {
+        name: "Winds of Victory", type: 2, func: 37, calc: 3,
+        args: [1.8, 0.18, 27, 21],
+        range: 19, prob: 30, ward: 2,
+        desc: "Deal heavy AGI-based damage and drain HP from four random foes, ignoring position."
+    },
+    1043: {
+        name: "Meteor Arrow", type: 2, func: 4, calc: 3,
+        args: [1.45, 8, 0.25, 3000],
+        range: 315, prob: 30, ward: 2,
+        desc: "AGI-based DMG, may burn up to five foes. Increased if fewer foes, ignoring position."
+    },
+    1044: {
+        name: "Belligerence", type: 1, func: 46, calc: 0,
+        args: [0.23, 4, 0, 0, 0, 8, 0.35, 4000],
+        range: 7, prob: 70,
+        desc: "Greatly lower AGI of up to three foes and sometimes burn targets."
+    },
+    1045: {
+        name: "Icy Current", type: 2, func: 4, calc: 2,
+        args: [1.6, 3, 0.25],
+        range: 314, prob: 30, ward: 2,
+        desc: "Heavy WIS-based damage and sometimes freeze up to four foes. Increased if fewer foes."
+    },
+    1046: {
+        name: "Binding Ice", type: 1, func: 19, calc: 0,
+        args: [0, 3, 0.2],
+        range: 7, prob: 70,
+        desc: "Chance to freeze up to three foes at start of battle."
+    },
+    1047: {
+        name: "Poison Wave", type: 2, func: 3, calc: 1,
+        args: [1.9, 3, 0.35],
+        range: 16, prob: 30, ward: 1, sac: 1,
+        desc: "Deal heavy ATK-based damage to three random foes and sometimes freeze them."
+    },
+    1048: {
+        name: "Slicing Wave", type: 2, func: 3, calc: 1,
+        args: [1],
+        range: 19, prob: 30, ward: 1, sac: 1,
+        desc: "Deal ATK-based damage to four random foes."
+    },
+    1049: {
+        name: "Ferocious Fang", type: 2, func: 4, calc: 1,
+        args: [1.4, 3, 0.15],
+        range: 20, prob: 30, ward: 1,
+        desc: "Deal ATK-based damage and sometimes freeze five random foes, ignoring position."
+    },
+    1050: {
+        name: "Conchsong", type: 1, func: 44, calc: 0,
+        args: [0.48, 1, 0, 0, 0, 1.45, 23],
+        range: 3, prob: 70,
+        desc: "Raise ATK and DEF & WIS of self/adjacent allies go up when their HP go down."
+    },
+    1051: {
+        name: "Encircling Water", type: 2, func: 4, calc: 2,
+        args: [1.1],
+        range: 17, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage to six random foes, ignoring position."
+    },
+    1052: {
+        name: "Might of Song", type: 1, func: 44, calc: 2,
+        args: [0.12, 3, 0, 0, 0, 0.06, 4],
+        range: 3, prob: 70,
+        desc: "Raise WIS and AGI of self and adjacent familiars on 12% and 6% of its WIS respectively."
+    },
+    1053: {
+        name: "Wave Cutter", type: 2, func: 3, calc: 1,
+        args: [2],
+        range: 23, prob: 30, ward: 1, sac: 1,
+        desc: "Deal massive ATK-based damage to two random foes."
+    },
     10001: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
         args: [1],
@@ -14545,6 +14709,36 @@ var SkillDatabase = {
         args: [1.2, 4, 1, 0.15],
         range: 5, prob: 100, ward: 1, isAutoAttack: true,
         desc: "ATK-based damage to one foe and lower AGI of target."
+    },
+    10148: {
+        name: "Standard Action", type: 2, func: 4, calc: 2,
+        args: [1.5],
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "Heavy WIS-based damage to one foe."
+    },
+    10149: {
+        name: "Standard Action", type: 2, func: 4, calc: 2,
+        args: [1.2, 8, 1, 3000],
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "WIS-based damage to one foe and burn target."
+    },
+    10150: {
+        name: "Standard Action", type: 2, func: 3, calc: 1,
+        args: [0.7],
+        range: 23, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to two random foes."
+    },
+    10151: {
+        name: "Standard Action", type: 2, func: 4, calc: 1,
+        args: [1.2],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
+    10152: {
+        name: "Standard Action", type: 2, func: 4, calc: 1,
+        args: [1.2],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
     },
     10153: {
         name: "Standard Action", type: 2, func: 33, calc: 1,
