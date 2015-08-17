@@ -48,6 +48,190 @@ var Affliction = (function () {
     };
     return Affliction;
 })();
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var BlindAffliction = (function (_super) {
+    __extends(BlindAffliction, _super);
+    function BlindAffliction() {
+        _super.call(this, ENUM.AfflictionType.BLIND);
+        this.missProb = 0;
+        this.finished = false;
+        this.validTurnNum = 0;
+    }
+    BlindAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    BlindAffliction.prototype.canMiss = function () {
+        return Math.random() <= this.missProb;
+    };
+    BlindAffliction.prototype.update = function () {
+        if (--this.validTurnNum <= 0) {
+            this.clear();
+        }
+    };
+    BlindAffliction.prototype.add = function (option) {
+        this.validTurnNum = option.turnNum;
+        this.missProb = option.missProb;
+    };
+    return BlindAffliction;
+})(Affliction);
+var BurnAffliction = (function (_super) {
+    __extends(BurnAffliction, _super);
+    function BurnAffliction() {
+        _super.call(this, ENUM.AfflictionType.BURN);
+        this.damage = 0;
+        this.values = [];
+    }
+    BurnAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    BurnAffliction.prototype.update = function (card) {
+        BattleModel.getInstance().damageToTargetDirectly(card, this.damage, "burn");
+    };
+    BurnAffliction.prototype.add = function (option) {
+        var arr = this.values;
+        arr.push(option.damage);
+        arr.sort(function (a, b) { return b - a; });
+        this.damage = 0;
+        for (var i = 0; i < BurnAffliction.STACK_NUM; i++) {
+            if (arr[i]) {
+                this.damage += arr[i];
+            }
+        }
+    };
+    BurnAffliction.STACK_NUM = 3;
+    return BurnAffliction;
+})(Affliction);
+var DisabledAffliction = (function (_super) {
+    __extends(DisabledAffliction, _super);
+    function DisabledAffliction() {
+        _super.call(this, ENUM.AfflictionType.DISABLE);
+    }
+    DisabledAffliction.prototype.canAttack = function () {
+        return this.isFinished();
+    };
+    DisabledAffliction.prototype.update = function () {
+        this.clear();
+    };
+    return DisabledAffliction;
+})(Affliction);
+var FrozenAffliction = (function (_super) {
+    __extends(FrozenAffliction, _super);
+    function FrozenAffliction() {
+        _super.call(this, ENUM.AfflictionType.FROZEN);
+    }
+    FrozenAffliction.prototype.canAttack = function () {
+        return this.isFinished();
+    };
+    FrozenAffliction.prototype.update = function () {
+        this.clear();
+    };
+    return FrozenAffliction;
+})(Affliction);
+var ParalysisAffliction = (function (_super) {
+    __extends(ParalysisAffliction, _super);
+    function ParalysisAffliction() {
+        _super.call(this, ENUM.AfflictionType.PARALYSIS);
+    }
+    ParalysisAffliction.prototype.canAttack = function () {
+        return this.isFinished();
+    };
+    ParalysisAffliction.prototype.update = function () {
+        this.clear();
+    };
+    return ParalysisAffliction;
+})(Affliction);
+var PoisonAffliction = (function (_super) {
+    __extends(PoisonAffliction, _super);
+    function PoisonAffliction() {
+        _super.call(this, ENUM.AfflictionType.POISON);
+        this.percent = 0;
+        this.finished = false;
+    }
+    PoisonAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    PoisonAffliction.prototype.update = function (card) {
+        var damage = Math.floor(card.originalStats.hp * this.percent / 100);
+        if (damage > PoisonAffliction.MAX_DAMAGE) {
+            damage = PoisonAffliction.MAX_DAMAGE;
+        }
+        BattleModel.getInstance().damageToTargetDirectly(card, damage, "poison");
+    };
+    PoisonAffliction.prototype.add = function (option) {
+        var percent = option.percent;
+        if (!percent) {
+            percent = PoisonAffliction.DEFAULT_PERCENT;
+        }
+        this.percent += percent;
+        var maxPercent = percent * PoisonAffliction.MAX_STACK_NUM;
+        if (this.percent > maxPercent) {
+            this.percent = maxPercent;
+        }
+    };
+    PoisonAffliction.DEFAULT_PERCENT = 5;
+    PoisonAffliction.MAX_STACK_NUM = 2;
+    PoisonAffliction.MAX_DAMAGE = 99999;
+    return PoisonAffliction;
+})(Affliction);
+var SilentAffliction = (function (_super) {
+    __extends(SilentAffliction, _super);
+    function SilentAffliction() {
+        _super.call(this, ENUM.AfflictionType.SILENT);
+        this.validTurnNum = 0;
+    }
+    SilentAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    SilentAffliction.prototype.canUseSkill = function () {
+        return this.isFinished();
+    };
+    SilentAffliction.prototype.update = function () {
+        if (--this.validTurnNum <= 0) {
+            this.clear();
+        }
+    };
+    SilentAffliction.prototype.add = function (option) {
+        this.validTurnNum = option.turnNum;
+    };
+    return SilentAffliction;
+})(Affliction);
+/// <reference path="BlindAffliction.ts"/>
+/// <reference path="BurnAffliction.ts"/>
+/// <reference path="DisabledAffliction.ts"/>
+/// <reference path="FrozenAffliction.ts"/>
+/// <reference path="ParalysisAffliction.ts"/>
+/// <reference path="PoisonAffliction.ts"/>
+/// <reference path="SilentAffliction.ts"/>
+var AfflictionFactory = (function () {
+    function AfflictionFactory() {
+    }
+    AfflictionFactory.getAffliction = function (type) {
+        switch (type) {
+            case ENUM.AfflictionType.BLIND:
+                return new BlindAffliction();
+            case ENUM.AfflictionType.DISABLE:
+                return new DisabledAffliction();
+            case ENUM.AfflictionType.FROZEN:
+                return new FrozenAffliction();
+            case ENUM.AfflictionType.PARALYSIS:
+                return new ParalysisAffliction();
+            case ENUM.AfflictionType.POISON:
+                return new PoisonAffliction();
+            case ENUM.AfflictionType.SILENT:
+                return new SilentAffliction();
+            case ENUM.AfflictionType.BURN:
+                return new BurnAffliction();
+            default:
+                throw new Error("Invalid affliction type!");
+        }
+    };
+    return AfflictionFactory;
+})();
 var BattleBackground = (function () {
     function BattleBackground() {
     }
@@ -651,6 +835,7 @@ var ENUM;
     (function (BattleType) {
         BattleType[BattleType["BLOOD_CLASH"] = 1] = "BLOOD_CLASH";
         BattleType[BattleType["NORMAL"] = 2] = "NORMAL";
+        BattleType[BattleType["COLISEUM"] = 3] = "COLISEUM";
     })(ENUM.BattleType || (ENUM.BattleType = {}));
     var BattleType = ENUM.BattleType;
     (function (RandomBrigType) {
@@ -706,6 +891,10 @@ var ENUM;
         RarityType[RarityType["MYTHIC"] = 6] = "MYTHIC";
     })(ENUM.RarityType || (ENUM.RarityType = {}));
     var RarityType = ENUM.RarityType;
+    (function (BonusType) {
+        BonusType[BonusType["COLISEUM"] = 1] = "COLISEUM";
+    })(ENUM.BonusType || (ENUM.BonusType = {}));
+    var BonusType = ENUM.BonusType;
 })(ENUM || (ENUM = {}));
 /// <reference path="interfaces/MinorEvent.ts"/>
 /// <reference path="Enums.ts"/>
@@ -1889,8 +2078,12 @@ var BrigGenerator = (function () {
             }
             var player1Skills = this.makeSkillArray(p1fSkillIdArray);
             var player2Skills = this.makeSkillArray(p2fSkillIdArray);
-            var card1 = new Card(p1_cardIds[i], battle.player1, i, player1Skills, data.p1_customStats[i]);
-            var card2 = new Card(p2_cardIds[i], battle.player2, i, player2Skills, data.p2_customStats[i]);
+            var bonusType;
+            if (battle.isColiseum) {
+                bonusType = ENUM.BonusType.COLISEUM;
+            }
+            var card1 = new Card(p1_cardIds[i], battle.player1, i, player1Skills, data.p1_customStats[i], bonusType);
+            var card2 = new Card(p2_cardIds[i], battle.player2, i, player2Skills, data.p2_customStats[i], bonusType);
             if (i < 5) {
                 battle.p1_mainCards[i] = card1;
                 battle.p2_mainCards[i] = card2;
@@ -1953,195 +2146,11 @@ var Stats = (function () {
     }
     return Stats;
 })();
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var BlindAffliction = (function (_super) {
-    __extends(BlindAffliction, _super);
-    function BlindAffliction() {
-        _super.call(this, ENUM.AfflictionType.BLIND);
-        this.missProb = 0;
-        this.finished = false;
-        this.validTurnNum = 0;
-    }
-    BlindAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    BlindAffliction.prototype.canMiss = function () {
-        return Math.random() <= this.missProb;
-    };
-    BlindAffliction.prototype.update = function () {
-        if (--this.validTurnNum <= 0) {
-            this.clear();
-        }
-    };
-    BlindAffliction.prototype.add = function (option) {
-        this.validTurnNum = option.turnNum;
-        this.missProb = option.missProb;
-    };
-    return BlindAffliction;
-})(Affliction);
-var BurnAffliction = (function (_super) {
-    __extends(BurnAffliction, _super);
-    function BurnAffliction() {
-        _super.call(this, ENUM.AfflictionType.BURN);
-        this.damage = 0;
-        this.values = [];
-    }
-    BurnAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    BurnAffliction.prototype.update = function (card) {
-        BattleModel.getInstance().damageToTargetDirectly(card, this.damage, "burn");
-    };
-    BurnAffliction.prototype.add = function (option) {
-        var arr = this.values;
-        arr.push(option.damage);
-        arr.sort(function (a, b) { return b - a; });
-        this.damage = 0;
-        for (var i = 0; i < BurnAffliction.STACK_NUM; i++) {
-            if (arr[i]) {
-                this.damage += arr[i];
-            }
-        }
-    };
-    BurnAffliction.STACK_NUM = 3;
-    return BurnAffliction;
-})(Affliction);
-var DisabledAffliction = (function (_super) {
-    __extends(DisabledAffliction, _super);
-    function DisabledAffliction() {
-        _super.call(this, ENUM.AfflictionType.DISABLE);
-    }
-    DisabledAffliction.prototype.canAttack = function () {
-        return this.isFinished();
-    };
-    DisabledAffliction.prototype.update = function () {
-        this.clear();
-    };
-    return DisabledAffliction;
-})(Affliction);
-var FrozenAffliction = (function (_super) {
-    __extends(FrozenAffliction, _super);
-    function FrozenAffliction() {
-        _super.call(this, ENUM.AfflictionType.FROZEN);
-    }
-    FrozenAffliction.prototype.canAttack = function () {
-        return this.isFinished();
-    };
-    FrozenAffliction.prototype.update = function () {
-        this.clear();
-    };
-    return FrozenAffliction;
-})(Affliction);
-var ParalysisAffliction = (function (_super) {
-    __extends(ParalysisAffliction, _super);
-    function ParalysisAffliction() {
-        _super.call(this, ENUM.AfflictionType.PARALYSIS);
-    }
-    ParalysisAffliction.prototype.canAttack = function () {
-        return this.isFinished();
-    };
-    ParalysisAffliction.prototype.update = function () {
-        this.clear();
-    };
-    return ParalysisAffliction;
-})(Affliction);
-var PoisonAffliction = (function (_super) {
-    __extends(PoisonAffliction, _super);
-    function PoisonAffliction() {
-        _super.call(this, ENUM.AfflictionType.POISON);
-        this.percent = 0;
-        this.finished = false;
-    }
-    PoisonAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    PoisonAffliction.prototype.update = function (card) {
-        var damage = Math.floor(card.originalStats.hp * this.percent / 100);
-        if (damage > PoisonAffliction.MAX_DAMAGE) {
-            damage = PoisonAffliction.MAX_DAMAGE;
-        }
-        BattleModel.getInstance().damageToTargetDirectly(card, damage, "poison");
-    };
-    PoisonAffliction.prototype.add = function (option) {
-        var percent = option.percent;
-        if (!percent) {
-            percent = PoisonAffliction.DEFAULT_PERCENT;
-        }
-        this.percent += percent;
-        var maxPercent = percent * PoisonAffliction.MAX_STACK_NUM;
-        if (this.percent > maxPercent) {
-            this.percent = maxPercent;
-        }
-    };
-    PoisonAffliction.DEFAULT_PERCENT = 5;
-    PoisonAffliction.MAX_STACK_NUM = 2;
-    PoisonAffliction.MAX_DAMAGE = 99999;
-    return PoisonAffliction;
-})(Affliction);
-var SilentAffliction = (function (_super) {
-    __extends(SilentAffliction, _super);
-    function SilentAffliction() {
-        _super.call(this, ENUM.AfflictionType.SILENT);
-        this.validTurnNum = 0;
-    }
-    SilentAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    SilentAffliction.prototype.canUseSkill = function () {
-        return this.isFinished();
-    };
-    SilentAffliction.prototype.update = function () {
-        if (--this.validTurnNum <= 0) {
-            this.clear();
-        }
-    };
-    SilentAffliction.prototype.add = function (option) {
-        this.validTurnNum = option.turnNum;
-    };
-    return SilentAffliction;
-})(Affliction);
-/// <reference path="BlindAffliction.ts"/>
-/// <reference path="BurnAffliction.ts"/>
-/// <reference path="DisabledAffliction.ts"/>
-/// <reference path="FrozenAffliction.ts"/>
-/// <reference path="ParalysisAffliction.ts"/>
-/// <reference path="PoisonAffliction.ts"/>
-/// <reference path="SilentAffliction.ts"/>
-var AfflictionFactory = (function () {
-    function AfflictionFactory() {
-    }
-    AfflictionFactory.getAffliction = function (type) {
-        switch (type) {
-            case ENUM.AfflictionType.BLIND:
-                return new BlindAffliction();
-            case ENUM.AfflictionType.DISABLE:
-                return new DisabledAffliction();
-            case ENUM.AfflictionType.FROZEN:
-                return new FrozenAffliction();
-            case ENUM.AfflictionType.PARALYSIS:
-                return new ParalysisAffliction();
-            case ENUM.AfflictionType.POISON:
-                return new PoisonAffliction();
-            case ENUM.AfflictionType.SILENT:
-                return new SilentAffliction();
-            case ENUM.AfflictionType.BURN:
-                return new BurnAffliction();
-            default:
-                throw new Error("Invalid affliction type!");
-        }
-    };
-    return AfflictionFactory;
-})();
 /// <reference path="Enums.ts"/>
 /// <reference path="Stats.ts"/>
 /// <reference path="affliction/AfflictionFactory.ts"/>
 var Card = (function () {
-    function Card(dbId, player, nth, skills, customStats) {
+    function Card(dbId, player, nth, skills, customStats, bonusType) {
         this.bcAddedProb = 0;
         this.lastBattleDamageTaken = 0;
         this.lastBattleDamageDealt = 0;
@@ -2171,6 +2180,10 @@ var Card = (function () {
         else {
             this.stats = new Stats(customStats.hp, customStats.atk, customStats.def, customStats.wis, customStats.agi);
             this.originalStats = new Stats(customStats.hp, customStats.atk, customStats.def, customStats.wis, customStats.agi);
+        }
+        if (bonusType === ENUM.BonusType.COLISEUM) {
+            this.stats.hp *= Card.COLISEUM_HP_MULTI_FACTOR;
+            this.originalStats.hp *= Card.COLISEUM_HP_MULTI_FACTOR;
         }
         this.status = new Status();
         this.isDead = false;
@@ -2640,6 +2653,7 @@ var Card = (function () {
         this.justEvaded = false;
     };
     Card.NEW_DEBUFF_LOW_LIMIT_FACTOR = 0.4;
+    Card.COLISEUM_HP_MULTI_FACTOR = 5;
     return Card;
 })();
 var CardManager = (function () {
@@ -6873,6 +6887,63 @@ var famDatabase = {
         img: "28b", rarity: 5, evo: 3,
         fullName: "Walutahanga, Guardian Dragon"
     },
+    11754: {
+        name: "Horus", stats: [21003, 17797, 16497, 7440, 18360],
+        skills: [1066, 1067],
+        autoAttack: 10021,
+        img: "3e4", rarity: 5, evo: 2,
+        fullName: "Horus, the Falcon God II"
+    },
+    11753: {
+        name: "Pagos", stats: [16995, 11297, 15002, 8101, 17699],
+        skills: [1064, 1065],
+        autoAttack: 10137,
+        img: "255", rarity: 4, evo: 2,
+        fullName: "Pagos, Camel Cavalryman II"
+    },
+    21752: {
+        name: "Petsuchos", stats: [16518, 18490, 13994, 5447, 16800],
+        skills: [1061, 1062],
+        autoAttack: 10011,
+        img: "472", rarity: 4, evo: 2,
+        fullName: "Petsuchos Minister II"
+    },
+    11752: {
+        name: "Petsuchos", stats: [12513, 13510, 11001, 6006, 13769],
+        skills: [1063],
+        autoAttack: 10011,
+        img: "1c1", rarity: 4, evo: 4,
+        fullName: "Petsuchos Executioner II"
+    },
+    21748: {
+        name: "Bastet", stats: [23015, 12008, 22038, 23015, 8405],
+        skills: [1058, 1059],
+        autoAttack: 10001,
+        img: "4f4", rarity: 5, evo: 3,
+        fullName: "Bastet, Cat Goddess"
+    },
+    11755: {
+        name: "Spartacus", stats: [25770, 24275, 24871, 15381, 11557],
+        skills: [1070],
+        autoAttack: 10156,
+        img: "4ca", rarity: 6, evo: 2,
+        fullName: "Spartacus, Rebel Gladiator II"
+    },
+    11760: {
+        name: "Crassus", stats: [24253, 25131, 22087, 14482, 18544],
+        skills: [1074, 1075],
+        passiveSkills: [9007],
+        autoAttack: 10106,
+        img: "3be", rarity: 6, evo: 2,
+        fullName: "Crassus, the Lion General II"
+    },
+    11759: {
+        name: "Gaiuz", stats: [17109, 18023, 12134, 5978, 16803],
+        skills: [1073],
+        autoAttack: 10104,
+        img: "461", rarity: 4, evo: 4,
+        fullName: "Gaiuz, Crashing Wave II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -7112,7 +7183,7 @@ function setPreviousChoices() {
         document.getElementById("debug").checked = true;
     }
     var bt = localStorage.getItem("bt");
-    if (bt === "1" || bt === "2") {
+    if (bt === "1" || bt === "2" || bt === "3") {
         document.getElementById("bt").value = bt;
     }
 }
@@ -7139,7 +7210,8 @@ function toogleDisable() {
 }
 function toogleReserve() {
     for (var player = 1; player <= 2; player++) {
-        var isBloodclash = document.getElementById("bt").value === "1";
+        var btValue = document.getElementById("bt").value;
+        var isBloodclash = btValue === "1" || btValue === "3";
         var elems = document.getElementsByClassName("reserve");
         for (var i = 0; i < elems.length; i++) {
             var elem = elems[i];
@@ -7214,7 +7286,8 @@ function setFamOptions() {
 }
 function toogleCustomStat(player) {
     var checked = document.getElementById("p" + player + "customStatChbox").checked;
-    var isBloodclash = document.getElementById("bt").value === "1";
+    var btValue = document.getElementById("bt").value;
+    var isBloodclash = btValue === "1" || btValue === "3";
     var customStatDiv = document.getElementById("p" + player + "customStatDivNormal");
     var inputs = customStatDiv.getElementsByTagName("input");
     for (var i = 0; i < inputs.length; i++) {
@@ -14050,6 +14123,132 @@ var SkillDatabase = {
         range: 23, prob: 30, ward: 1, sac: 1,
         desc: "Deal massive ATK-based damage to two random foes."
     },
+    1054: {
+        name: "Crimson Flash", type: 2, func: 52, calc: 1,
+        args: [0.95, 1, 2500, 6, 0.5, 0.25, 121, 120],
+        range: 17, prob: 30,
+        desc: "Deal ATK-based damage and sometimes absorbs ATK from six random foes."
+    },
+    1055: {
+        name: "Flowing Stance", type: 3, func: 42, calc: 1,
+        args: [1.45, 4, 1, 0.11],
+        range: 21, prob: 50, ward: 1,
+        desc: "Chance to unleash a heavy counter attack when struck, lowering AGI of target."
+    },
+    1056: {
+        name: "Bring it on!", type: 3, func: 39, calc: 6,
+        args: [1, 1, 0, 100, 10],
+        range: 8, prob: 30,
+        desc: ".."
+    },
+    1057: {
+        name: "Bring it on!", type: 3, func: 39, calc: 6,
+        args: [1, 1, 0, 150, 10],
+        range: 8, prob: 30,
+        desc: ".."
+    },
+    1058: {
+        name: "Glittering Eye", type: 1, func: 44, calc: 0,
+        args: [0.2, 17, 0, 0, 0, 0.2, 2],
+        range: 3, prob: 70,
+        desc: "Raise HP/DEF of self and adjacent familiars on 20% of its WIS respectively."
+    },
+    1059: {
+        name: "Pouncing Cat", type: 3, func: 41, calc: 2,
+        args: [1.6],
+        range: 21, prob: 50, ward: 2,
+        desc: "Chance to unleash heavy WIS-based counter attack when struck, ignoring position."
+    },
+    1060: {
+        name: "Poison Wing", type: 2, func: 4, calc: 2,
+        args: [1.4, 1, 0.1, 10],
+        range: 8, prob: 30, ward: 3, sac: 1,
+        desc: "Deal WIS-based damage and sometimes poison all foes, ignoring position."
+    },
+    1061: {
+        name: "Aculeate Tail", type: 2, func: 7, calc: 1,
+        args: [1.6, 0.05],
+        range: 7, prob: 30, ward: 1,
+        desc: "Heavy ATK-based damage and chance to kill up to three targets."
+    },
+    1062: {
+        name: "Punishing Tail", type: 16, func: 19, calc: 0,
+        args: [0, 2, 0.7],
+        range: 7, prob: 70,
+        desc: "High chance to paralyze up to three foes for one turn upon his death."
+    },
+    1063: {
+        name: "Double Bite", type: 2, func: 3, calc: 1,
+        args: [1.85],
+        range: 6, prob: 30, ward: 1, sac: 1,
+        desc: "Deal heavy ATK-based damage to up to two foes."
+    },
+    1064: {
+        name: "Sand Slash", type: 2, func: 3, calc: 3,
+        args: [1.75, 7, 0.35, 1, 1],
+        range: 16, prob: 30, ward: 1,
+        desc: "Heavy AGI-based damage to three random foes, sometimes blind them for one turn."
+    },
+    1065: {
+        name: "Stalwart Hooves", type: 3, func: 38, calc: 6,
+        args: [0, 1, 4, 10, 5],
+        range: 7, prob: 50,
+        desc: "Greatly lower ATK and AGI of up to three foes when being attacked."
+    },
+    1066: {
+        name: "Soaring Talon", type: 2, func: 37, calc: 3,
+        args: [1.85, 0.2, 27, 21],
+        range: 19, prob: 30, ward: 2,
+        desc: "Heavy AGI-based damage and drain HP from four random foes, ignoring position."
+    },
+    1067: {
+        name: "Gift of the Sky", type: 1, func: 44, calc: 0,
+        args: [2.5, 12, 0, 0, 0, 1.5, 14],
+        range: 3, prob: 70,
+        desc: "Raise DEF/AGI of self and adjacent allies go up when their HP go down"
+    },
+    1068: {
+        name: "Mercy for the Fallen2", type: 1, func: 30, calc: 0,
+        args: [0, 1],
+        range: 7, prob: 100,
+        desc: "ATK and WIS of up to three foes swap values with each other."
+    },
+    1069: {
+        name: "Scare2", type: 1, func: 2, calc: 0,
+        args: [0.3, 8],
+        range: 8, prob: 100,
+        desc: "Lower the skill trigger rate of all foes by 30%."
+    },
+    1070: {
+        name: "Blade of Defiance", type: 5, func: 28, calc: 7,
+        args: [0.3, 9, 23, 2, 0.4],
+        range: 21, prob: 50, sac: 1,
+        desc: "Reflect 60% of ATK/AGI-based damage back to two random foes."
+    },
+    1073: {
+        name: "Seaborn Fog", type: 1, func: 44, calc: 0,
+        args: [0.42, 2, 0, 0, 0, 0.25, 5],
+        range: 3, prob: 70, sac: 1,
+        desc: "Raise DEF and reduce physical damage taken by self and adjacent familiars."
+    },
+    1074: {
+        name: "Blade of Coercion", type: 2, func: 4, calc: 1,
+        args: [1.35, 8, 0.25, 3000],
+        range: 20, prob: 30, ward: 1,
+        desc: "Deal ATK-based damage and sometimes burn five random foes, ignoring position."
+    },
+    1075: {
+        name: "Ward of Wealth", type: 1, func: 44, calc: 0,
+        args: [0.35, 1, 0, 0, 0, 1076, 16],
+        range: 3, prob: 70,
+        desc: "Raise ATK by 35%/Revive with full HP after being killed, self and adjacent familiars."
+    },
+    1076: {
+        name: "Dawn's Light", type: 16, func: 6, calc: 0,
+        args: [1],
+        range: 21, prob: 100,
+        desc: "-"
+    },
     10001: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
         args: [1],
@@ -14746,6 +14945,18 @@ var SkillDatabase = {
         range: 5, prob: 100, ward: 1, isAutoAttack: true,
         desc: "ATK-based damage to one foe and lower ATK of target."
     },
+    10155: {
+        name: "Standard Action", type: 2, func: 53, calc: 2,
+        args: [0.5, 3, 2000, 6, 1, 1, 121, 120],
+        range: 5, prob: 100, isAutoAttack: true,
+        desc: "Deal WIS-based damage and absorbs WIS from one foe."
+    },
+    10156: {
+        name: "Standard Action", type: 2, func: 33, calc: 1,
+        args: [1.2, 2, 1, 0.16],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe and lower DEF of target."
+    },
     9001: {
         name: "Abject Horror", type: 20, func: 1002, calc: 0,
         args: [0.3],
@@ -14763,6 +14974,12 @@ var SkillDatabase = {
         args: [0.1],
         range: 0, prob: 100,
         desc: "Up to 10% chance to reproduce the previous attack action."
+    },
+    9007: {
+        name: "Devoted Servant", type: 20, func: 1006, calc: 0,
+        args: [0.15],
+        range: 0, prob: 100,
+        desc: "Up to 15% chance to reproduce the previous attack action."
     },
 };
 var RangeFactory = (function () {
@@ -15713,6 +15930,7 @@ var BattleModel = (function () {
     function BattleModel(data, option, tierListString) {
         if (option === void 0) { option = {}; }
         this.isBloodClash = false;
+        this.isColiseum = false;
         this.isFinished = false;
         this.playerWon = null;
         this.p1_mainCards = [];
@@ -15738,6 +15956,11 @@ var BattleModel = (function () {
         var graphic = new BattleGraphic();
         if (option.battleType && option.battleType === ENUM.BattleType.BLOOD_CLASH) {
             this.isBloodClash = true;
+        }
+        if (option.battleType && option.battleType === ENUM.BattleType.COLISEUM) {
+            this.isBloodClash = true;
+            this.isColiseum = true;
+            BattleModel.MAX_TURN_NUM = 10;
         }
         var p1_formation = option.p1RandomMode ?
             pickRandomProperty(Formation.FORMATION_CONFIG) : data.p1_formation;
@@ -16026,22 +16249,25 @@ var BattleModel = (function () {
         }
     };
     BattleModel.prototype.processDebuff = function (executor, target, skill) {
-        var status, multi;
+        var statuses;
+        var multi;
         var isNewLogic = false;
         switch (skill.skillFunc) {
             case ENUM.SkillFunc.DEBUFFATTACK:
             case ENUM.SkillFunc.DEBUFFINDIRECT:
-                status = skill.skillFuncArg2;
+                statuses = [skill.skillFuncArg2];
                 multi = skill.skillFuncArg4;
                 break;
             case ENUM.SkillFunc.DEBUFF:
-                status = skill.skillFuncArg2;
+                statuses = [skill.skillFuncArg2];
                 multi = skill.skillFuncArg1;
                 break;
             case ENUM.SkillFunc.CASTER_BASED_DEBUFF:
             case ENUM.SkillFunc.DEBUFF_AFFLICTION:
             case ENUM.SkillFunc.MULTI_DEBUFF:
-                status = skill.skillFuncArg2;
+                statuses = [skill.skillFuncArg2];
+                if (skill.skillFuncArg3)
+                    statuses.push(skill.skillFuncArg3);
                 multi = skill.skillFuncArg1;
                 isNewLogic = true;
                 break;
@@ -16050,12 +16276,14 @@ var BattleModel = (function () {
             case ENUM.SkillFunc.COUNTER_DEBUFF:
             case ENUM.SkillFunc.COUNTER_DEBUFF_INDIRECT:
             case ENUM.SkillFunc.PROTECT_COUNTER_DEBUFF:
-                status = skill.skillFuncArg2;
+                statuses = [skill.skillFuncArg2];
                 multi = skill.skillFuncArg4;
                 isNewLogic = true;
                 break;
             case ENUM.SkillFunc.ONHIT_DEBUFF:
-                status = skill.skillFuncArg2;
+                statuses = [skill.skillFuncArg2];
+                if (skill.skillFuncArg3)
+                    statuses.push(skill.skillFuncArg3);
                 multi = skill.skillFuncArg1;
                 isNewLogic = true;
                 if (skill.skillFuncArg4) {
@@ -16066,35 +16294,38 @@ var BattleModel = (function () {
             default:
                 throw new Error("Wrong skill to use with processDebuff()");
         }
-        if (status === ENUM.StatusType.SKILL_PROBABILITY) {
-            var amount = -1 * skill.skillFuncArg1;
-        }
-        else {
-            if (isFlat) {
-                var baseAmount = -100;
-            }
-            else if (!isNewLogic) {
-                baseAmount = getDebuffAmount(executor, target);
+        for (var i = 0; i < statuses.length; i++) {
+            var status = statuses[i];
+            if (status === ENUM.StatusType.SKILL_PROBABILITY) {
+                var amount = -1 * skill.skillFuncArg1;
             }
             else {
-                baseAmount = getCasterBasedDebuffAmount(executor);
+                if (isFlat) {
+                    var baseAmount = -100;
+                }
+                else if (!isNewLogic) {
+                    baseAmount = getDebuffAmount(executor, target);
+                }
+                else {
+                    baseAmount = getCasterBasedDebuffAmount(executor);
+                }
+                amount = Math.floor(baseAmount * multi);
             }
-            amount = Math.floor(baseAmount * multi);
+            target.changeStatus(status, amount, isNewLogic);
+            var description = target.name + "'s " + ENUM.StatusType[status] + " decreased by " + Math.abs(amount);
+            this.logger.addMinorEvent({
+                executorId: executor.id,
+                targetId: target.id,
+                type: ENUM.MinorEventType.STATUS,
+                status: {
+                    type: status,
+                    isNewLogic: isNewLogic
+                },
+                description: description,
+                amount: amount,
+                skillId: skill.id
+            });
         }
-        target.changeStatus(status, amount, isNewLogic);
-        var description = target.name + "'s " + ENUM.StatusType[status] + " decreased by " + Math.abs(amount);
-        this.logger.addMinorEvent({
-            executorId: executor.id,
-            targetId: target.id,
-            type: ENUM.MinorEventType.STATUS,
-            status: {
-                type: status,
-                isNewLogic: isNewLogic
-            },
-            description: description,
-            amount: amount,
-            skillId: skill.id
-        });
     };
     BattleModel.prototype.startBattle = function () {
         this.logger.startBattleLog();
