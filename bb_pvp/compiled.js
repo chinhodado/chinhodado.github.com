@@ -602,6 +602,8 @@ var ENUM;
         SkillFunc[SkillFunc["MULTI_DEBUFF"] = 45] = "MULTI_DEBUFF";
         SkillFunc[SkillFunc["DEBUFF_AFFLICTION"] = 46] = "DEBUFF_AFFLICTION";
         SkillFunc[SkillFunc["ABSORB"] = 51] = "ABSORB";
+        SkillFunc[SkillFunc["ABSORB_ATTACK"] = 52] = "ABSORB_ATTACK";
+        SkillFunc[SkillFunc["ABSORB_MAGIC"] = 53] = "ABSORB_MAGIC";
         SkillFunc[SkillFunc["PROTECT_COUNTER_DEBUFF"] = 56] = "PROTECT_COUNTER_DEBUFF";
         SkillFunc[SkillFunc["DAMAGE_PASSIVE"] = 1001] = "DAMAGE_PASSIVE";
         SkillFunc[SkillFunc["DEFENSE_PASSIVE"] = 1002] = "DEFENSE_PASSIVE";
@@ -6944,6 +6946,34 @@ var famDatabase = {
         img: "461", rarity: 4, evo: 4,
         fullName: "Gaiuz, Crashing Wave II"
     },
+    11697: {
+        name: "Aegir", stats: [25098, 15088, 21675, 24069, 18544],
+        skills: [1035, 1036],
+        passiveSkills: [9006],
+        autoAttack: 10007,
+        isMounted: true,
+        img: "2e8", rarity: 6, evo: 2,
+        fullName: "Aegir, the Roaring Sea II"
+    },
+    11750: {
+        name: "Khepri", stats: [14792, 7602, 12999, 16010, 16707],
+        skills: [1060],
+        autoAttack: 10155,
+        img: "108", rarity: 4, evo: 4,
+        fullName: "Khepri, the Morning Sun II"
+    },
+    21618: {
+        name: "Isabella", stats: [21538, 21062, 20795, 11217, 18098],
+        skills: [1054, 1055],
+        img: "46a", rarity: 5, evo: 3,
+        fullName: "Isabella, the Waterbrand"
+    },
+    11756: {
+        name: "Julia", stats: [21870, 20353, 14178, 6725, 18154],
+        skills: [1071],
+        img: "1da", rarity: 5, evo: 2,
+        fullName: "Julia, Centaur Eques II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -7773,49 +7803,63 @@ var AbsorbSkillLogic = (function (_super) {
         var executor = data.executor;
         skill.getReady(executor);
         var target;
+        while (target = skill.getTarget(executor)) {
+            this.absorbTarget(executor, target, skill);
+        }
+    };
+    AbsorbSkillLogic.prototype.absorbTarget = function (executor, target, skill) {
         var statusToBuff = AbsorbSkillLogic.getComponentStatusFromBuffStatusType(skill.skillFuncArg2);
         var debuffMulti = skill.skillFuncArg3;
-        while (target = skill.getTarget(executor)) {
-            for (var j = 0; j < statusToBuff.length; j++) {
-                var statusType = statusToBuff[j];
-                console.assert(skill.skillFuncArg4 === ENUM.SkillCalcType.WIS, "Non WIS-based debuff unimplemented!");
-                console.assert(skill.skillFuncArg6 === 1, "Absorb doesn't have 100% probability - unimplemented!");
-                var isNewLogic = false;
+        if (executor.isDead || !executor.canUseSkill()) {
+            return;
+        }
+        if (Math.random() > skill.skillFuncArg6) {
+            return;
+        }
+        for (var j = 0; j < statusToBuff.length; j++) {
+            var statusType = statusToBuff[j];
+            var calcType = skill.skillFuncArg4;
+            var isNewLogic = false;
+            if (calcType !== ENUM.SkillCalcType.DEBUFF) {
+                console.assert(calcType === ENUM.SkillCalcType.WIS, "Non WIS-based debuff unimplemented!");
                 var debuffAmount = Math.floor(executor.getWIS() * debuffMulti);
-                var lowStatLimit = target.getOriginalStat(ENUM.StatusType[statusType]) * Card.NEW_DEBUFF_LOW_LIMIT_FACTOR;
-                var currentStat = target.getStat(ENUM.StatusType[statusType]);
-                var maxDebuffLimit = lowStatLimit > currentStat ? 0 : currentStat - lowStatLimit;
-                if (debuffAmount > maxDebuffLimit) {
-                    debuffAmount = maxDebuffLimit;
-                }
-                target.changeStatus(statusType, -debuffAmount, isNewLogic);
-                this.logger.addMinorEvent({
-                    executorId: executor.id,
-                    targetId: target.id,
-                    type: ENUM.MinorEventType.STATUS,
-                    status: {
-                        type: statusType,
-                        isNewLogic: isNewLogic
-                    },
-                    description: target.name + "'s " + ENUM.StatusType[statusType] + " decreased by " + Math.abs(debuffAmount),
-                    amount: -debuffAmount,
-                    skillId: skill.id
-                });
-                var buffAmount = Math.floor(Math.abs(debuffAmount) * skill.skillFuncArg5);
-                executor.changeStatus(statusType, buffAmount, false);
-                this.logger.addMinorEvent({
-                    executorId: executor.id,
-                    targetId: executor.id,
-                    type: ENUM.MinorEventType.STATUS,
-                    status: {
-                        type: statusType,
-                        isAllUp: skill.skillFuncArg2 === ENUM.StatusType.ALL_STATUS
-                    },
-                    description: executor.name + "'s " + ENUM.StatusType[statusType] + " increased by " + buffAmount,
-                    amount: buffAmount,
-                    skillId: skill.id
-                });
             }
+            else {
+                debuffAmount = skill.skillFuncArg3;
+            }
+            var lowStatLimit = target.getOriginalStat(ENUM.StatusType[statusType]) * Card.NEW_DEBUFF_LOW_LIMIT_FACTOR;
+            var currentStat = target.getStat(ENUM.StatusType[statusType]);
+            var maxDebuffLimit = lowStatLimit > currentStat ? 0 : currentStat - lowStatLimit;
+            if (debuffAmount > maxDebuffLimit) {
+                debuffAmount = maxDebuffLimit;
+            }
+            target.changeStatus(statusType, -debuffAmount, isNewLogic);
+            this.logger.addMinorEvent({
+                executorId: executor.id,
+                targetId: target.id,
+                type: ENUM.MinorEventType.STATUS,
+                status: {
+                    type: statusType,
+                    isNewLogic: isNewLogic
+                },
+                description: target.name + "'s " + ENUM.StatusType[statusType] + " decreased by " + Math.abs(debuffAmount),
+                amount: -debuffAmount,
+                skillId: skill.id
+            });
+            var buffAmount = Math.floor(Math.abs(debuffAmount) * skill.skillFuncArg5);
+            executor.changeStatus(statusType, buffAmount, false);
+            this.logger.addMinorEvent({
+                executorId: executor.id,
+                targetId: executor.id,
+                type: ENUM.MinorEventType.STATUS,
+                status: {
+                    type: statusType,
+                    isAllUp: skill.skillFuncArg2 === ENUM.StatusType.ALL_STATUS
+                },
+                description: executor.name + "'s " + ENUM.StatusType[statusType] + " increased by " + buffAmount,
+                amount: buffAmount,
+                skillId: skill.id
+            });
         }
     };
     AbsorbSkillLogic.getComponentStatusFromBuffStatusType = function (type) {
@@ -7956,6 +8000,9 @@ var AttackSkillLogic = (function (_super) {
                 if (skill.skillFunc === ENUM.SkillFunc.DRAIN_ATTACK || skill.skillFunc === ENUM.SkillFunc.DRAIN_MAGIC) {
                     this.processDrainPhase(executor, skill);
                 }
+                if (skill.skillFunc === ENUM.SkillFunc.ABSORB_ATTACK || skill.skillFunc === ENUM.SkillFunc.ABSORB_MAGIC) {
+                    new AbsorbSkillLogic().absorbTarget(executor, targetCard, skill);
+                }
                 this.clearAllCardsDamagePhaseData();
             }
         }
@@ -7992,6 +8039,9 @@ var AttackSkillLogic = (function (_super) {
         }
         if (skill.skillFunc === ENUM.SkillFunc.DRAIN_ATTACK || skill.skillFunc === ENUM.SkillFunc.DRAIN_MAGIC) {
             this.processDrainPhase(executor, skill);
+        }
+        if (skill.skillFunc === ENUM.SkillFunc.ABSORB_ATTACK || skill.skillFunc === ENUM.SkillFunc.ABSORB_MAGIC) {
+            new AbsorbSkillLogic().absorbTarget(executor, target, skill);
         }
         this.clearAllCardsDamagePhaseData();
     };
@@ -8858,6 +8908,8 @@ var SkillLogicFactory = (function () {
             case ENUM.SkillFunc.CASTER_BASED_DEBUFF_ATTACK:
             case ENUM.SkillFunc.CASTER_BASED_DEBUFF_MAGIC:
             case ENUM.SkillFunc.KILL:
+            case ENUM.SkillFunc.ABSORB_ATTACK:
+            case ENUM.SkillFunc.ABSORB_MAGIC:
                 return new AttackSkillLogic();
             case ENUM.SkillFunc.PROTECT:
                 return new ProtectSkillLogic();
@@ -8955,6 +9007,8 @@ var Skill = (function () {
             case ENUM.SkillFunc.DRAIN_ATTACK:
             case ENUM.SkillFunc.DRAIN_MAGIC:
             case ENUM.SkillFunc.KILL:
+            case ENUM.SkillFunc.ABSORB_ATTACK:
+            case ENUM.SkillFunc.ABSORB_MAGIC:
                 return true;
             default:
                 return false;
@@ -8973,6 +9027,7 @@ var Skill = (function () {
             case ENUM.SkillFunc.DEBUFFATTACK:
             case ENUM.SkillFunc.CASTER_BASED_DEBUFF_ATTACK:
             case ENUM.SkillFunc.DRAIN_ATTACK:
+            case ENUM.SkillFunc.ABSORB_ATTACK:
                 return false;
             default:
                 return true;
@@ -9108,6 +9163,8 @@ var Skill = (function () {
                     statuses.push(skillInfo.args[2]);
                 break;
             case ENUM.SkillFunc.ABSORB:
+            case ENUM.SkillFunc.ABSORB_ATTACK:
+            case ENUM.SkillFunc.ABSORB_MAGIC:
                 statuses = AbsorbSkillLogic.getComponentStatusFromBuffStatusType(skillInfo.args[1]);
                 break;
             default:
@@ -14027,6 +14084,18 @@ var SkillDatabase = {
         range: 17, prob: 30, ward: 1, sac: 1,
         desc: "Deal AGI-based damage to six random foes and sometimes lower ATK."
     },
+    1035: {
+        name: "Twining Net", type: 2, func: 53, calc: 2,
+        args: [2.4, 4, 0.09, 2, 0.5, 0.5, 121, 120],
+        range: 23, prob: 30, ward: 2,
+        desc: "Massive WIS-based damage and absorbs AGI from two random foes, ignoring position."
+    },
+    1036: {
+        name: "Leaching Wave", type: 2, func: 53, calc: 3,
+        args: [3.2, 3, 0.12, 2, 0.5, 0.5, 121, 120],
+        range: 23, prob: 30, ward: 2,
+        desc: "Massive AGI-based damage and absorbs WIS from two random foes, ignoring position."
+    },
     1037: {
         name: "Medicinal Wine", type: 2, func: 18, calc: 4,
         args: [1, 1],
@@ -14126,7 +14195,7 @@ var SkillDatabase = {
     1054: {
         name: "Crimson Flash", type: 2, func: 52, calc: 1,
         args: [0.95, 1, 2500, 6, 0.5, 0.25, 121, 120],
-        range: 17, prob: 30,
+        range: 17, prob: 30, ward: 1,
         desc: "Deal ATK-based damage and sometimes absorbs ATK from six random foes."
     },
     1055: {
@@ -14224,6 +14293,12 @@ var SkillDatabase = {
         args: [0.3, 9, 23, 2, 0.4],
         range: 21, prob: 50, sac: 1,
         desc: "Reflect 60% of ATK/AGI-based damage back to two random foes."
+    },
+    1071: {
+        name: "Arena Gale", type: 2, func: 52, calc: 3,
+        args: [0.7, 4, 500, 6, 1, 1, 121, 120],
+        range: 17, prob: 50, ward: 1, sac: 1,
+        desc: "Deal AGI-based damage and absorb AGI from six random foes."
     },
     1073: {
         name: "Seaborn Fog", type: 1, func: 44, calc: 0,
@@ -14948,7 +15023,7 @@ var SkillDatabase = {
     10155: {
         name: "Standard Action", type: 2, func: 53, calc: 2,
         args: [0.5, 3, 2000, 6, 1, 1, 121, 120],
-        range: 5, prob: 100, isAutoAttack: true,
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
         desc: "Deal WIS-based damage and absorbs WIS from one foe."
     },
     10156: {
@@ -14974,6 +15049,12 @@ var SkillDatabase = {
         args: [0.1],
         range: 0, prob: 100,
         desc: "Up to 10% chance to reproduce the previous attack action."
+    },
+    9006: {
+        name: "Breakwater", type: 20, func: 1002, calc: 0,
+        args: [0.35],
+        range: 0, prob: 100,
+        desc: "Decrease damage from lower rarities by up to 35%."
     },
     9007: {
         name: "Devoted Servant", type: 20, func: 1006, calc: 0,
