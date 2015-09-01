@@ -6974,6 +6974,100 @@ var famDatabase = {
         img: "1da", rarity: 5, evo: 2,
         fullName: "Julia, Centaur Eques II"
     },
+    11765: {
+        name: "Huitzilopochtli", stats: [20050, 18555, 18100, 8827, 18219],
+        skills: [1081, 1082],
+        autoAttack: 10160,
+        img: "282", rarity: 5, evo: 2,
+        fullName: "Huitzilopochtli, God of War II"
+    },
+    11762: {
+        name: "Frostscale", stats: [17038, 4396, 12391, 17721, 17201],
+        skills: [1079],
+        autoAttack: 10158,
+        img: "138", rarity: 4, evo: 2,
+        fullName: "Frostscale Plesiosaur II"
+    },
+    11764: {
+        name: "Thundering", stats: [12686, 5029, 14927, 17899, 17424],
+        skills: [1080],
+        autoAttack: 10159,
+        img: "2a2", rarity: 4, evo: 4,
+        fullName: "Thundering Pterosaur II"
+    },
+    11766: {
+        name: "Mielikki", stats: [19053, 18566, 16681, 11340, 18111],
+        skills: [1083, 1084],
+        autoAttack: 10161,
+        img: "1b5", rarity: 5, evo: 2,
+        fullName: "Mielikki, Bear Rider II"
+    },
+    21761: {
+        name: "Hellscale", stats: [20787, 21384, 20088, 11221, 17510],
+        skills: [1077, 1078],
+        autoAttack: 10157,
+        img: "35a", rarity: 5, evo: 3,
+        fullName: "Hellscale Theropod"
+    },
+    11783: {
+        name: "Paracelsus", stats: [12806, 7806, 8198, 15950, 11111],
+        skills: [1093],
+        autoAttack: 10007,
+        img: "15f", rarity: 4, evo: 4,
+        fullName: "Paracelsus, Venomdagger II"
+    },
+    11779: {
+        name: "Hagen", stats: [16779, 15281, 15438, 4785, 16889],
+        skills: [1087],
+        autoAttack: 10162,
+        img: "1c4", rarity: 4, evo: 4,
+        fullName: "Hagen, Dueling King II"
+    },
+    21779: {
+        name: "Hagen", stats: [12759, 13615, 13312, 6313, 10311],
+        skills: [1088],
+        img: "447", rarity: 4, evo: 2,
+        fullName: "Hagen, Mad King II"
+    },
+    11781: {
+        name: "Muramasa", stats: [17049, 16042, 13160, 5923, 17569],
+        skills: [1091, 1092],
+        autoAttack: 10108,
+        img: "45e", rarity: 4, evo: 2,
+        fullName: "Muramasa, the Cursed Katana II"
+    },
+    11780: {
+        name: "Uscias", stats: [20234, 6790, 14991, 21458, 18154],
+        skills: [1089, 1090],
+        autoAttack: 10163,
+        img: "26f", rarity: 5, evo: 2,
+        fullName: "Uscias, the Claiomh Solais II"
+    },
+    21777: {
+        name: "Demonblade", stats: [21454, 9110, 18186, 21674, 18046],
+        skills: [1085, 1086],
+        autoAttack: 10007,
+        img: "1f4", rarity: 5, evo: 3,
+        fullName: "Demonblade Countess"
+    },
+    10420: {
+        name: "Ziz", stats: [11741, 10042, 11900, 10624, 10042],
+        skills: [19],
+        img: "35e", rarity: 4, evo: 4,
+        fullName: "Ziz, Wings Divine II"
+    },
+    10089: {
+        name: "Granados", stats: [10725, 11825, 11350, 10541, 10418],
+        skills: [19],
+        img: "170", rarity: 4, evo: 4,
+        fullName: "Granados, Lion King II"
+    },
+    10381: {
+        name: "Nine-tailed", stats: [10673, 11807, 12235, 11170, 12500],
+        skills: [19],
+        img: "306", rarity: 4, evo: 4,
+        fullName: "Nine-tailed Fox II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -14324,6 +14418,108 @@ var SkillDatabase = {
         range: 21, prob: 100,
         desc: "-"
     },
+    1077: {
+        name: "Ancient Flame", type: 2, func: 4, calc: 1,
+        args: [1.65],
+        range: 314, prob: 30, ward: 1,
+        desc: "Heavy ATK-based damage to up to four foes, ignoring position. Increased if fewer foes."
+    },
+    1078: {
+        name: "Basalt Skin", type: 1, func: 44, calc: 0,
+        args: [0.36, 2, 0, 0, 0, 0.3, 6],
+        range: 21, prob: 70,
+        desc: "Raise DEF and reduce magic damage taken by self."
+    },
+    1079: {
+        name: "Ancient Blizzard", type: 2, func: 4, calc: 2,
+        args: [1.3, 3, 0.2],
+        range: 8, prob: 30, ward: 2, sac: 1,
+        desc: "WIS-based damage to all foes and sometimes freeze targets, ignoring position."
+    },
+    1080: {
+        name: "Ancient Thunder", type: 2, func: 4, calc: 2,
+        args: [1.05, 2, 0.2],
+        range: 20, prob: 30, ward: 2, sac: 1,
+        desc: "WIS-based damage to five random foes and sometimes paralyze targets, ignoring position."
+    },
+    1081: {
+        name: "Angry Hummingbird", type: 2, func: 34, calc: 1,
+        args: [1.2, 4, 1, 0.03],
+        range: 17, prob: 30, ward: 1,
+        desc: "ATK-based damage to six random foes and lower AGI of targets."
+    },
+    1082: {
+        name: "Heartblood Sacrifice", type: 1, func: 51, calc: 0,
+        args: [0, 7, 2000, 6, 0.4, 1, 121, 120, 43],
+        range: 7, prob: 70,
+        desc: "Absorbs ATK and AGI from up to three foes at the beginning of battles."
+    },
+    1083: {
+        name: "Wrath of the Wood", type: 2, func: 34, calc: 1,
+        args: [1.45, 1, 0.25, 0.19],
+        range: 315, prob: 30, ward: 1,
+        desc: "ATK-based DMG, may lower ATK up to five foes, ignoring position. Increased if fewer foes."
+    },
+    1084: {
+        name: "Rage of the Bear", type: 1, func: 44, calc: 0,
+        args: [0.45, 17, 0, 0, 0, 0.45, 2],
+        range: 3, prob: 70,
+        desc: "Raise HP/DEF of self and adjacent familiars on 45% of its WIS respectively."
+    },
+    1085: {
+        name: "Flurry of Blades", type: 2, func: 4, calc: 2,
+        args: [2.1],
+        range: 16, prob: 30, ward: 2,
+        desc: "Deal massive WIS-based damage to three random foes, ignoring position."
+    },
+    1086: {
+        name: "Broken Blade Bane", type: 16, func: 32, calc: 0,
+        args: [0.2, 1],
+        range: 7, prob: 70,
+        desc: "Greatly lower ATK of up to three foes upon her death."
+    },
+    1087: {
+        name: "Endless Rush", type: 2, func: 33, calc: 1,
+        args: [1.25, 2, 0.25, 0.25],
+        range: 20, prob: 30, ward: 1, sac: 1,
+        desc: "Deal ATK-based damage to five random foes and sometimes lower DEF."
+    },
+    1088: {
+        name: "Dain's Legacy", type: 2, func: 3, calc: 1,
+        args: [1.35],
+        range: 16, prob: 30, ward: 1, sac: 1,
+        desc: "Deal ATK-based damage to three random foes."
+    },
+    1089: {
+        name: "Flash of Steel", type: 2, func: 4, calc: 2,
+        args: [1.5],
+        range: 19, prob: 30, ward: 2,
+        desc: "Deal heavy WIS-based damage to four random foes, ignoring position."
+    },
+    1090: {
+        name: "Grace of Light", type: 1, func: 44, calc: 0,
+        args: [0.25, 3, 0, 0, 0, 1.25, 14],
+        range: 3, prob: 70,
+        desc: "Raise WIS and AGI of self/adjacent allies go up when their HP go down."
+    },
+    1091: {
+        name: "Armageddon", type: 2, func: 4, calc: 1,
+        args: [1.5],
+        range: 20, prob: 30, ward: 1,
+        desc: "Deal ATK-based damage to five random foes, ignoring position."
+    },
+    1092: {
+        name: "Aura of Madness", type: 1, func: 44, calc: 0,
+        args: [0.35, 1, 0, 0, 0, 0.2, 4],
+        range: 3, prob: 70,
+        desc: "Raise ATK and AGI of self and adjacent familiars by 35% and by 20% of its WIS."
+    },
+    1093: {
+        name: "Azoth", type: 2, func: 4, calc: 2,
+        args: [2],
+        range: 23, prob: 30, ward: 2, sac: 1,
+        desc: "Deal massive WIS-based damage to two random foes, ignoring position."
+    },
     10001: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
         args: [1],
@@ -15031,6 +15227,48 @@ var SkillDatabase = {
         args: [1.2, 2, 1, 0.16],
         range: 5, prob: 100, ward: 1, isAutoAttack: true,
         desc: "ATK-based damage to one foe and lower DEF of target."
+    },
+    10157: {
+        name: "Standard Action", type: 2, func: 4, calc: 1,
+        args: [1.2],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
+    10158: {
+        name: "Standard Action", type: 2, func: 4, calc: 2,
+        args: [1, 3, 0.4],
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "WIS-based damage to one foe and sometimes freeze target."
+    },
+    10159: {
+        name: "Standard Action", type: 2, func: 4, calc: 2,
+        args: [1, 2, 0.4],
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "WIS-based damage to one foe and sometimes paralyze target."
+    },
+    10160: {
+        name: "Standard Action", type: 2, func: 4, calc: 1,
+        args: [1.2],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
+    10161: {
+        name: "Standard Action", type: 2, func: 4, calc: 1,
+        args: [1.2],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
+    10162: {
+        name: "Standard Action", type: 2, func: 33, calc: 1,
+        args: [1.2, 2, 1, 0.25],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage and lower DEF of target."
+    },
+    10163: {
+        name: "Standard Action", type: 2, func: 4, calc: 2,
+        args: [1],
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "WIS-based damage to one foe."
     },
     9001: {
         name: "Abject Horror", type: 20, func: 1002, calc: 0,
