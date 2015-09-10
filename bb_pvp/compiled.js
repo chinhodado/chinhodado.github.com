@@ -2074,9 +2074,15 @@ var BrigGenerator = (function () {
             if (p1_cardInfo.isWarlord) {
                 p1fSkillIdArray = p1_warlordSkillIds;
             }
+            if (data.p1_customSkills[i]) {
+                p1fSkillIdArray = data.p1_customSkills[i];
+            }
             var p2fSkillIdArray = p2_cardInfo.skills;
             if (p2_cardInfo.isWarlord) {
                 p2fSkillIdArray = p2_warlordSkillIds;
+            }
+            if (data.p2_customSkills[i]) {
+                p2fSkillIdArray = data.p2_customSkills[i];
             }
             var player1Skills = this.makeSkillArray(p1fSkillIdArray);
             var player2Skills = this.makeSkillArray(p2fSkillIdArray);
@@ -7068,6 +7074,81 @@ var famDatabase = {
         img: "306", rarity: 4, evo: 4,
         fullName: "Nine-tailed Fox II"
     },
+    41806: {
+        name: "Crom", stats: [21213, 6017, 16987, 21505, 18112],
+        skills: [],
+        autoAttack: 10016,
+        img: "3b3", rarity: 5, evo: 1,
+        fullName: "Crom Cruach, the Silver Moon"
+    },
+    41659: {
+        name: "Ilya", stats: [19655, 19943, 17687, 8028, 18186],
+        skills: [],
+        img: "260", rarity: 5, evo: 1,
+        fullName: "Ilya, Giant Slayer"
+    },
+    41173: {
+        name: "Tarasca", stats: [22911, 17998, 20476, 8002, 13503],
+        skills: [],
+        img: "49b", rarity: 5, evo: 1,
+        fullName: "Adamant Tarasca"
+    },
+    41068: {
+        name: "Valafar", stats: [20005, 8007, 13710, 22024, 17212],
+        skills: [],
+        autoAttack: 10007,
+        img: "168", rarity: 5, evo: 1,
+        fullName: "Valafar, Inferno Vanquisher"
+    },
+    11603: {
+        name: "Nimue", stats: [19086, 8599, 14384, 20982, 17992],
+        skills: [906],
+        autoAttack: 10124,
+        img: "2c6", rarity: 5, evo: 2,
+        fullName: "Nimue, Lady of the Lake II"
+    },
+    11789: {
+        name: "Chanchu", stats: [15002, 4396, 13008, 19097, 17602],
+        skills: [1113, 1114],
+        autoAttack: 10001,
+        img: "209", rarity: 4, evo: 2,
+        fullName: "Chanchu, Hermit II"
+    },
+    21788: {
+        name: "Qiong Qi", stats: [17591, 13398, 14503, 8047, 17710],
+        skills: [1110, 1111],
+        autoAttack: 10011,
+        img: "305", rarity: 4, evo: 2,
+        fullName: "Qiong Qi, World Eater II"
+    },
+    21790: {
+        name: "Zhu Rong", stats: [23340, 7660, 18190, 22817, 18318],
+        skills: [1094, 1095],
+        autoAttack: 10164,
+        img: "295", rarity: 5, evo: 3,
+        fullName: "Zhu Rong, the Blazing Storm"
+    },
+    11788: {
+        name: "Qiong Qi", stats: [12806, 11903, 10904, 6689, 14500],
+        skills: [1112],
+        autoAttack: 10011,
+        img: "435", rarity: 4, evo: 4,
+        fullName: "Qiong Qi, Man Eater II"
+    },
+    11786: {
+        name: "Ruyi Zhenxian", stats: [14500, 16489, 14500, 6103, 16510],
+        skills: [1109],
+        autoAttack: 10165,
+        img: "308", rarity: 4, evo: 4,
+        fullName: "Ruyi Zhenxian, the Ferocious II"
+    },
+    21784: {
+        name: "Long Nu", stats: [20492, 6522, 21003, 22480, 17982],
+        skills: [1107, 1108],
+        autoAttack: 10001,
+        img: "11f", rarity: 5, evo: 3,
+        fullName: "Long Nu, Sea Princess"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -7303,6 +7384,16 @@ function setPreviousChoices() {
             }
         }
     }
+    for (var player = 1; player <= 2; player++) {
+        for (var famIndex = 0; famIndex < 10; famIndex++) {
+            for (var skillIndex = 0; skillIndex < 3; skillIndex++) {
+                var key = "p" + player + "f" + famIndex + "s" + skillIndex;
+                if (localStorage.getItem(key) && localStorage.getItem(key) !== "null") {
+                    document.getElementById(key).value = localStorage.getItem(key);
+                }
+            }
+        }
+    }
     if (localStorage.getItem("debug") === "true") {
         document.getElementById("debug").checked = true;
     }
@@ -7355,12 +7446,17 @@ function onFormLoad() {
     setFamOptions();
     setSkillOptions();
     addCustomsStatDiv();
+    addCustomsSkillDiv();
     toogleCustomStat(1);
     toogleCustomStat(2);
+    toogleCustomSkill(1);
+    toogleCustomSkill(2);
     document.getElementById("bt").onchange = function () {
         toogleReserve();
         toogleCustomStat(1);
         toogleCustomStat(2);
+        toogleCustomSkill(1);
+        toogleCustomSkill(2);
     };
     setPreviousChoices();
     toogleReserve();
@@ -7434,6 +7530,31 @@ function toogleCustomStat(player) {
         }
     }
 }
+function toogleCustomSkill(player) {
+    var checked = document.getElementById("p" + player + "customSkillChbox").checked;
+    var btValue = document.getElementById("bt").value;
+    var isBloodclash = btValue === "1" || btValue === "3";
+    var customSkillDiv = document.getElementById("p" + player + "customSkillDivNormal");
+    var inputs = customSkillDiv.getElementsByTagName("input");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].disabled = !checked;
+    }
+    customSkillDiv.style.display = checked ? "block" : "none";
+    customSkillDiv = document.getElementById("p" + player + "customSkillDivBloodclash");
+    inputs = customSkillDiv.getElementsByTagName("input");
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].disabled = !isBloodclash || !checked;
+    }
+    customSkillDiv.style.display = (checked && isBloodclash) ? "block" : "none";
+    for (var i = 0; i < 10; i++) {
+        var slotChecked = document.getElementById("p" + player + "f" + i + "customSkillChkbox").checked;
+        var slotDisabled = document.getElementById("p" + player + "f" + i + "customSkillChkbox").disabled;
+        for (var j = 0; j < 3; j++) {
+            var select = document.getElementById("p" + player + "f" + i + "s" + j);
+            select.disabled = slotDisabled || !slotChecked;
+        }
+    }
+}
 function setSkillOptions() {
     var skillSelects = document.getElementsByClassName("skillSelect");
     var skillIdArray = SkillProvider.getAvailableSkillsForSelect();
@@ -7478,6 +7599,33 @@ function addCustomsStatDiv() {
         }
     }
 }
+function addCustomsSkillDiv() {
+    var divArr = ["Normal", "Bloodclash"];
+    var skillSelect = document.getElementsByClassName("skillSelect")[0];
+    for (var divIndex = 0; divIndex < divArr.length; divIndex++) {
+        for (var player = 1; player <= 2; player++) {
+            var customSkillDiv = document.getElementById("p" + player + "customSkillDiv" + divArr[divIndex]);
+            for (var i = 0; i < 5; i++) {
+                var famIndex = i + 5 * divIndex;
+                customSkillDiv.appendChild(document.createElement('br'));
+                customSkillDiv.appendChild(document.createTextNode("Familiar " + (famIndex + 1)));
+                var input = document.createElement("input");
+                input.type = "checkbox";
+                input.id = "p" + player + "f" + famIndex + "customSkillChkbox";
+                input.onchange = (function (p) { return function () { return toogleCustomSkill(p); }; })(player);
+                customSkillDiv.appendChild(input);
+                for (var skillIndex = 0; skillIndex < 3; skillIndex++) {
+                    customSkillDiv.appendChild(document.createTextNode(" Skill " + skillIndex + " "));
+                    var select = document.createElement("select");
+                    select.name = "p" + player + "f" + famIndex + "s" + skillIndex;
+                    select.id = "p" + player + "f" + famIndex + "s" + skillIndex;
+                    select.innerHTML = skillSelect.innerHTML;
+                    customSkillDiv.appendChild(select);
+                }
+            }
+        }
+    }
+}
 function getBattleDataOption() {
     localStorage.setItem("debug", getURLParameter("debug"));
     var data = {}, option = {};
@@ -7494,6 +7642,8 @@ function getBattleDataOption() {
         localStorage.setItem("2f", data.p2_formation);
     data.p1_customStats = {};
     data.p2_customStats = {};
+    data.p1_customSkills = {};
+    data.p2_customSkills = {};
     var arr = ["HP", "ATK", "DEF", "WIS", "AGI"];
     for (var player = 1; player <= 2; player++) {
         for (var famIndex = 0; famIndex < 10; famIndex++) {
@@ -7506,6 +7656,21 @@ function getBattleDataOption() {
                     }
                     data[("p" + player + "_customStats")][famIndex][arr[statIndex].toLowerCase()] = +stat;
                     localStorage.setItem(key, stat);
+                }
+            }
+        }
+    }
+    for (var player = 1; player <= 2; player++) {
+        for (var famIndex = 0; famIndex < 10; famIndex++) {
+            for (var skillIndex = 0; skillIndex < 3; skillIndex++) {
+                var key = "p" + player + "f" + famIndex + "s" + skillIndex;
+                var customSkillId = getURLParameter(key);
+                if (customSkillId) {
+                    if (!data[("p" + player + "_customSkills")][famIndex]) {
+                        data[("p" + player + "_customSkills")][famIndex] = [];
+                    }
+                    data[("p" + player + "_customSkills")][famIndex][skillIndex] = +customSkillId;
+                    localStorage.setItem(key, customSkillId);
                 }
             }
         }
@@ -13213,53 +13378,17 @@ var SkillDatabase = {
         range: 23, prob: 30, ward: 2, sac: 1,
         desc: "Deal massive WIS-based damage to two random foes, ignoring position."
     },
-    849: {
-        name: "Blazing Rapier", type: 2, func: 4, calc: 2,
-        args: [1.15],
-        range: 16, prob: 30, ward: 2,
-        desc: "Deal heavy WIS-based damage to three random foes, ignoring position."
-    },
-    850: {
-        name: "Blazing Rapier", type: 2, func: 4, calc: 2,
-        args: [1.15],
-        range: 19, prob: 30, ward: 2,
-        desc: "Deal heavy WIS-based damage to four random foes, ignoring position."
-    },
     851: {
         name: "Blazing Rapier", type: 2, func: 4, calc: 2,
         args: [1.15],
         range: 20, prob: 30, ward: 2,
         desc: "Deal heavy WIS-based damage to five random foes, ignoring position."
     },
-    852: {
-        name: "Conflagration", type: 1, func: 1, calc: 0,
-        args: [0.1, 3],
-        range: 3, prob: 70,
-        desc: "Raise WIS of self and adjacent familiars, based on 10% of his WIS."
-    },
-    853: {
-        name: "Conflagration", type: 1, func: 1, calc: 0,
-        args: [0.15, 3],
-        range: 3, prob: 70,
-        desc: "Raise WIS of self and adjacent familiars, based on 15% of his WIS."
-    },
     854: {
         name: "Conflagration", type: 1, func: 1, calc: 0,
         args: [0.2, 3],
         range: 3, prob: 70,
         desc: "Raise WIS of self and adjacent familiars, based on 20% of his WIS."
-    },
-    855: {
-        name: "Inferno Aegis", type: 1, func: 1, calc: 0,
-        args: [0.1, 5],
-        range: 3, prob: 70,
-        desc: "Reduce physical damage taken by self and adjacent familiars by 10%."
-    },
-    856: {
-        name: "Inferno Aegis", type: 1, func: 1, calc: 0,
-        args: [0.2, 5],
-        range: 3, prob: 70,
-        desc: "Reduce physical damage taken by self and adjacent familiars by 20%."
     },
     857: {
         name: "Inferno Aegis", type: 1, func: 1, calc: 0,
@@ -13656,6 +13785,24 @@ var SkillDatabase = {
         args: [2],
         range: 23, prob: 30, ward: 2, sac: 1,
         desc: "Deal massive WIS-based damage to two random foes, ignoring position."
+    },
+    928: {
+        name: "Fierce Dash", type: 2, func: 4, calc: 1,
+        args: [1.4],
+        range: 315, prob: 30, ward: 1,
+        desc: "Deal ATK-based damage up to five foes, ignoring position. Increased if fewer foes."
+    },
+    931: {
+        name: "Stone Guard", type: 1, func: 1, calc: 0,
+        args: [0.2, 1, 2],
+        range: 3, prob: 70,
+        desc: "Raise ATK/DEF of self and adjacent familiars on 20% of its WIS respectively."
+    },
+    934: {
+        name: "Reflecting Carapace", type: 5, func: 28, calc: 7,
+        args: [0.3, 9, 23, 2, 0.4],
+        range: 21, prob: 50,
+        desc: "Reflect 60% of ATK/AGI-based damage back to up to two foes."
     },
     935: {
         name: "Blizzard Breath", type: 2, func: 4, calc: 2,
@@ -14088,6 +14235,24 @@ var SkillDatabase = {
         range: 21, prob: 100,
         desc: "-"
     },
+    1011: {
+        name: "Just Deserts", type: 2, func: 3, calc: 1,
+        args: [1.05],
+        range: 20, prob: 30, ward: 1,
+        desc: "Deal ATK-based damage to five random foes."
+    },
+    1014: {
+        name: "Indignation", type: 1, func: 44, calc: 0,
+        args: [0.2, 1, 0, 0, 0, 0.7, 3],
+        range: 21, prob: 70,
+        desc: "Raise ATK and WIS of self by 20% and 70% of its WIS respectively."
+    },
+    1017: {
+        name: "Mark of Virtue", type: 5, func: 14, calc: 1,
+        args: [1.4],
+        range: 4, prob: 50, ward: 1,
+        desc: "Take damage in place of any ally and unleash a counter attack."
+    },
     1018: {
         name: "Chain Snip", type: 2, func: 7, calc: 1,
         args: [1.35, 0.08],
@@ -14519,6 +14684,102 @@ var SkillDatabase = {
         args: [2],
         range: 23, prob: 30, ward: 2, sac: 1,
         desc: "Deal massive WIS-based damage to two random foes, ignoring position."
+    },
+    1094: {
+        name: "Leaping Flames", type: 2, func: 4, calc: 2,
+        args: [1.3, 8, 0.25, 2500],
+        range: 315, prob: 30, ward: 2,
+        desc: "Deal WIS-based DMG, may burn up to five foes, ignoring position. Increased if fewer foes."
+    },
+    1095: {
+        name: "Bewitching Dance", type: 3, func: 38, calc: 6,
+        args: [1, 3, 4, 25, 5],
+        range: 7, prob: 50,
+        desc: "Greatly lower WIS and AGI of up to three foes when being attacked."
+    },
+    1098: {
+        name: "Crescent Flame", type: 2, func: 4, calc: 2,
+        args: [1],
+        range: 17, prob: 30, ward: 3,
+        desc: "Deal WIS-based damage to six random foes, ignoring position."
+    },
+    1101: {
+        name: "Waxing Winds", type: 1, func: 1, calc: 0,
+        args: [0.3, 6, 7],
+        range: 3, prob: 70,
+        desc: "Reduce magic and breath damages taken by self and adjacent familiars by 30%."
+    },
+    1104: {
+        name: "Gibbous Gleam", type: 1, func: 44, calc: 0,
+        args: [0.1, 2, 0, 0, 0, 0.2, 3],
+        range: 3, prob: 70,
+        desc: "Raise DEF/WIS of self/adjacent familiars on by 10% and 20% of its WIS respectively."
+    },
+    1107: {
+        name: "Freezing Rain", type: 2, func: 4, calc: 2,
+        args: [1.55, 3, 0.2],
+        range: 314, prob: 30, ward: 2,
+        desc: "Heavy WIS-based damage and sometimes freeze up to four foes. Increased if fewer foes."
+    },
+    1108: {
+        name: "Healing Rain", type: 2, func: 18, calc: 4,
+        args: [1.2],
+        range: 122, prob: 30,
+        desc: "Restore a large amount of HP to two party members."
+    },
+    1109: {
+        name: "Ruyi Hook", type: 2, func: 33, calc: 1,
+        args: [2.55, 2, 0.45, 0.2],
+        range: 23, prob: 30, ward: 1, sac: 1,
+        desc: "Deal massive ATK-based damage to two random foes and sometimes lower DEF."
+    },
+    1110: {
+        name: "World Breaker", type: 2, func: 52, calc: 3,
+        args: [1.7, 4, 800, 6, 0.5, 1, 121, 120],
+        range: 16, prob: 30, ward: 1,
+        desc: "Deal heavy AGI-based damage and absorb AGI from three random foes."
+    },
+    1111: {
+        name: "Calamity Ward", type: 1, func: 44, calc: 0,
+        args: [0.37, 2, 0, 0, 0, 0.4, 5],
+        range: 3, prob: 70,
+        desc: "Raise DEF and reduce physical damage taken by self and adjacent familiars."
+    },
+    1112: {
+        name: "Flying Claws", type: 2, func: 3, calc: 3,
+        args: [1.7],
+        range: 6, prob: 30, ward: 1, sac: 1,
+        desc: "Deal heavy AGI-based damage to up to two foes."
+    },
+    1113: {
+        name: "Toad Venom", type: 2, func: 4, calc: 2,
+        args: [1.95, 2, 0.4],
+        range: 313, prob: 30, ward: 2,
+        desc: "Heavy WIS-based damage, sometimes paralyze up to three foes. Increased if fewer foes."
+    },
+    1114: {
+        name: "Toad Remedy", type: 1, func: 44, calc: 0,
+        args: [0.2, 17, 0, 0, 0, 1115, 16],
+        range: 3, prob: 70,
+        desc: "Raise HP/Revive with 50% HP after being killed, self and adjacent familiars."
+    },
+    1115: {
+        name: "Toad", type: 16, func: 6, calc: 0,
+        args: [0.5],
+        range: 21, prob: 100,
+        desc: "-"
+    },
+    1116: {
+        name: "Sword of Discord", type: 2, func: 33, calc: 1,
+        args: [1.65, 4, 0.4, 0.15],
+        range: 16, prob: 30, ward: 1,
+        desc: "Heavy ATK-based damage to three random foes, sometimes greatly lower AGI."
+    },
+    1117: {
+        name: "Faithless Fangs", type: 2, func: 33, calc: 3,
+        args: [1.8, 1, 1, 0.15],
+        range: 16, prob: 30, ward: 1,
+        desc: "Heavy AGI-based damage to three random foes, sometimes greatly lower ATK."
     },
     10001: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
@@ -15042,6 +15303,12 @@ var SkillDatabase = {
         range: 6, prob: 100, ward: 2, isAutoAttack: true,
         desc: "WIS-based damage to up to 2 foes and sometimes burn targets."
     },
+    10124: {
+        name: "Standard Action", type: 2, func: 53, calc: 2,
+        args: [1, 3, 1000, 6, 0.5, 1, 121, 120],
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "WIS-based damage and absorbs WIS from one foe."
+    },
     10125: {
         name: "Standard Action", type: 2, func: 4, calc: 1,
         args: [1.2],
@@ -15269,6 +15536,18 @@ var SkillDatabase = {
         args: [1],
         range: 5, prob: 100, ward: 2, isAutoAttack: true,
         desc: "WIS-based damage to one foe."
+    },
+    10164: {
+        name: "Standard Action", type: 2, func: 4, calc: 2,
+        args: [1, 8, 0.6, 2500],
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "WIS-based damage to one foe and sometimes burn target."
+    },
+    10165: {
+        name: "Standard Action", type: 2, func: 33, calc: 1,
+        args: [1.2, 2, 1, 0.14],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage and lower DEF of target."
     },
     9001: {
         name: "Abject Horror", type: 20, func: 1002, calc: 0,
