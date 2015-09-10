@@ -2113,7 +2113,7 @@ var BrigGenerator = (function () {
     BrigGenerator.makeSkillArray = function (skillIds) {
         var skillArray = [];
         for (var i = 0; i < 3; i++) {
-            if (skillIds[i]) {
+            if (skillIds[i] && +skillIds[i] !== 0) {
                 skillArray.push(new Skill(skillIds[i]));
             }
         }
@@ -7559,9 +7559,13 @@ function setSkillOptions() {
     var skillSelects = document.getElementsByClassName("skillSelect");
     var skillIdArray = SkillProvider.getAvailableSkillsForSelect();
     skillIdArray.sort(function (a, b) { return SkillDatabase[a].name.localeCompare(SkillDatabase[b].name); });
+    var option = document.createElement("option");
+    option.value = "0";
+    option.text = "--none--";
+    skillSelects[0].add(option);
     for (var index = 0; index < skillIdArray.length; index++) {
         var key = skillIdArray[index];
-        var option = document.createElement("option");
+        option = document.createElement("option");
         option.value = key + "";
         option.text = SkillDatabase[key].name;
         skillSelects[0].add(option);
