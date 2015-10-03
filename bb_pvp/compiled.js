@@ -51,8 +51,7 @@ var Affliction = (function () {
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var BlindAffliction = (function (_super) {
     __extends(BlindAffliction, _super);
@@ -7148,6 +7147,125 @@ var famDatabase = {
         autoAttack: 10001,
         img: "11f", rarity: 5, evo: 3,
         fullName: "Long Nu, Sea Princess"
+    },
+    11793: {
+        name: "Carl", stats: [16009, 16952, 14482, 5403, 17201],
+        skills: [1121],
+        autoAttack: 10167,
+        img: "1b8", rarity: 4, evo: 2,
+        fullName: "Carl, Giant Knight II"
+    },
+    11803: {
+        name: "Andras", stats: [18501, 20007, 16009, 8144, 18447],
+        skills: [1116, 1117],
+        autoAttack: 10011,
+        isMounted: true,
+        img: "2c8", rarity: 5, evo: 2,
+        fullName: "Andras, the Slayer II"
+    },
+    11792: {
+        name: "Bercilak", stats: [21588, 22856, 15034, 6487, 17797],
+        skills: [1119, 1120],
+        autoAttack: 10044,
+        img: "111", rarity: 5, evo: 2,
+        fullName: "Bercilak, Green Knight II"
+    },
+    11791: {
+        name: "Gawain", stats: [23798, 22509, 23224, 14113, 18208],
+        skills: [1118],
+        autoAttack: 10166,
+        img: "4a3", rarity: 6, evo: 2,
+        fullName: "Sir Gawain, Sun Knight II"
+    },
+    11621: {
+        name: "Sabnock", stats: [25261, 24643, 21112, 14926, 18544],
+        skills: [1123, 1124],
+        passiveSkills: [9008],
+        autoAttack: 10061,
+        img: "14e", rarity: 6, evo: 2,
+        fullName: "Sabnock, Marquis of Hell II"
+    },
+    11795: {
+        name: "Ragnelle", stats: [16681, 6064, 11662, 17106, 17292],
+        skills: [1122],
+        autoAttack: 10129,
+        img: "32b", rarity: 4, evo: 4,
+        fullName: "Ragnelle, the Moonlight II"
+    },
+    11828: {
+        name: "Leopard Queen", stats: [12487, 11428, 10564, 8026, 13256],
+        skills: [1142],
+        img: "4d5", rarity: 4, evo: 4,
+        fullName: "Cat Sith Leopard Queen II"
+    },
+    11798: {
+        name: "Ollpheist", stats: [17569, 3594, 13507, 16876, 17201],
+        skills: [1127],
+        autoAttack: 10169,
+        img: "372", rarity: 4, evo: 2,
+        fullName: "Ollpheist II"
+    },
+    11801: {
+        name: "Scathach", stats: [19140, 6844, 18100, 19151, 18013],
+        skills: [1129, 1130],
+        autoAttack: 10171,
+        img: "4a6", rarity: 5, evo: 2,
+        fullName: "Scathach, Shadow Goddess II"
+    },
+    11800: {
+        name: "Fergus", stats: [14879, 14792, 14413, 10418, 15487],
+        skills: [1128],
+        autoAttack: 10170,
+        img: "1df", rarity: 4, evo: 4,
+        fullName: "Fergus, Bold King II"
+    },
+    21797: {
+        name: "Cu Chulainn", stats: [20754, 19681, 20170, 12283, 18105],
+        skills: [1125, 1126],
+        autoAttack: 10168,
+        img: "44b", rarity: 5, evo: 3,
+        fullName: "Cu Chulainn, the Thunderbolt"
+    },
+    1623: {
+        name: "Fomor Berserker", stats: [8910, 7170, 7140, 7360, 7510],
+        skills: [1145],
+        img: "291", rarity: 5, evo: 1,
+        fullName: "Fomor Berserker"
+    },
+    11825: {
+        name: "Pomona", stats: [20559, 17894, 13528, 11275, 18349],
+        skills: [1137, 1138],
+        autoAttack: 10151,
+        img: "2e6", rarity: 5, evo: 2,
+        fullName: "Pomona, Grove Goddess II"
+    },
+    11826: {
+        name: "Tricia", stats: [16356, 15348, 12965, 6064, 17797],
+        skills: [1139, 1140],
+        autoAttack: 10151,
+        img: "393", rarity: 4, evo: 2,
+        fullName: "Tricia, Cauldron Witch II"
+    },
+    11824: {
+        name: "Pumpkin Hangman", stats: [15462, 6723, 11770, 16900, 17071],
+        skills: [1135],
+        autoAttack: 10172,
+        img: "2e2", rarity: 4, evo: 4,
+        fullName: "Pumpkin Hangman II"
+    },
+    21822: {
+        name: "Samhain", stats: [21767, 18770, 17836, 14021, 18105],
+        skills: [1133, 1134],
+        autoAttack: 10151,
+        img: "3ae", rarity: 5, evo: 3,
+        fullName: "Samhain, Night Trampler"
+    },
+    21824: {
+        name: "Cursed Pumpkin", stats: [12857, 8534, 9054, 13897, 11156],
+        skills: [1136],
+        autoAttack: 10007,
+        img: "27e", rarity: 4, evo: 2,
+        fullName: "Cursed Pumpkin Golem II"
     },
 };
 var FamProvider = (function () {
@@ -14785,6 +14903,150 @@ var SkillDatabase = {
         range: 16, prob: 30, ward: 1,
         desc: "Heavy AGI-based damage to three random foes, sometimes greatly lower ATK."
     },
+    1118: {
+        name: "Galatine", type: 2, func: 33, calc: 1,
+        args: [1.5, 2, 0.3, 0.18],
+        range: 19, prob: 30, ward: 1, sac: 1,
+        desc: "Deal heavy ATK-based damage to four random foes and sometimes lower DEF."
+    },
+    1119: {
+        name: "Virescent Fog", type: 1, func: 1, calc: 0,
+        args: [1, 5],
+        range: 21, prob: 70,
+        desc: "Reduce totally physical damage taken by self."
+    },
+    1120: {
+        name: "Headsman's Game", type: 2, func: 3, calc: 1,
+        args: [1.2],
+        range: 6, prob: 30, ward: 1,
+        desc: "Deal ATK-based damage to up to two foes."
+    },
+    1121: {
+        name: "Whirling Chain", type: 2, func: 3, calc: 1,
+        args: [1.8],
+        range: 7, prob: 30, ward: 1, sac: 1,
+        desc: "Deal heavy ATK-based damage to up to three foes."
+    },
+    1122: {
+        name: "Masked Phantom", type: 2, func: 4, calc: 2,
+        args: [1.65, 7, 0.25, 1, 0.9],
+        range: 19, prob: 30, ward: 2, sac: 1,
+        desc: "Deal heavy WIS-based damage to four random foes and sometimes blind them."
+    },
+    1123: {
+        name: "Unhealing Rend", type: 2, func: 4, calc: 3,
+        args: [1.55, 2, 0.25],
+        range: 17, prob: 30, ward: 2,
+        desc: "Heavy AGI-based damage to and sometimes paralyze six random foes, ignoring position. "
+    },
+    1124: {
+        name: "Life Tax", type: 1, func: 51, calc: 0,
+        args: [0, 9, 3000, 6, 0.4, 1, 121, 120, 43],
+        range: 7, prob: 70,
+        desc: "Absorbs DEF and AGI from up to three foes at the beginning of battles."
+    },
+    1125: {
+        name: "Gae Bulg", type: 2, func: 4, calc: 1,
+        args: [1.8, 2, 0.25],
+        range: 19, prob: 30, ward: 1,
+        desc: "Heavy ATK-based damage, sometimes paralyze four random foes, ignoring position."
+    },
+    1126: {
+        name: "Gift of the Spear", type: 3, func: 39, calc: 6,
+        args: [1, 3, 0, 20, 3],
+        range: 36, prob: 50,
+        desc: "Chance to increase WIS of self and an ally on the right when being attacked."
+    },
+    1127: {
+        name: "Freezing Whorl", type: 2, func: 4, calc: 2,
+        args: [1.05, 3, 0.4],
+        range: 8, prob: 30, ward: 2, sac: 1,
+        desc: "WIS-based damage and sometimes freeze all foes, ignoring position."
+    },
+    1128: {
+        name: "Light of Caladbolg", type: 3, func: 39, calc: 6,
+        args: [1, 3, 2, 15, 5],
+        range: 3, prob: 50, sac: 1,
+        desc: "Chance to increase DEF and WIS of self and adjacent familiars when being attacked."
+    },
+    1129: {
+        name: "Shadow Feast", type: 2, func: 37, calc: 2,
+        args: [2.25, 0.15, 27, 21],
+        range: 16, prob: 30, ward: 2,
+        desc: "Deal massive WIS-based damage and drain HP from three random foes, ignoring position."
+    },
+    1130: {
+        name: "Shadow Cloak", type: 1, func: 44, calc: 0,
+        args: [2, 13, 0, 0, 0, 1.4, 14],
+        range: 3, prob: 70,
+        desc: "Raise WIS/AGI of self and adjacent familiars when its HP decreases."
+    },
+    1133: {
+        name: "Harvesting Scythe", type: 2, func: 4, calc: 3,
+        args: [1.7],
+        range: 314, prob: 30, ward: 2,
+        desc: "Heavy AGI-based damage to up to four foes, ignoring position. Increased if fewer foes."
+    },
+    1134: {
+        name: "Shieldbreaker Hooves", type: 1, func: 32, calc: 0,
+        args: [0.3, 2],
+        range: 7, prob: 70,
+        desc: "Greatly lower DEF of up to three foes based on 30% of his WIS."
+    },
+    1135: {
+        name: "Frisky Vines", type: 2, func: 34, calc: 2,
+        args: [1.65, 3, 0.3, 0.07],
+        range: 19, prob: 30, ward: 2, sac: 1,
+        desc: "Heavy WIS-based damage to 4 random foes and sometimes lower WIS, ignoring position."
+    },
+    1136: {
+        name: "Twining Vines", type: 2, func: 4, calc: 2,
+        args: [1.5],
+        range: 16, prob: 30, ward: 2, sac: 1,
+        desc: "Deal heavy WIS-based damage to three random foes, ignoring position."
+    },
+    1137: {
+        name: "Stone Fruit", type: 2, func: 4, calc: 3,
+        args: [1.2],
+        range: 17, prob: 30, ward: 2,
+        desc: "Deal AGI-based damage to six random foes, ignoring position."
+    },
+    1138: {
+        name: "Grove's Mercy", type: 1, func: 44, calc: 0,
+        args: [0.3, 4, 0, 0, 0, 1, 18],
+        range: 36, prob: 70,
+        desc: "Raise AGI of self and an ally on the right, both take an extra action next turn."
+    },
+    1139: {
+        name: "Toil and Trouble", type: 2, func: 4, calc: 3,
+        args: [1.65],
+        range: 19, prob: 30, ward: 2,
+        desc: "Deal heavy AGI-based damage to four random foes, ignoring position."
+    },
+    1140: {
+        name: "Pumpkin Nostrum", type: 1, func: 44, calc: 0,
+        args: [0.25, 4, 0, 0, 0, 1141, 16],
+        range: 37, prob: 70,
+        desc: "Raise AGI/Revive with 50% HP after being killed, self and an ally on the left."
+    },
+    1141: {
+        name: "Dawn's Light", type: 16, func: 6, calc: 0,
+        args: [0.5],
+        range: 21, prob: 100,
+        desc: "-"
+    },
+    1142: {
+        name: "Rain of Claws", type: 2, func: 3, calc: 3,
+        args: [2],
+        range: 23, prob: 30, ward: 1, sac: 1,
+        desc: "Deal massive AGI-based damage to two random foes."
+    },
+    1145: {
+        name: "Pestilent Blade", type: 1, func: 19, calc: 0,
+        args: [0, 1, 1, 25],
+        range: 8, prob: 100, sac: 1,
+        desc: "Poison all foes at the start of battle."
+    },
     10001: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
         args: [1],
@@ -15553,6 +15815,48 @@ var SkillDatabase = {
         range: 5, prob: 100, ward: 1, isAutoAttack: true,
         desc: "ATK-based damage and lower DEF of target."
     },
+    10166: {
+        name: "Standard Action", type: 2, func: 52, calc: 1,
+        args: [1, 1, 750, 6, 1, 1, 121, 120],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage and absorbs ATK from one foe."
+    },
+    10167: {
+        name: "Standard Action", type: 2, func: 3, calc: 1,
+        args: [1.5],
+        range: 6, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "Heavy ATK-based damage to up to two foes."
+    },
+    10168: {
+        name: "Standard Action", type: 2, func: 4, calc: 1,
+        args: [1.2],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
+    10169: {
+        name: "Standard Action", type: 2, func: 4, calc: 2,
+        args: [1, 3, 0.3],
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "WIS-based damage and sometimes freeze target."
+    },
+    10170: {
+        name: "Standard Action", type: 2, func: 3, calc: 1,
+        args: [1.3],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
+    10171: {
+        name: "Standard Action", type: 2, func: 37, calc: 2,
+        args: [1, 0.5, 27, 21],
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "WIS-based damage and drain HP from target."
+    },
+    10172: {
+        name: "Standard Action", type: 2, func: 34, calc: 2,
+        args: [1.2, 3, 1, 0.05],
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "WIS-based damage and lower WIS of target."
+    },
     9001: {
         name: "Abject Horror", type: 20, func: 1002, calc: 0,
         args: [0.3],
@@ -15582,6 +15886,12 @@ var SkillDatabase = {
         args: [0.15],
         range: 0, prob: 100,
         desc: "Up to 15% chance to reproduce the previous attack action."
+    },
+    9008: {
+        name: "Lionpride", type: 20, func: 1001, calc: 0,
+        args: [0.25],
+        range: 0, prob: 100,
+        desc: "Increase damage to lower rarities by up to 25%."
     },
 };
 var RangeFactory = (function () {
@@ -15740,6 +16050,8 @@ var RangeFactory = (function () {
                 return new RightRange(id);
             case ENUM.SkillRange.SELF_IMMEDIATE_RIGHT:
                 return new SelfImmediateRightRange(id);
+            case ENUM.SkillRange.SELF_IMMEDIATE_LEFT:
+                return new SelfImmediateLeftRange(id);
             case ENUM.SkillRange.PASSIVE:
                 return null;
             default:
@@ -16008,6 +16320,25 @@ var SelfImmediateRightRange = (function (_super) {
         this.targets = targets;
     };
     return SelfImmediateRightRange;
+})(BaseRange);
+var SelfImmediateLeftRange = (function (_super) {
+    __extends(SelfImmediateLeftRange, _super);
+    function SelfImmediateLeftRange() {
+        _super.apply(this, arguments);
+    }
+    SelfImmediateLeftRange.prototype.getReady = function (executor) {
+        var targets = [];
+        this.currentIndex = 0;
+        if (!executor.isDead) {
+            targets.push(executor);
+        }
+        var leftCard = CardManager.getInstance().getLeftSideCard(executor);
+        if (leftCard && !leftCard.isDead) {
+            targets.push(leftCard);
+        }
+        this.targets = targets;
+    };
+    return SelfImmediateLeftRange;
 })(BaseRange);
 var RandomRange = (function (_super) {
     __extends(RandomRange, _super);
