@@ -896,6 +896,11 @@ var ENUM;
         BonusType[BonusType["COLISEUM"] = 1] = "COLISEUM";
     })(ENUM.BonusType || (ENUM.BonusType = {}));
     var BonusType = ENUM.BonusType;
+    (function (AddProbability) {
+        AddProbability[AddProbability["BLOODCLASH"] = 10] = "BLOODCLASH";
+        AddProbability[AddProbability["COLISEUM"] = 3] = "COLISEUM";
+    })(ENUM.AddProbability || (ENUM.AddProbability = {}));
+    var AddProbability = ENUM.AddProbability;
 })(ENUM || (ENUM = {}));
 /// <reference path="interfaces/MinorEvent.ts"/>
 /// <reference path="Enums.ts"/>
@@ -1609,7 +1614,8 @@ var BattleGraphic = (function () {
                 var center_x = this.coordArray[target.getPlayerId()][target.formationColumn][0];
                 var center_y = this.coordArray[target.getPlayerId()][target.formationColumn][1];
                 var damageText = SVG.get("p" + target.getPlayerId() + "f" + target.formationColumn + "damageText");
-                damageText.text("+10%").center(center_x, center_y).font({ size: BattleGraphic.wr * 25 })
+                var bonusProb = this.battle.isColiseum ? ENUM.AddProbability.COLISEUM : ENUM.AddProbability.BLOODCLASH;
+                damageText.text("+" + bonusProb + "%").center(center_x, center_y).font({ size: BattleGraphic.wr * 25 })
                     .opacity(1).animate({ delay: '2s' }).opacity(0)
                     .after(function () {
                     this.text('-');
@@ -7357,6 +7363,82 @@ var famDatabase = {
         autoAttack: 10034,
         img: "43a", rarity: 6, evo: 2,
         fullName: "Strigoi, Undying Warrior II"
+    },
+    21842: {
+        name: "Infernal Wyrm Warden", stats: [21034, 7687, 20031, 21592, 18152],
+        skills: [1166, 1167],
+        autoAttack: 10001,
+        img: "206", rarity: 5, evo: 3,
+        fullName: "Infernal Wyrm Warden"
+    },
+    11853: {
+        name: "Tatsuta", stats: [20104, 6768, 16421, 20126, 18176],
+        skills: [1180, 1181],
+        autoAttack: 10007,
+        img: "25d", rarity: 5, evo: 2,
+        fullName: "Lady Tatsuta, the Mapleleaf II"
+    },
+    11845: {
+        name: "Latona", stats: [14952, 15147, 14585, 5506, 16803],
+        skills: [1169],
+        autoAttack: 10179,
+        img: "267", rarity: 4, evo: 4,
+        fullName: "Latona, Wolfwoman II"
+    },
+    11843: {
+        name: "Rustom", stats: [16096, 15847, 16215, 5035, 16800],
+        skills: [1168],
+        autoAttack: 10178,
+        img: "197", rarity: 4, evo: 2,
+        fullName: "Rustom, Zombie Ape II"
+    },
+    11856: {
+        name: "Bare-Branch", stats: [12355, 8698, 9063, 13451, 11390],
+        skills: [1184],
+        autoAttack: 10007,
+        img: "26f", rarity: 4, evo: 4,
+        fullName: "Bare-Branch Treant II"
+    },
+    21852: {
+        name: "Nicola", stats: [12900, 11611, 11459, 7960, 12066],
+        skills: [1179],
+        autoAttack: 10005,
+        img: "298", rarity: 4, evo: 2,
+        fullName: "Nicola, Corpse Handler II"
+    },
+    11852: {
+        name: "Nicola", stats: [16048, 14606, 12597, 7528, 17147],
+        skills: [1178],
+        autoAttack: 10182,
+        img: "208", rarity: 4, evo: 4,
+        fullName: "Nicola, the Poison Fly II"
+    },
+    11854: {
+        name: "Domini", stats: [15847, 5880, 12358, 17049, 17385],
+        skills: [1182, 1183],
+        autoAttack: 10007,
+        img: "2ad", rarity: 4, evo: 2,
+        fullName: "Domini, Pest Controller II"
+    },
+    11849: {
+        name: "Beelzebub", stats: [22509, 22910, 21242, 17049, 18143],
+        skills: [1174],
+        autoAttack: 10181,
+        img: "3df", rarity: 6, evo: 2,
+        fullName: "Beelzebub, Glutton King II"
+    },
+    21850: {
+        name: "Lucifuge", stats: [21278, 8712, 18221, 22130, 18140],
+        skills: [1175, 1176],
+        autoAttack: 10007,
+        img: "3bb", rarity: 5, evo: 3,
+        fullName: "Lucifuge, Infernal Premier"
+    },
+    41726: {
+        name: "Haagenti", stats: [21813, 20148, 16179, 6523, 18386],
+        skills: [],
+        img: "4cb", rarity: 5, evo: 1,
+        fullName: "Haagenti, Lord of Beasts"
     },
 };
 var FamProvider = (function () {
@@ -15308,6 +15390,84 @@ var SkillDatabase = {
         range: 7, prob: 70,
         desc: "Greatly lower DEF of up to three foes and burn targets."
     },
+    1174: {
+        name: "Arrow of the Fly Lord", type: 2, func: 4, calc: 1,
+        args: [1.7, 2, 0.25],
+        range: 314, prob: 30, ward: 1, sac: 1,
+        desc: "Heavy ATK-based DMG and sometimes paralyze up to four foes. Increased if fewer foes."
+    },
+    1175: {
+        name: "Draw of Death", type: 2, func: 4, calc: 2,
+        args: [1.55],
+        range: 19, prob: 30, ward: 2,
+        desc: "Deal heavy WIS-based damage to four random foes, ignoring position."
+    },
+    1176: {
+        name: "Lust for Life", type: 2, func: 6, calc: 0,
+        args: [0.5],
+        range: 2, prob: 50,
+        desc: "Revive and restore with 50% HP of adjacent familiars."
+    },
+    1178: {
+        name: "Swarm of Flies", type: 2, func: 37, calc: 3,
+        args: [1.15, 0.2, 27, 21],
+        range: 17, prob: 30, ward: 2, sac: 1,
+        desc: "Deal AGI-based damage and drain HP from six random foes, ignoring position."
+    },
+    1179: {
+        name: "Ravenous Flies", type: 2, func: 4, calc: 3,
+        args: [1.35],
+        range: 19, prob: 30, ward: 2, sac: 1,
+        desc: "Deal AGI-based damage to four random foes, ignoring position."
+    },
+    1180: {
+        name: "Maple Edge", type: 2, func: 4, calc: 2,
+        args: [1.25],
+        range: 20, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage to five random foes, ignoring position."
+    },
+    1181: {
+        name: "Bracing Breeze", type: 1, func: 44, calc: 0,
+        args: [0.2, 3, 0, 0, 0, 1.8, 13],
+        range: 3, prob: 70,
+        desc: "Raise self/adjacent allies' WIS by 20% of her WIS, their WIS increases as HP falls."
+    },
+    1182: {
+        name: "Bug Bomb", type: 2, func: 4, calc: 2,
+        args: [1.15, 1, 0.15, 5],
+        range: 17, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage and sometimes poison six random foes, ignoring position. "
+    },
+    1183: {
+        name: "Insect Repellant", type: 1, func: 44, calc: 0,
+        args: [0.24, 17, 0, 0, 0, 0.12, 3],
+        range: 3, prob: 70,
+        desc: "Raise HP and WIS of self and adjacent familiars by 24% and 12% of its WIS respectively."
+    },
+    1184: {
+        name: "Rampike Claws", type: 2, func: 4, calc: 2,
+        args: [2],
+        range: 23, prob: 30, ward: 2, sac: 1,
+        desc: "Deal massive WIS-based damage to two random foes, ignoring position."
+    },
+    1190: {
+        name: "Thundercall Horn", type: 2, func: 4, calc: 3,
+        args: [1.3],
+        range: 20, prob: 30, ward: 2,
+        desc: "Deal AGI-based damage to five random foes, ignoring position."
+    },
+    1193: {
+        name: "Enraged Bull", type: 1, func: 44, calc: 1,
+        args: [0.15, 1, 0, 0, 0, 0.1, 4],
+        range: 3, prob: 70,
+        desc: "Raise ATK/AGI of self and adjacent familiars based on 15% and 10% of its ATK respectively."
+    },
+    1196: {
+        name: "Lulled Bull", type: 1, func: 44, calc: 1,
+        args: [0.15, 3, 0, 0, 0, 0.1, 4],
+        range: 3, prob: 70,
+        desc: "Raise WIS/AGI of self and adjacent familiars based on 15% and 10% of its ATK respectively."
+    },
     10001: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
         args: [1],
@@ -16159,6 +16319,24 @@ var SkillDatabase = {
         args: [0.8],
         range: 23, prob: 100, ward: 1, isAutoAttack: true,
         desc: "ATK-based damage to two random foes."
+    },
+    10180: {
+        name: "Standard Action", type: 2, func: 33, calc: 1,
+        args: [1, 2, 1, 0.1],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage and lower DEF of target."
+    },
+    10181: {
+        name: "Standard Action", type: 2, func: 53, calc: 1,
+        args: [1.2, 1, 1000, 6, 1, 0.5, 121, 120],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage and sometimes absorbs ATK from one foe."
+    },
+    10182: {
+        name: "Standard Action", type: 2, func: 34, calc: 1,
+        args: [1.2, 2, 1, 0.06],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "Deal ATK-based damage to one foe and lower DEF."
     },
     9001: {
         name: "Abject Horror", type: 20, func: 1002, calc: 0,
@@ -17823,15 +18001,16 @@ var BattleModel = (function () {
                 battleDesc: battleDesc
             });
         }
-        else if (this.isBloodClash) {
+        else if (this.isBloodClash || this.isColiseum) {
             var allCards = this.cardManager.getAllCurrentCards();
             for (var i = 0; i < allCards.length; i++) {
                 var tmpCard = allCards[i];
                 if (tmpCard && !tmpCard.isDead) {
-                    tmpCard.bcAddedProb += 10;
+                    var bonusProb = this.isColiseum ? ENUM.AddProbability.COLISEUM : ENUM.AddProbability.BLOODCLASH;
+                    tmpCard.bcAddedProb += bonusProb;
                     this.logger.addMinorEvent({
                         type: ENUM.MinorEventType.BC_ADDPROB,
-                        description: tmpCard.name + " gets 10% increase in skill prob.",
+                        description: tmpCard.name + " gets " + bonusProb + "% increase in skill prob.",
                         bcAddProb: {
                             targetId: tmpCard.id,
                             isMain: this.cardManager.isCurrentMainCard(tmpCard)
