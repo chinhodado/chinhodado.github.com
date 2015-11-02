@@ -2243,7 +2243,7 @@ var Card = (function () {
         }
         if (cardData.passiveSkills) {
             this.passiveSkills.push(new Skill(cardData.passiveSkills[0]));
-            console.assert(!cardData.passiveSkills[1], "More than one passive skill is not implemented!");
+            assert(!cardData.passiveSkills[1], "More than one passive skill is not implemented!");
         }
     }
     Card.prototype.getSerializableObject = function () {
@@ -8387,7 +8387,7 @@ var AbsorbSkillLogic = (function (_super) {
             var calcType = skill.skillFuncArg4;
             var isNewLogic = false;
             if (calcType !== ENUM.SkillCalcType.DEBUFF) {
-                console.assert(calcType === ENUM.SkillCalcType.WIS, "Non WIS-based debuff unimplemented!");
+                assert(calcType === ENUM.SkillCalcType.WIS, "Non WIS-based debuff unimplemented!");
                 var debuffAmount = Math.floor(executor.getWIS() * debuffMulti);
             }
             else {
@@ -8614,7 +8614,7 @@ var AttackSkillLogic = (function (_super) {
     AttackSkillLogic.prototype.processDrainPhase = function (executor, skill) {
         var healRange = RangeFactory.getRange(skill.skillFuncArg4);
         healRange.getReady(executor, function (card) { return !card.isFullHealth(); });
-        console.assert(!(healRange instanceof RandomRange), "can't do this with random ranges!");
+        assert(!(healRange instanceof RandomRange), "can't do this with random ranges!");
         if (healRange.targets.length === 0) {
             return;
         }
@@ -8825,7 +8825,7 @@ var ProtectSkillLogic = (function (_super) {
         if (this.cardManager.isSameCard(data.targetCard, data.executor) && data.skill.skillRange !== ENUM.SkillRange.MYSELF) {
             return false;
         }
-        console.assert(!(data.skill.range instanceof RandomRange), "can't do this with random ranges!");
+        assert(!(data.skill.range instanceof RandomRange), "can't do this with random ranges!");
         return _super.prototype.willBeExecuted.call(this, data) && this.cardManager.isCardInList(data.targetCard, data.skill.range.targets);
     };
     ProtectSkillLogic.prototype.execute = function (data) {
@@ -8942,7 +8942,7 @@ var CounterDrainSkillLogic = (function (_super) {
         _super.prototype.execute.call(this, data);
         var range = RangeFactory.getRange(skill.skillFuncArg4);
         range.getReady(data.executor);
-        console.assert(!(range instanceof RandomRange), "can't do this with random ranges!");
+        assert(!(range instanceof RandomRange), "can't do this with random ranges!");
         var totalHealAmount = data.executor.lastBattleDamageDealt * skill.skillFuncArg2;
         var eachTargetHealAmount = Math.floor(totalHealAmount / range.targets.length);
         while (target = range.getTarget(data.executor)) {
@@ -9012,7 +9012,7 @@ var DrainSkillLogic = (function (_super) {
             description: data.executor.name + " procs " + skill.name + ". ",
             skillId: skill.id
         });
-        console.assert(!(skill.range instanceof RandomRange), "can't do this with random ranges!");
+        assert(!(skill.range instanceof RandomRange), "can't do this with random ranges!");
         var eachTargetHealAmount = Math.floor(data.executor.lastBattleDamageTaken / skill.range.targets.length);
         while (target = skill.getTarget(data.executor)) {
             this.battleModel.damageToTargetDirectly(target, -1 * eachTargetHealAmount, " healing");
@@ -9034,7 +9034,7 @@ var EvadeSkillLogic = (function (_super) {
         }
         var canEvade = Skill.canProtectFromCalcType(skill.skillFuncArg2, data.attackSkill)
             && Skill.canProtectFromAttackType(skill.skillFuncArg1, data.attackSkill);
-        console.assert(!(skill.range instanceof RandomRange), "can't do this with random ranges!");
+        assert(!(skill.range instanceof RandomRange), "can't do this with random ranges!");
         return _super.prototype.willBeExecuted.call(this, data) && this.cardManager.isCardInList(data.targetCard, skill.range.targets) && canEvade;
     };
     EvadeSkillLogic.prototype.execute = function (data) {
@@ -17369,6 +17369,15 @@ function isChrome() {
 }
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+function assert(condition, message) {
+    if (!condition) {
+        message = message || "Assertion failed";
+        if (typeof Error !== "undefined") {
+            throw new Error(message);
+        }
+        throw message;
+    }
 }
 /// <reference path="affliction/Affliction.ts"/>
 /// <reference path="interfaces/DamagePhaseData.ts"/>
