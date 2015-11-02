@@ -8650,7 +8650,10 @@ var BuffSkillLogic = (function (_super) {
             statusToBuff = this.getComponentStatus(skill.skillFuncArg2);
         }
         var basedOnStatType = ENUM.SkillCalcType[skill.skillCalcType];
-        var baseStat = skill.skillFunc === ENUM.SkillFunc.ONHIT_BUFF ? 0 : executor.getStat(basedOnStatType);
+        var baseStat = skill.skillCalcType === 6 ? 0 : executor.getStat(basedOnStatType);
+        if (skill.skillFunc === ENUM.SkillFunc.ONHIT_BUFF) {
+            assert(skill.skillCalcType === 6, "ONHIT_BUFF with calcType != 6, not sure what this means...");
+        }
         var target;
         while (target = skill.getTarget(executor)) {
             for (var j = 0; j < statusToBuff.length; j++) {
@@ -8689,9 +8692,14 @@ var BuffSkillLogic = (function (_super) {
                         buffAmount = skill.skillFuncArg1;
                         break;
                     case ENUM.StatusType.HP_SHIELD:
-                        skillMod = skill.skillFuncArg1;
-                        buffAmount = Math.round(skillMod * baseStat);
-                        var maxValue = ~~(target.getOriginalHP() * skill.skillFuncArg3);
+                        if (skill.skillCalcType === 6) {
+                            buffAmount = skill.skillFuncArg4;
+                        }
+                        else {
+                            skillMod = skill.skillFuncArg1;
+                            buffAmount = Math.round(skillMod * baseStat);
+                            var maxValue = ~~(target.getOriginalHP() * skill.skillFuncArg3);
+                        }
                         break;
                     default:
                         throw new Error("Wrong status type or not implemented");
@@ -15281,7 +15289,7 @@ var SkillDatabase = {
         desc: "Deal WIS-based damage to and sometimes poison five random foes, ignoring position. "
     },
     1147: {
-        name: "Blessed Moonlight", type: 1, func: 1, calc: 0,
+        name: "Blessed Moonlight", type: 1, func: 1, calc: 6,
         args: [1, 17, 1.5, 5000],
         range: 3, prob: 70,
         desc: "Raise HP of self and adjacent familiars at beginning of battle."
