@@ -604,6 +604,11 @@ var ENUM;
         SkillFunc[SkillFunc["ABSORB_ATTACK"] = 52] = "ABSORB_ATTACK";
         SkillFunc[SkillFunc["ABSORB_MAGIC"] = 53] = "ABSORB_MAGIC";
         SkillFunc[SkillFunc["PROTECT_COUNTER_DEBUFF"] = 56] = "PROTECT_COUNTER_DEBUFF";
+        SkillFunc[SkillFunc["COUNTER_DRAIN_INDIRECT"] = 62] = "COUNTER_DRAIN_INDIRECT";
+        SkillFunc[SkillFunc["COUNTER_DRAIN"] = 63] = "COUNTER_DRAIN";
+        SkillFunc[SkillFunc["PROTECT_COUNTER_DRAIN_INDIRECT"] = 64] = "PROTECT_COUNTER_DRAIN_INDIRECT";
+        SkillFunc[SkillFunc["PROTECT_COUNTER_DRAIN"] = 65] = "PROTECT_COUNTER_DRAIN";
+        SkillFunc[SkillFunc["PROTECT_COUNTER_DEBUFF_INDIRECT"] = 66] = "PROTECT_COUNTER_DEBUFF_INDIRECT";
         SkillFunc[SkillFunc["DAMAGE_PASSIVE"] = 1001] = "DAMAGE_PASSIVE";
         SkillFunc[SkillFunc["DEFENSE_PASSIVE"] = 1002] = "DEFENSE_PASSIVE";
         SkillFunc[SkillFunc["EXTRA_TURN_PASSIVE"] = 1006] = "EXTRA_TURN_PASSIVE";
@@ -7378,6 +7383,13 @@ var famDatabase = {
         img: "25d", rarity: 5, evo: 2,
         fullName: "Lady Tatsuta, the Mapleleaf II"
     },
+    11847: {
+        name: "Urom", stats: [20971, 21209, 15056, 8415, 18100],
+        skills: [1172, 1173],
+        autoAttack: 10180,
+        img: "172", rarity: 5, evo: 2,
+        fullName: "Urom, Mummy Lizardman II"
+    },
     11845: {
         name: "Latona", stats: [14952, 15147, 14585, 5506, 16803],
         skills: [1169],
@@ -8918,6 +8930,27 @@ var CounterDispellSkillLogic = (function (_super) {
     };
     return CounterDispellSkillLogic;
 })(ProtectSkillLogic);
+/// <reference path="CounterSkillLogic.ts"/>
+var CounterDrainSkillLogic = (function (_super) {
+    __extends(CounterDrainSkillLogic, _super);
+    function CounterDrainSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    CounterDrainSkillLogic.prototype.execute = function (data) {
+        var skill = data.skill;
+        var target;
+        _super.prototype.execute.call(this, data);
+        var range = RangeFactory.getRange(skill.skillFuncArg4);
+        range.getReady(data.executor);
+        console.assert(!(range instanceof RandomRange), "can't do this with random ranges!");
+        var totalHealAmount = data.executor.lastBattleDamageDealt * skill.skillFuncArg2;
+        var eachTargetHealAmount = Math.floor(totalHealAmount / range.targets.length);
+        while (target = range.getTarget(data.executor)) {
+            this.battleModel.damageToTargetDirectly(target, -1 * eachTargetHealAmount, " healing");
+        }
+    };
+    return CounterDrainSkillLogic;
+})(CounterSkillLogic);
 /// <reference path="SkillLogic.ts"/>
 var DebuffAfflictionSkillLogic = (function (_super) {
     __extends(DebuffAfflictionSkillLogic, _super);
@@ -9410,6 +9443,7 @@ var ExtraTurnPassiveSkillLogic = (function (_super) {
 /// <reference path="ClearStatusSkillLogic.ts"/>
 /// <reference path="CounterDebuffSkillLogic.ts"/>
 /// <reference path="CounterDispellSkillLogic.ts"/>
+/// <reference path="CounterDrainSkillLogic.ts"/>
 /// <reference path="DebuffAfflictionSkillLogic.ts"/>
 /// <reference path="DebuffSkillLogic.ts"/>
 /// <reference path="DrainSkillLogic.ts"/>
@@ -9483,6 +9517,9 @@ var SkillLogicFactory = (function () {
             case ENUM.SkillFunc.COUNTER_DEBUFF:
             case ENUM.SkillFunc.COUNTER_DEBUFF_INDIRECT:
                 return new CounterDebuffSkillLogic();
+            case ENUM.SkillFunc.COUNTER_DRAIN:
+            case ENUM.SkillFunc.COUNTER_DRAIN_INDIRECT:
+                return new CounterDrainSkillLogic();
             case ENUM.SkillFunc.CLEAR_DEBUFF:
                 return new ClearDebuffSkillLogic();
             case ENUM.SkillFunc.DRAIN:
@@ -9552,6 +9589,8 @@ var Skill = (function () {
             case ENUM.SkillFunc.COUNTER_INDIRECT:
             case ENUM.SkillFunc.COUNTER_DEBUFF:
             case ENUM.SkillFunc.COUNTER_DEBUFF_INDIRECT:
+            case ENUM.SkillFunc.COUNTER_DRAIN:
+            case ENUM.SkillFunc.COUNTER_DRAIN_INDIRECT:
             case ENUM.SkillFunc.PROTECT_COUNTER:
             case ENUM.SkillFunc.PROTECT_COUNTER_DEBUFF:
             case ENUM.SkillFunc.DEBUFFATTACK:
@@ -9575,6 +9614,7 @@ var Skill = (function () {
             case ENUM.SkillFunc.ATTACK:
             case ENUM.SkillFunc.COUNTER:
             case ENUM.SkillFunc.COUNTER_DEBUFF:
+            case ENUM.SkillFunc.COUNTER_DRAIN:
             case ENUM.SkillFunc.PROTECT_COUNTER:
             case ENUM.SkillFunc.PROTECT_COUNTER_DEBUFF:
             case ENUM.SkillFunc.PROTECT_REFLECT:
@@ -15390,6 +15430,18 @@ var SkillDatabase = {
         range: 7, prob: 70,
         desc: "Greatly lower DEF of up to three foes and burn targets."
     },
+    1172: {
+        name: "Bandaged Blade", type: 2, func: 33, calc: 1,
+        args: [1.75, 2, 0.4, 0.25],
+        range: 16, prob: 30, ward: 1,
+        desc: "Deal heavy ATK-based damage, may lower DEF of three random foes."
+    },
+    1173: {
+        name: "Cursed Bandages", type: 3, func: 63, calc: 1,
+        args: [1.3, 0.3, 27, 21],
+        range: 21, prob: 50, ward: 1,
+        desc: "Chance to unleash a heavy counter attack and drain HP from target when struck."
+    },
     1174: {
         name: "Arrow of the Fly Lord", type: 2, func: 4, calc: 1,
         args: [1.7, 2, 0.25],
@@ -15453,19 +15505,19 @@ var SkillDatabase = {
     1190: {
         name: "Thundercall Horn", type: 2, func: 4, calc: 3,
         args: [1.3],
-        range: 20, prob: 30, ward: 2,
+        range: 20, prob: 30, ward: 2, sac: 1,
         desc: "Deal AGI-based damage to five random foes, ignoring position."
     },
     1193: {
         name: "Enraged Bull", type: 1, func: 44, calc: 1,
         args: [0.15, 1, 0, 0, 0, 0.1, 4],
-        range: 3, prob: 70,
+        range: 3, prob: 70, sac: 1,
         desc: "Raise ATK/AGI of self and adjacent familiars based on 15% and 10% of its ATK respectively."
     },
     1196: {
         name: "Lulled Bull", type: 1, func: 44, calc: 1,
         args: [0.15, 3, 0, 0, 0, 0.1, 4],
-        range: 3, prob: 70,
+        range: 3, prob: 70, sac: 1,
         desc: "Raise WIS/AGI of self and adjacent familiars based on 15% and 10% of its ATK respectively."
     },
     10001: {
