@@ -7452,6 +7452,81 @@ var famDatabase = {
         img: "4cb", rarity: 5, evo: 1,
         fullName: "Haagenti, Lord of Beasts"
     },
+    21857: {
+        name: "Jupiter", stats: [22538, 24050, 18017, 8125, 18250],
+        skills: [1197, 1198],
+        img: "113", rarity: 5, evo: 3,
+        fullName: "Intrepid Hand of Jupiter"
+    },
+    11655: {
+        name: "Hermine", stats: [15121, 4710, 13138, 18143, 17992],
+        skills: [1203, 1204],
+        autoAttack: 10183,
+        img: "14f", rarity: 4, evo: 2,
+        fullName: "Hermine, High Priestess II"
+    },
+    11859: {
+        name: "Bennu", stats: [15134, 5040, 13245, 17864, 16803],
+        skills: [1199],
+        autoAttack: 10110,
+        img: "275", rarity: 4, evo: 4,
+        fullName: "Bennu, the Sun Bird II"
+    },
+    11861: {
+        name: "Caim", stats: [12720, 12293, 11124, 6516, 14134],
+        skills: [1202],
+        img: "37b", rarity: 4, evo: 4,
+        fullName: "Caim, the Dark Plume II"
+    },
+    21861: {
+        name: "Caim", stats: [16085, 16908, 13799, 6010, 17201],
+        skills: [1200, 1201],
+        img: "3c3", rarity: 4, evo: 2,
+        fullName: "Caim, Death Seeker II"
+    },
+    11706: {
+        name: "Cat Sith Whipmaster", stats: [16215, 16518, 14211, 5609, 17504],
+        skills: [1210],
+        autoAttack: 10185,
+        img: "41f", rarity: 4, evo: 2,
+        fullName: "Cat Sith Whipmaster II"
+    },
+    11930: {
+        name: "Ljung", stats: [16974, 17133, 13710, 5029, 17206],
+        skills: [1211],
+        autoAttack: 10105,
+        img: "441", rarity: 4, evo: 4,
+        fullName: "Ljung, the Wrecker II"
+    },
+    11865: {
+        name: "Garmr", stats: [21339, 19205, 14417, 8025, 18252],
+        skills: [1208, 1209],
+        autoAttack: 10061,
+        img: "2af", rarity: 5, evo: 2,
+        fullName: "Garmr, Watchhound II"
+    },
+    11869: {
+        name: "Hel", stats: [25824, 12315, 22249, 25553, 18555],
+        skills: [1212, 1213],
+        passiveSkills: [9010],
+        autoAttack: 10129,
+        img: "135", rarity: 6, evo: 2,
+        fullName: "Hel, Goddess of Woe II"
+    },
+    11864: {
+        name: "Tyr", stats: [25109, 25012, 24578, 9000, 18154],
+        skills: [1207],
+        autoAttack: 10184,
+        img: "42b", rarity: 6, evo: 2,
+        fullName: "Tyr, God of War II"
+    },
+    11870: {
+        name: "Chicomecoatl", stats: [21112, 10192, 17363, 19530, 13008],
+        skills: [1205, 1206],
+        autoAttack: 10001,
+        img: "1ba", rarity: 5, evo: 2,
+        fullName: "Chicomecoatl, the Bountiful II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -8474,7 +8549,48 @@ var AfflictionSkillLogic = (function (_super) {
         data.skill.getReady(data.executor);
         var target;
         while (target = data.skill.getTarget(data.executor)) {
-            this.battleModel.processAffliction(data.executor, target, data.skill);
+            AfflictionSkillLogic.processAffliction(data.executor, target, data.skill);
+        }
+    };
+    AfflictionSkillLogic.processAffliction = function (executor, target, skill, fixedProb) {
+        var type = skill.skillFuncArg2;
+        var prob = fixedProb ? fixedProb : skill.skillFuncArg3;
+        if (!type) {
+            return;
+        }
+        var option = {};
+        if (skill.skillFuncArg4) {
+            if (type === ENUM.AfflictionType.POISON) {
+                option.percent = skill.skillFuncArg4;
+            }
+            else if (type === ENUM.AfflictionType.SILENT || type === ENUM.AfflictionType.BLIND) {
+                option.turnNum = skill.skillFuncArg4;
+            }
+            else if (type === ENUM.AfflictionType.BURN) {
+                option.damage = skill.skillFuncArg4;
+            }
+        }
+        if (skill.skillFuncArg5) {
+            option.missProb = skill.skillFuncArg5;
+        }
+        if (Math.random() <= prob) {
+            target.setAffliction(type, option);
+            if (type === ENUM.AfflictionType.POISON) {
+                var percent = target.getPoisonPercent();
+            }
+            var logger = BattleLogger.getInstance();
+            logger.addMinorEvent({
+                executorId: executor.id,
+                targetId: target.id,
+                type: ENUM.MinorEventType.AFFLICTION,
+                affliction: {
+                    type: type,
+                    duration: option.turnNum,
+                    percent: percent,
+                    missProb: option.missProb
+                },
+                description: target.name + " is now " + ENUM.AfflictionType[type],
+            });
         }
     };
     return AfflictionSkillLogic;
@@ -8551,11 +8667,11 @@ var AttackSkillLogic = (function (_super) {
                     if (!executor.justMissed && !targetCard.justEvaded && !targetCard.isDead) {
                         if (Skill.isDebuffAttackSkill(skill.id)) {
                             if (Math.random() <= skill.skillFuncArg3) {
-                                this.battleModel.processDebuff(executor, targetCard, skill);
+                                DebuffSkillLogic.processDebuff(executor, targetCard, skill);
                             }
                         }
                         else if (skill.skillFunc === ENUM.SkillFunc.ATTACK || skill.skillFunc === ENUM.SkillFunc.MAGIC) {
-                            this.battleModel.processAffliction(executor, targetCard, skill);
+                            AfflictionSkillLogic.processAffliction(executor, targetCard, skill);
                         }
                     }
                     if (defenseSkill && defenseSkill.willBeExecuted(defenseData) && !aoeReactiveSkillActivated) {
@@ -8592,11 +8708,11 @@ var AttackSkillLogic = (function (_super) {
             if (!executor.justMissed && !target.justEvaded && !target.isDead) {
                 if (Skill.isDebuffAttackSkill(skill.id)) {
                     if (Math.random() <= skill.skillFuncArg3) {
-                        this.battleModel.processDebuff(executor, target, skill);
+                        DebuffSkillLogic.processDebuff(executor, target, skill);
                     }
                 }
                 else if (skill.skillFunc === ENUM.SkillFunc.ATTACK || skill.skillFunc === ENUM.SkillFunc.MAGIC) {
-                    this.battleModel.processAffliction(executor, target, skill);
+                    AfflictionSkillLogic.processAffliction(executor, target, skill);
                 }
             }
             if (defenseSkill && defenseSkill.willBeExecuted(defenseData)) {
@@ -8720,6 +8836,25 @@ var BuffSkillLogic = (function (_super) {
             }
         }
     };
+    BuffSkillLogic.processRemainHpBuff = function (target, isPositiveChange) {
+        var types = [];
+        if (target.status.remainHpAtkUp > 0)
+            types.push(ENUM.StatusType.ATK);
+        if (target.status.remainHpDefUp > 0)
+            types.push(ENUM.StatusType.DEF);
+        if (target.status.remainHpWisUp > 0)
+            types.push(ENUM.StatusType.WIS);
+        if (target.status.remainHpAgiUp > 0)
+            types.push(ENUM.StatusType.AGI);
+        var verb = isPositiveChange ? "decreased" : "increased";
+        var logger = BattleLogger.getInstance();
+        for (var i = 0; i < types.length; i++) {
+            logger.addMinorEvent({
+                type: ENUM.MinorEventType.TEXT,
+                description: target.name + "'s " + ENUM.StatusType[types[i]] + " " + verb + " because of remain HP buff.",
+            });
+        }
+    };
     return BuffSkillLogic;
 })(SkillLogic);
 /// <reference path="SkillLogic.ts"/>
@@ -8801,7 +8936,7 @@ var CounterSkillLogic = (function (_super) {
         });
         if (!data.executor.justMissed && !data.attacker.justEvaded && !data.attacker.isDead
             && data.skill.skillFunc === ENUM.SkillFunc.COUNTER) {
-            this.battleModel.processAffliction(data.executor, data.attacker, data.skill);
+            AfflictionSkillLogic.processAffliction(data.executor, data.attacker, data.skill);
         }
     };
     return CounterSkillLogic;
@@ -8816,7 +8951,7 @@ var CounterDebuffSkillLogic = (function (_super) {
         _super.prototype.execute.call(this, data);
         var protector = data.executor;
         if (!protector.isDead && protector.canUseSkill() && !data.attacker.isDead && Math.random() <= data.skill.skillFuncArg3) {
-            this.battleModel.processDebuff(protector, data.attacker, data.skill);
+            DebuffSkillLogic.processDebuff(protector, data.attacker, data.skill);
         }
     };
     return CounterDebuffSkillLogic;
@@ -8874,11 +9009,11 @@ var ProtectSkillLogic = (function (_super) {
         }
         if (!data.attacker.justMissed && !protector.isDead) {
             if (attackSkill.skillFunc === ENUM.SkillFunc.ATTACK || attackSkill.skillFunc === ENUM.SkillFunc.MAGIC) {
-                this.battleModel.processAffliction(data.attacker, protector, attackSkill);
+                AfflictionSkillLogic.processAffliction(data.attacker, protector, attackSkill);
             }
             else if (Skill.isDebuffAttackSkill(attackSkill.id)) {
                 if (Math.random() <= attackSkill.skillFuncArg3) {
-                    this.battleModel.processDebuff(data.attacker, protector, attackSkill);
+                    DebuffSkillLogic.processDebuff(data.attacker, protector, attackSkill);
                 }
             }
         }
@@ -8992,7 +9127,87 @@ var DebuffSkillLogic = (function (_super) {
         skill.getReady(executor);
         var target;
         while (target = skill.getTarget(executor)) {
-            this.battleModel.processDebuff(executor, target, skill);
+            DebuffSkillLogic.processDebuff(executor, target, skill);
+        }
+    };
+    DebuffSkillLogic.processDebuff = function (executor, target, skill) {
+        var statuses;
+        var multi;
+        var isNewLogic = false;
+        switch (skill.skillFunc) {
+            case ENUM.SkillFunc.DEBUFFATTACK:
+            case ENUM.SkillFunc.DEBUFFINDIRECT:
+                statuses = [skill.skillFuncArg2];
+                multi = skill.skillFuncArg4;
+                break;
+            case ENUM.SkillFunc.DEBUFF:
+                statuses = [skill.skillFuncArg2];
+                multi = skill.skillFuncArg1;
+                break;
+            case ENUM.SkillFunc.CASTER_BASED_DEBUFF:
+            case ENUM.SkillFunc.DEBUFF_AFFLICTION:
+            case ENUM.SkillFunc.MULTI_DEBUFF:
+                statuses = [skill.skillFuncArg2];
+                if (skill.skillFuncArg3)
+                    statuses.push(skill.skillFuncArg3);
+                multi = skill.skillFuncArg1;
+                isNewLogic = true;
+                break;
+            case ENUM.SkillFunc.CASTER_BASED_DEBUFF_ATTACK:
+            case ENUM.SkillFunc.CASTER_BASED_DEBUFF_MAGIC:
+            case ENUM.SkillFunc.COUNTER_DEBUFF:
+            case ENUM.SkillFunc.COUNTER_DEBUFF_INDIRECT:
+            case ENUM.SkillFunc.PROTECT_COUNTER_DEBUFF:
+                statuses = [skill.skillFuncArg2];
+                multi = skill.skillFuncArg4;
+                isNewLogic = true;
+                break;
+            case ENUM.SkillFunc.ONHIT_DEBUFF:
+                statuses = [skill.skillFuncArg2];
+                if (skill.skillFuncArg3)
+                    statuses.push(skill.skillFuncArg3);
+                multi = skill.skillFuncArg1;
+                isNewLogic = true;
+                if (skill.skillFuncArg4) {
+                    multi = skill.skillFuncArg4;
+                    var isFlat = true;
+                }
+                break;
+            default:
+                throw new Error("Wrong skill to use with processDebuff()");
+        }
+        for (var i = 0; i < statuses.length; i++) {
+            var status = statuses[i];
+            if (status === ENUM.StatusType.SKILL_PROBABILITY) {
+                var amount = -1 * skill.skillFuncArg1;
+            }
+            else {
+                if (isFlat) {
+                    var baseAmount = -100;
+                }
+                else if (!isNewLogic) {
+                    baseAmount = getDebuffAmount(executor, target);
+                }
+                else {
+                    baseAmount = getCasterBasedDebuffAmount(executor);
+                }
+                amount = Math.floor(baseAmount * multi);
+            }
+            target.changeStatus(status, amount, isNewLogic);
+            var description = target.name + "'s " + ENUM.StatusType[status] + " decreased by " + Math.abs(amount);
+            var logger = BattleLogger.getInstance();
+            logger.addMinorEvent({
+                executorId: executor.id,
+                targetId: target.id,
+                type: ENUM.MinorEventType.STATUS,
+                status: {
+                    type: status,
+                    isNewLogic: isNewLogic
+                },
+                description: description,
+                amount: amount,
+                skillId: skill.id
+            });
         }
     };
     return DebuffSkillLogic;
@@ -9200,7 +9415,7 @@ var OnHitDebuffSkillLogic = (function (_super) {
             skillId: data.skill.id
         });
         while (target = data.skill.getTarget(data.executor)) {
-            this.battleModel.processDebuff(data.executor, target, data.skill);
+            DebuffSkillLogic.processDebuff(data.executor, target, data.skill);
         }
     };
     OnHitDebuffSkillLogic.UNINITIALIZED_VALUE = -1234;
@@ -9238,7 +9453,7 @@ var ProtectCounterDebuffSkillLogic = (function (_super) {
         var toReturn = _super.prototype.execute.call(this, data);
         var protector = data.executor;
         if (!protector.isDead && protector.canUseSkill() && !data.attacker.isDead && Math.random() <= data.skill.skillFuncArg3) {
-            this.battleModel.processDebuff(protector, data.attacker, data.skill);
+            DebuffSkillLogic.processDebuff(protector, data.attacker, data.skill);
         }
         return toReturn;
     };
@@ -9276,7 +9491,7 @@ var ProtectReflectSkillLogic = (function (_super) {
                 oriDmg: toReturn.dmgTaken / data.skill.skillFuncArg5
             });
             if (data.attackSkill.skillFunc === ENUM.SkillFunc.ATTACK || data.attackSkill.skillFunc === ENUM.SkillFunc.MAGIC) {
-                this.battleModel.processAffliction(data.executor, target, data.attackSkill, ProtectReflectSkillLogic.REFLECT_AFFLICTION_PROBABILITY);
+                AfflictionSkillLogic.processAffliction(data.executor, target, data.attackSkill, ProtectReflectSkillLogic.REFLECT_AFFLICTION_PROBABILITY);
             }
             this.clearAllCardsDamagePhaseData();
         }
@@ -15528,6 +15743,108 @@ var SkillDatabase = {
         range: 3, prob: 70, sac: 1,
         desc: "Raise WIS/AGI of self and adjacent familiars based on 15% and 10% of its ATK respectively."
     },
+    1197: {
+        name: "Lightning Doublestrike", type: 2, func: 3, calc: 1,
+        args: [2.1],
+        range: 6, prob: 30, ward: 1,
+        desc: "Deal massive ATK-based damage to up to two foes."
+    },
+    1198: {
+        name: "Grace of the Sky", type: 1, func: 1, calc: 0,
+        args: [0.7, 5, 6],
+        range: 21, prob: 70,
+        desc: "Reduce physical and magical damage taken by self greatly."
+    },
+    1199: {
+        name: "Embers of the Sun", type: 2, func: 4, calc: 2,
+        args: [1.55, 8, 0.25, 1500],
+        range: 314, prob: 30, ward: 3, sac: 1,
+        desc: "Heavy WIS-based DMG, may burn up to four foes, ignoring position. Increased if fewer foes."
+    },
+    1200: {
+        name: "Saber & Feather", type: 2, func: 33, calc: 1,
+        args: [1.9, 2, 1, 0.1],
+        range: 16, prob: 30, ward: 1,
+        desc: "Deal heavy ATK-based damage to three random foes and lower DEF."
+    },
+    1201: {
+        name: "Wall of Feathers", type: 1, func: 44, calc: 0,
+        args: [0.5, 1, 0, 0, 0, 0.5, 2],
+        range: 3, prob: 70,
+        desc: "Raise ATK and DEF of self and adjacent familiars by 50% of his WIS."
+    },
+    1202: {
+        name: "Fellfeather Saber", type: 2, func: 3, calc: 3,
+        args: [1.15],
+        range: 7, prob: 30, ward: 1, sac: 1,
+        desc: "Deal AGI-based damage to up to three foes."
+    },
+    1203: {
+        name: "Divine Gale", type: 2, func: 34, calc: 2,
+        args: [1.3, 4, 0.25, 0.05],
+        range: 20, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage and sometimes lower AGI of five random foes, ignoring position."
+    },
+    1204: {
+        name: "Divine Tailwind", type: 1, func: 44, calc: 2,
+        args: [0.14, 3, 0, 0, 0, 0.08, 4],
+        range: 3, prob: 70,
+        desc: "Raise WIS/AGI of self and adjacent familiars on 14% and 8% of its WIS respectively."
+    },
+    1205: {
+        name: "Dance of the Harvest", type: 2, func: 18, calc: 4,
+        args: [0.7, 1],
+        range: 4, prob: 50,
+        desc: "Restore 70% of HP to all party members."
+    },
+    1206: {
+        name: "Popping Corn", type: 3, func: 43, calc: 2,
+        args: [1.85, 1, 1, 0.06],
+        range: 21, prob: 50, ward: 2,
+        desc: "Chance to unleash a heavy counter attack when struck, lowering ATK of target."
+    },
+    1207: {
+        name: "Gleipnir", type: 2, func: 4, calc: 1,
+        args: [1.6, 2, 0.3],
+        range: 19, prob: 30, ward: 1, sac: 1,
+        desc: "Heavy ATK-based damage, sometimes paralyze four random foes, ignoring position."
+    },
+    1208: {
+        name: "Shredded Chain", type: 2, func: 4, calc: 3,
+        args: [1.8],
+        range: 19, prob: 30, ward: 2,
+        desc: "Deal heavy AGI-based damage to four random foes, ignoring position."
+    },
+    1209: {
+        name: "Sigil of Blood", type: 1, func: 44, calc: 0,
+        args: [0.25, 1, 0, 0, 0, 0.25, 3],
+        range: 3, prob: 70,
+        desc: "Raise ATK/WIS of self and adjacent allies by 25% of its WIS."
+    },
+    1210: {
+        name: "Whip & Tail", type: 2, func: 34, calc: 1,
+        args: [1.4, 4, 0.2, 0.15],
+        range: 20, prob: 30, ward: 1, sac: 1,
+        desc: "Deal ATK-based damage to five random foes and sometimes lower AGI, ignoring position."
+    },
+    1211: {
+        name: "Heavy Strike", type: 2, func: 4, calc: 1,
+        args: [2.15, 8, 0.35, 2000],
+        range: 7, prob: 30, ward: 1, sac: 1,
+        desc: "Massive ATK-based damage and sometimes burn up to three foes, ignoring position."
+    },
+    1212: {
+        name: "Claws of Death", type: 2, func: 4, calc: 2,
+        args: [1.1, 5, 0.3, 1],
+        range: 17, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage and sometimes silence six random foes, ignoring position."
+    },
+    1213: {
+        name: "Miasma of Death", type: 3, func: 62, calc: 2,
+        args: [1.75, 0.4, 27, 21],
+        range: 21, prob: 50, ward: 2,
+        desc: "Chance to unleash a heavy counter attack when struck and drain HP from target."
+    },
     10001: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
         args: [1],
@@ -16398,6 +16715,24 @@ var SkillDatabase = {
         range: 5, prob: 100, ward: 1, isAutoAttack: true,
         desc: "Deal ATK-based damage to one foe and lower DEF."
     },
+    10183: {
+        name: "Standard Action", type: 2, func: 34, calc: 2,
+        args: [1, 4, 1, 0.014],
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "Deal WIS-based damage to one foe and lower AGI of target."
+    },
+    10184: {
+        name: "Standard Action", type: 2, func: 4, calc: 1,
+        args: [1.5, 2, 0.4],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "Heavy ATK-based damage and sometimes paralyze target."
+    },
+    10185: {
+        name: "Standard Action", type: 2, func: 34, calc: 1,
+        args: [1.2, 4, 0.4, 0.15],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe and sometimes lower AGI of target."
+    },
     9001: {
         name: "Abject Horror", type: 20, func: 1002, calc: 0,
         args: [0.3],
@@ -16433,6 +16768,12 @@ var SkillDatabase = {
         args: [0.25],
         range: 0, prob: 100,
         desc: "Increase damage to lower rarities by up to 25%."
+    },
+    9010: {
+        name: "Decree of Death", type: 20, func: 1002, calc: 0,
+        args: [0.4],
+        range: 0, prob: 100,
+        desc: "Decrease damage from lower rarities by up to 40%"
     },
 };
 var RangeFactory = (function () {
@@ -17590,7 +17931,7 @@ var BattleModel = (function () {
             this.addOnDeathCard(target);
         }
         else {
-            this.processRemainHpBuff(target, false);
+            BuffSkillLogic.processRemainHpBuff(target, false);
         }
     };
     BattleModel.prototype.getWouldBeDamage = function (data) {
@@ -17670,144 +18011,7 @@ var BattleModel = (function () {
             this.addOnDeathCard(target);
         }
         else {
-            this.processRemainHpBuff(target, damage < 0);
-        }
-    };
-    BattleModel.prototype.processRemainHpBuff = function (target, isPositiveChange) {
-        var types = [];
-        if (target.status.remainHpAtkUp > 0)
-            types.push(ENUM.StatusType.ATK);
-        if (target.status.remainHpDefUp > 0)
-            types.push(ENUM.StatusType.DEF);
-        if (target.status.remainHpWisUp > 0)
-            types.push(ENUM.StatusType.WIS);
-        if (target.status.remainHpAgiUp > 0)
-            types.push(ENUM.StatusType.AGI);
-        var verb = isPositiveChange ? "decreased" : "increased";
-        for (var i = 0; i < types.length; i++) {
-            this.logger.addMinorEvent({
-                type: ENUM.MinorEventType.TEXT,
-                description: target.name + "'s " + ENUM.StatusType[types[i]] + " " + verb + " because of remain HP buff.",
-            });
-        }
-    };
-    BattleModel.prototype.processAffliction = function (executor, target, skill, fixedProb) {
-        var type = skill.skillFuncArg2;
-        var prob = fixedProb ? fixedProb : skill.skillFuncArg3;
-        if (!type) {
-            return;
-        }
-        var option = {};
-        if (skill.skillFuncArg4) {
-            if (type === ENUM.AfflictionType.POISON) {
-                option.percent = skill.skillFuncArg4;
-            }
-            else if (type === ENUM.AfflictionType.SILENT || type === ENUM.AfflictionType.BLIND) {
-                option.turnNum = skill.skillFuncArg4;
-            }
-            else if (type === ENUM.AfflictionType.BURN) {
-                option.damage = skill.skillFuncArg4;
-            }
-        }
-        if (skill.skillFuncArg5) {
-            option.missProb = skill.skillFuncArg5;
-        }
-        if (Math.random() <= prob) {
-            target.setAffliction(type, option);
-            if (type === ENUM.AfflictionType.POISON) {
-                var percent = target.getPoisonPercent();
-            }
-            this.logger.addMinorEvent({
-                executorId: executor.id,
-                targetId: target.id,
-                type: ENUM.MinorEventType.AFFLICTION,
-                affliction: {
-                    type: type,
-                    duration: option.turnNum,
-                    percent: percent,
-                    missProb: option.missProb
-                },
-                description: target.name + " is now " + ENUM.AfflictionType[type],
-            });
-        }
-    };
-    BattleModel.prototype.processDebuff = function (executor, target, skill) {
-        var statuses;
-        var multi;
-        var isNewLogic = false;
-        switch (skill.skillFunc) {
-            case ENUM.SkillFunc.DEBUFFATTACK:
-            case ENUM.SkillFunc.DEBUFFINDIRECT:
-                statuses = [skill.skillFuncArg2];
-                multi = skill.skillFuncArg4;
-                break;
-            case ENUM.SkillFunc.DEBUFF:
-                statuses = [skill.skillFuncArg2];
-                multi = skill.skillFuncArg1;
-                break;
-            case ENUM.SkillFunc.CASTER_BASED_DEBUFF:
-            case ENUM.SkillFunc.DEBUFF_AFFLICTION:
-            case ENUM.SkillFunc.MULTI_DEBUFF:
-                statuses = [skill.skillFuncArg2];
-                if (skill.skillFuncArg3)
-                    statuses.push(skill.skillFuncArg3);
-                multi = skill.skillFuncArg1;
-                isNewLogic = true;
-                break;
-            case ENUM.SkillFunc.CASTER_BASED_DEBUFF_ATTACK:
-            case ENUM.SkillFunc.CASTER_BASED_DEBUFF_MAGIC:
-            case ENUM.SkillFunc.COUNTER_DEBUFF:
-            case ENUM.SkillFunc.COUNTER_DEBUFF_INDIRECT:
-            case ENUM.SkillFunc.PROTECT_COUNTER_DEBUFF:
-                statuses = [skill.skillFuncArg2];
-                multi = skill.skillFuncArg4;
-                isNewLogic = true;
-                break;
-            case ENUM.SkillFunc.ONHIT_DEBUFF:
-                statuses = [skill.skillFuncArg2];
-                if (skill.skillFuncArg3)
-                    statuses.push(skill.skillFuncArg3);
-                multi = skill.skillFuncArg1;
-                isNewLogic = true;
-                if (skill.skillFuncArg4) {
-                    multi = skill.skillFuncArg4;
-                    var isFlat = true;
-                }
-                break;
-            default:
-                throw new Error("Wrong skill to use with processDebuff()");
-        }
-        for (var i = 0; i < statuses.length; i++) {
-            var status = statuses[i];
-            if (status === ENUM.StatusType.SKILL_PROBABILITY) {
-                var amount = -1 * skill.skillFuncArg1;
-            }
-            else {
-                if (isFlat) {
-                    var baseAmount = -100;
-                }
-                else if (!isNewLogic) {
-                    baseAmount = getDebuffAmount(executor, target);
-                }
-                else {
-                    baseAmount = getCasterBasedDebuffAmount(executor);
-                }
-                amount = Math.floor(baseAmount * multi);
-            }
-            target.changeStatus(status, amount, isNewLogic);
-            var description = target.name + "'s " + ENUM.StatusType[status] + " decreased by " + Math.abs(amount);
-            this.logger.addMinorEvent({
-                executorId: executor.id,
-                targetId: target.id,
-                type: ENUM.MinorEventType.STATUS,
-                status: {
-                    type: status,
-                    isNewLogic: isNewLogic
-                },
-                description: description,
-                amount: amount,
-                skillId: skill.id
-            });
+            BuffSkillLogic.processRemainHpBuff(target, damage < 0);
         }
     };
     BattleModel.prototype.startBattle = function () {
