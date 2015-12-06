@@ -2654,7 +2654,7 @@ var Card = (function () {
         this.justEvaded = false;
     };
     Card.NEW_DEBUFF_LOW_LIMIT_FACTOR = 0.4;
-    Card.COLISEUM_HP_MULTI_FACTOR = 5;
+    Card.COLISEUM_HP_MULTI_FACTOR = 3;
     return Card;
 })();
 var CardManager = (function () {
