@@ -199,13 +199,6 @@ var SilentAffliction = (function (_super) {
     };
     return SilentAffliction;
 })(Affliction);
-/// <reference path="BlindAffliction.ts"/>
-/// <reference path="BurnAffliction.ts"/>
-/// <reference path="DisabledAffliction.ts"/>
-/// <reference path="FrozenAffliction.ts"/>
-/// <reference path="ParalysisAffliction.ts"/>
-/// <reference path="PoisonAffliction.ts"/>
-/// <reference path="SilentAffliction.ts"/>
 var AfflictionFactory = (function () {
     function AfflictionFactory() {
     }
@@ -295,7 +288,6 @@ var Status = (function () {
     }
     return Status;
 })();
-/// <reference path="Status.ts"/>
 var BattleDebugger = (function () {
     function BattleDebugger() {
         if (BattleDebugger._instance) {
@@ -907,8 +899,6 @@ var ENUM;
     })(ENUM.AddProbability || (ENUM.AddProbability = {}));
     var AddProbability = ENUM.AddProbability;
 })(ENUM || (ENUM = {}));
-/// <reference path="interfaces/MinorEvent.ts"/>
-/// <reference path="Enums.ts"/>
 var BattleGraphic = (function () {
     function BattleGraphic() {
         this.coordArray = {
@@ -1838,8 +1828,6 @@ var BattleGraphic = (function () {
     BattleGraphic._instance = null;
     return BattleGraphic;
 })();
-/// <reference path="../lib/svgjs.d.ts"/>
-/// <reference path="interfaces/MajorEvent.ts"/>
 var BattleLogger = (function () {
     function BattleLogger() {
         this.minorEventLog = [];
@@ -2028,8 +2016,6 @@ var BattleLogger = (function () {
     BattleLogger._instance = null;
     return BattleLogger;
 })();
-/// <reference path="interfaces/GameData.ts"/>
-/// <reference path="interfaces/GameOption.ts"/>
 var BrigGenerator = (function () {
     function BrigGenerator() {
     }
@@ -2164,9 +2150,6 @@ var Stats = (function () {
     }
     return Stats;
 })();
-/// <reference path="Enums.ts"/>
-/// <reference path="Stats.ts"/>
-/// <reference path="affliction/AfflictionFactory.ts"/>
 var Card = (function () {
     function Card(dbId, player, nth, skills, customStats, bonusType) {
         this.bcAddedProb = 0;
@@ -3056,10 +3039,6 @@ var CsRandom = (function () {
         return this.internalSample();
     };
     CsRandom.prototype.getSampleForLargeRange = function () {
-        // The distribution of double value returned by Sample
-        // is not distributed well enough for a large range.
-        // If we use Sample for a range [Int32.MinValue..Int32.MaxValue)
-        // We will end up getting even numbers only.
         var result = this.internalSample();
         var negative = (this.internalSample() % 2 === 0) ? true : false;
         if (negative) {
@@ -3096,11 +3075,6 @@ var CsRandom = (function () {
     CsRandom.MZ = 0;
     return CsRandom;
 })();
-/**
- * Some notes:
- * - Order the familiars by the fullName
- * - The order of the skills only matters for mounted familiars
- */
 var famDatabase = {
     11261: {
         name: "Rahab", stats: [14073, 12597, 15498, 9004, 16754],
@@ -7527,6 +7501,100 @@ var famDatabase = {
         img: "1ba", rarity: 5, evo: 2,
         fullName: "Chicomecoatl, the Bountiful II"
     },
+    11875: {
+        name: "Guardian of the Grove", stats: [20104, 19086, 14807, 8935, 18317],
+        skills: [1221, 1222],
+        autoAttack: 10187,
+        img: "3fa", rarity: 5, evo: 2,
+        fullName: "Guardian of the Grove II"
+    },
+    11873: {
+        name: "Iridescent Chalchiuhtotolin", stats: [16510, 13476, 15778, 5687, 17292],
+        skills: [1217],
+        img: "4fb", rarity: 4, evo: 4,
+        fullName: "Iridescent Chalchiuhtotolin II"
+    },
+    11874: {
+        name: "Idun", stats: [20722, 6270, 15706, 20299, 18252],
+        skills: [1218, 1219],
+        autoAttack: 10003,
+        img: "467", rarity: 5, evo: 2,
+        fullName: "Idun, the Golden Apple II"
+    },
+    11871: {
+        name: "Ain", stats: [15652, 4472, 15099, 16020, 17504],
+        skills: [1216],
+        autoAttack: 10186,
+        img: "400", rarity: 4, evo: 2,
+        fullName: "Ain, Squirrel-back Faerie II"
+    },
+    21862: {
+        name: "Diana", stats: [20380, 20194, 19493, 10208, 18221],
+        skills: [1214, 1215],
+        autoAttack: 10103,
+        img: "26d", rarity: 5, evo: 3,
+        fullName: "Diana, the Crescent Moon"
+    },
+    11884: {
+        name: "Brass Snow-Leopard", stats: [13256, 13024, 10074, 8209, 10564],
+        skills: [1232],
+        img: "4d8", rarity: 4, evo: 4,
+        fullName: "Brass Snow-Leopard II"
+    },
+    11882: {
+        name: "Negafok", stats: [17103, 16258, 13431, 5468, 17493],
+        skills: [1230, 1231],
+        autoAttack: 10103,
+        img: "192", rarity: 4, evo: 2,
+        fullName: "Negafok, Reindeer Rider II"
+    },
+    11881: {
+        name: "Vidar", stats: [22141, 21859, 15587, 6183, 18306],
+        skills: [1228, 1229],
+        img: "155", rarity: 5, evo: 2,
+        fullName: "Vidar, the Iron Heel II"
+    },
+    11807: {
+        name: "Gabrielle", stats: [19974, 17775, 17255, 8101, 18143],
+        skills: [1245, 1246],
+        img: "372", rarity: 5, evo: 2,
+        fullName: "Gabrielle, Angel of Sky II"
+    },
+    11880: {
+        name: "Yule", stats: [15024, 17353, 13256, 6530, 17034],
+        skills: [1226],
+        autoAttack: 10157,
+        img: "2fc", rarity: 4, evo: 4,
+        fullName: "Yule Goat, Death Bringer II"
+    },
+    21880: {
+        name: "Yule", stats: [13052, 13203, 10733, 7364, 11589],
+        skills: [1227],
+        autoAttack: 10005,
+        img: "1a3", rarity: 4, evo: 2,
+        fullName: "Yule Goat, the Blood-Stained II"
+    },
+    11185: {
+        name: "Michael", stats: [24513, 24004, 22379, 12640, 18284],
+        skills: [1223],
+        autoAttack: 10157,
+        img: "3a7", rarity: 6, evo: 2,
+        fullName: "Michael, Steelclad Angel II"
+    },
+    21878: {
+        name: "Befana", stats: [22153, 8586, 17498, 22048, 18105],
+        skills: [1224, 1225],
+        autoAttack: 10007,
+        img: "3d1", rarity: 5, evo: 3,
+        fullName: "Befana, the Moonless Night"
+    },
+    21885: {
+        name: "Virginal", stats: [23688, 8160, 17865, 22340, 18342],
+        skills: [1233, 1234],
+        autoAttack: 10057,
+        img: "2c8", rarity: 5, evo: 3,
+        fullName: "Virginal, Ice Queen"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -7605,7 +7673,6 @@ var FamProvider = (function () {
     FamProvider.allIdList = null;
     return FamProvider;
 })();
-/// <reference path="Enums.ts"/>
 var Formation = (function () {
     function Formation(type) {
         this.type = type;
@@ -7723,7 +7790,6 @@ var SkillProvider = (function () {
     SkillProvider.onDeathSkillList = null;
     return SkillProvider;
 })();
-/// <reference path="SkillProvider.ts"/>
 function setPreviousChoices() {
     if (localStorage.getItem("f0") && localStorage.getItem("f0") !== "null") {
         for (var i = 0; i < 10; i++) {
@@ -8369,7 +8435,6 @@ var Player = (function () {
     }
     return Player;
 })();
-/// <reference path="../interfaces/SkillLogicData.ts"/>
 var SkillLogic = (function () {
     function SkillLogic() {
         this.battleModel = BattleModel.getInstance();
@@ -8433,7 +8498,6 @@ var SkillLogic = (function () {
     };
     return SkillLogic;
 })();
-/// <reference path="SkillLogic.ts"/>
 var AbsorbSkillLogic = (function (_super) {
     __extends(AbsorbSkillLogic, _super);
     function AbsorbSkillLogic() {
@@ -8539,7 +8603,6 @@ var AbsorbSkillLogic = (function (_super) {
     };
     return AbsorbSkillLogic;
 })(SkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var AfflictionSkillLogic = (function (_super) {
     __extends(AfflictionSkillLogic, _super);
     function AfflictionSkillLogic() {
@@ -8595,7 +8658,6 @@ var AfflictionSkillLogic = (function (_super) {
     };
     return AfflictionSkillLogic;
 })(SkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var AttackSkillLogic = (function (_super) {
     __extends(AttackSkillLogic, _super);
     function AttackSkillLogic() {
@@ -8742,7 +8804,6 @@ var AttackSkillLogic = (function (_super) {
     };
     return AttackSkillLogic;
 })(SkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var BuffSkillLogic = (function (_super) {
     __extends(BuffSkillLogic, _super);
     function BuffSkillLogic() {
@@ -8857,7 +8918,6 @@ var BuffSkillLogic = (function (_super) {
     };
     return BuffSkillLogic;
 })(SkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var ClearStatusSkillLogic = (function (_super) {
     __extends(ClearStatusSkillLogic, _super);
     function ClearStatusSkillLogic() {
@@ -8912,7 +8972,6 @@ var ClearDebuffSkillLogic = (function (_super) {
     }
     return ClearDebuffSkillLogic;
 })(ClearStatusSkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var CounterSkillLogic = (function (_super) {
     __extends(CounterSkillLogic, _super);
     function CounterSkillLogic() {
@@ -8941,7 +9000,6 @@ var CounterSkillLogic = (function (_super) {
     };
     return CounterSkillLogic;
 })(SkillLogic);
-/// <reference path="CounterSkillLogic.ts"/>
 var CounterDebuffSkillLogic = (function (_super) {
     __extends(CounterDebuffSkillLogic, _super);
     function CounterDebuffSkillLogic() {
@@ -8956,7 +9014,6 @@ var CounterDebuffSkillLogic = (function (_super) {
     };
     return CounterDebuffSkillLogic;
 })(CounterSkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var ProtectSkillLogic = (function (_super) {
     __extends(ProtectSkillLogic, _super);
     function ProtectSkillLogic() {
@@ -9025,7 +9082,6 @@ var ProtectSkillLogic = (function (_super) {
     };
     return ProtectSkillLogic;
 })(SkillLogic);
-/// <reference path="ProtectSkillLogic.ts"/>
 var CounterDispellSkillLogic = (function (_super) {
     __extends(CounterDispellSkillLogic, _super);
     function CounterDispellSkillLogic() {
@@ -9073,7 +9129,6 @@ var CounterDispellSkillLogic = (function (_super) {
     };
     return CounterDispellSkillLogic;
 })(ProtectSkillLogic);
-/// <reference path="CounterSkillLogic.ts"/>
 var CounterDrainSkillLogic = (function (_super) {
     __extends(CounterDrainSkillLogic, _super);
     function CounterDrainSkillLogic() {
@@ -9094,7 +9149,6 @@ var CounterDrainSkillLogic = (function (_super) {
     };
     return CounterDrainSkillLogic;
 })(CounterSkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var DebuffAfflictionSkillLogic = (function (_super) {
     __extends(DebuffAfflictionSkillLogic, _super);
     function DebuffAfflictionSkillLogic() {
@@ -9115,7 +9169,6 @@ var DebuffAfflictionSkillLogic = (function (_super) {
     };
     return DebuffAfflictionSkillLogic;
 })(SkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var DebuffSkillLogic = (function (_super) {
     __extends(DebuffSkillLogic, _super);
     function DebuffSkillLogic() {
@@ -9212,7 +9265,6 @@ var DebuffSkillLogic = (function (_super) {
     };
     return DebuffSkillLogic;
 })(SkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var DrainSkillLogic = (function (_super) {
     __extends(DrainSkillLogic, _super);
     function DrainSkillLogic() {
@@ -9243,7 +9295,6 @@ var DrainSkillLogic = (function (_super) {
     };
     return DrainSkillLogic;
 })(SkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var EvadeSkillLogic = (function (_super) {
     __extends(EvadeSkillLogic, _super);
     function EvadeSkillLogic() {
@@ -9284,7 +9335,6 @@ var EvadeSkillLogic = (function (_super) {
     };
     return EvadeSkillLogic;
 })(SkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var HealSkillLogic = (function (_super) {
     __extends(HealSkillLogic, _super);
     function HealSkillLogic() {
@@ -9312,7 +9362,6 @@ var HealSkillLogic = (function (_super) {
     };
     return HealSkillLogic;
 })(SkillLogic);
-/// <reference path="BuffSkillLogic.ts"/>
 var MultiBuffSkillLogic = (function (_super) {
     __extends(MultiBuffSkillLogic, _super);
     function MultiBuffSkillLogic() {
@@ -9331,7 +9380,6 @@ var MultiBuffSkillLogic = (function (_super) {
     };
     return MultiBuffSkillLogic;
 })(BuffSkillLogic);
-/// <reference path="DebuffSkillLogic.ts"/>
 var MultiDebuffSkillLogic = (function (_super) {
     __extends(MultiDebuffSkillLogic, _super);
     function MultiDebuffSkillLogic() {
@@ -9350,7 +9398,6 @@ var MultiDebuffSkillLogic = (function (_super) {
     };
     return MultiDebuffSkillLogic;
 })(DebuffSkillLogic);
-/// <reference path="BuffSkillLogic.ts"/>
 var OnHitBuffSkillLogic = (function (_super) {
     __extends(OnHitBuffSkillLogic, _super);
     function OnHitBuffSkillLogic() {
@@ -9383,7 +9430,6 @@ var OnHitBuffSkillLogic = (function (_super) {
     OnHitBuffSkillLogic.UNINITIALIZED_VALUE = -1234;
     return OnHitBuffSkillLogic;
 })(BuffSkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var OnHitDebuffSkillLogic = (function (_super) {
     __extends(OnHitDebuffSkillLogic, _super);
     function OnHitDebuffSkillLogic() {
@@ -9421,7 +9467,6 @@ var OnHitDebuffSkillLogic = (function (_super) {
     OnHitDebuffSkillLogic.UNINITIALIZED_VALUE = -1234;
     return OnHitDebuffSkillLogic;
 })(SkillLogic);
-/// <reference path="ProtectSkillLogic.ts"/>
 var ProtectCounterSkillLogic = (function (_super) {
     __extends(ProtectCounterSkillLogic, _super);
     function ProtectCounterSkillLogic() {
@@ -9443,7 +9488,6 @@ var ProtectCounterSkillLogic = (function (_super) {
     };
     return ProtectCounterSkillLogic;
 })(ProtectSkillLogic);
-/// <reference path="ProtectCounterSkillLogic.ts"/>
 var ProtectCounterDebuffSkillLogic = (function (_super) {
     __extends(ProtectCounterDebuffSkillLogic, _super);
     function ProtectCounterDebuffSkillLogic() {
@@ -9459,7 +9503,6 @@ var ProtectCounterDebuffSkillLogic = (function (_super) {
     };
     return ProtectCounterDebuffSkillLogic;
 })(ProtectCounterSkillLogic);
-/// <reference path="ProtectSkillLogic.ts"/>
 var ProtectReflectSkillLogic = (function (_super) {
     __extends(ProtectReflectSkillLogic, _super);
     function ProtectReflectSkillLogic() {
@@ -9500,7 +9543,6 @@ var ProtectReflectSkillLogic = (function (_super) {
     ProtectReflectSkillLogic.REFLECT_AFFLICTION_PROBABILITY = 0.2;
     return ProtectReflectSkillLogic;
 })(ProtectSkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var RandomSkillLogic = (function (_super) {
     __extends(RandomSkillLogic, _super);
     function RandomSkillLogic() {
@@ -9527,7 +9569,6 @@ var RandomSkillLogic = (function (_super) {
     };
     return RandomSkillLogic;
 })(SkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var ReviveSkillLogic = (function (_super) {
     __extends(ReviveSkillLogic, _super);
     function ReviveSkillLogic() {
@@ -9555,7 +9596,6 @@ var ReviveSkillLogic = (function (_super) {
     };
     return ReviveSkillLogic;
 })(SkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var SurviveSkillLogic = (function (_super) {
     __extends(SurviveSkillLogic, _super);
     function SurviveSkillLogic() {
@@ -9576,7 +9616,6 @@ var SurviveSkillLogic = (function (_super) {
     };
     return SurviveSkillLogic;
 })(SkillLogic);
-/// <reference path="SkillLogic.ts"/>
 var TurnOrderChangeSkillLogic = (function (_super) {
     __extends(TurnOrderChangeSkillLogic, _super);
     function TurnOrderChangeSkillLogic() {
@@ -9599,7 +9638,6 @@ var TurnOrderChangeSkillLogic = (function (_super) {
     };
     return TurnOrderChangeSkillLogic;
 })(SkillLogic);
-/// <reference path="../SkillLogic.ts"/>
 var BasePassiveSkillLogic = (function (_super) {
     __extends(BasePassiveSkillLogic, _super);
     function BasePassiveSkillLogic() {
@@ -9616,7 +9654,6 @@ var BasePassiveSkillLogic = (function (_super) {
     };
     return BasePassiveSkillLogic;
 })(SkillLogic);
-/// <reference path="BasePassiveSkillLogic.ts"/>
 var DamagePassiveSkillLogic = (function (_super) {
     __extends(DamagePassiveSkillLogic, _super);
     function DamagePassiveSkillLogic() {
@@ -9632,7 +9669,6 @@ var DamagePassiveSkillLogic = (function (_super) {
     };
     return DamagePassiveSkillLogic;
 })(BasePassiveSkillLogic);
-/// <reference path="BasePassiveSkillLogic.ts"/>
 var DefensePassiveSkillLogic = (function (_super) {
     __extends(DefensePassiveSkillLogic, _super);
     function DefensePassiveSkillLogic() {
@@ -9648,7 +9684,6 @@ var DefensePassiveSkillLogic = (function (_super) {
     };
     return DefensePassiveSkillLogic;
 })(BasePassiveSkillLogic);
-/// <reference path="BasePassiveSkillLogic.ts"/>
 var ExtraTurnPassiveSkillLogic = (function (_super) {
     __extends(ExtraTurnPassiveSkillLogic, _super);
     function ExtraTurnPassiveSkillLogic() {
@@ -9659,33 +9694,6 @@ var ExtraTurnPassiveSkillLogic = (function (_super) {
     };
     return ExtraTurnPassiveSkillLogic;
 })(BasePassiveSkillLogic);
-/// <reference path="AbsorbSkillLogic.ts"/>
-/// <reference path="AfflictionSkillLogic.ts"/>
-/// <reference path="AttackSkillLogic.ts"/>
-/// <reference path="BuffSkillLogic.ts"/>
-/// <reference path="ClearStatusSkillLogic.ts"/>
-/// <reference path="CounterDebuffSkillLogic.ts"/>
-/// <reference path="CounterDispellSkillLogic.ts"/>
-/// <reference path="CounterDrainSkillLogic.ts"/>
-/// <reference path="DebuffAfflictionSkillLogic.ts"/>
-/// <reference path="DebuffSkillLogic.ts"/>
-/// <reference path="DrainSkillLogic.ts"/>
-/// <reference path="EvadeSkillLogic.ts"/>
-/// <reference path="HealSkillLogic.ts"/>
-/// <reference path="MultiBuffSkillLogic.ts"/>
-/// <reference path="MultiDebuffSkillLogic.ts"/>
-/// <reference path="OnHitBuffSkillLogic.ts"/>
-/// <reference path="OnHitDebuffSkillLogic.ts"/>
-/// <reference path="ProtectCounterSkillLogic.ts"/>
-/// <reference path="ProtectCounterDebuffSkillLogic.ts"/>
-/// <reference path="ProtectReflectSkillLogic.ts"/>
-/// <reference path="RandomSkillLogic.ts"/>
-/// <reference path="ReviveSkillLogic.ts"/>
-/// <reference path="SurviveSkillLogic.ts"/>
-/// <reference path="TurnOrderChangeSkillLogic.ts"/>
-/// <reference path="passive/DamagePassiveSkillLogic.ts"/>
-/// <reference path="passive/DefensePassiveSkillLogic.ts"/>
-/// <reference path="passive/ExtraTurnPassiveSkillLogic.ts"/>
 var SkillLogicFactory = (function () {
     function SkillLogicFactory() {
     }
@@ -9771,7 +9779,6 @@ var SkillLogicFactory = (function () {
     };
     return SkillLogicFactory;
 })();
-/// <reference path="skillLogic/SkillLogicFactory.ts"/>
 var Skill = (function () {
     function Skill(skillId) {
         var skillData = SkillDatabase[skillId];
@@ -15845,6 +15852,144 @@ var SkillDatabase = {
         range: 21, prob: 50, ward: 2,
         desc: "Chance to unleash a heavy counter attack when struck and drain HP from target."
     },
+    1214: {
+        name: "Moonlight Volley", type: 2, func: 4, calc: 1,
+        args: [1.75],
+        range: 314, prob: 30, ward: 1,
+        desc: "Heavy ATK-based damage to up to four foes, ignoring position. Increased if fewer foes."
+    },
+    1215: {
+        name: "Gift of the Moon", type: 1, func: 51, calc: 0,
+        args: [0, 4, 2000, 6, 0.33, 1, 121, 120, 43],
+        range: 7, prob: 70,
+        desc: "Absorb AGI from up to three foes at beginning of battles."
+    },
+    1216: {
+        name: "Gambol", type: 6, func: 27, calc: 0,
+        args: [2, 9, 78, 79],
+        range: 21, prob: 50, sac: 1,
+        desc: "Evade enemy ATK-based and AGI-based attack skills."
+    },
+    1217: {
+        name: "Turkey Dash", type: 2, func: 7, calc: 3,
+        args: [1.05, 0.1],
+        range: 8, prob: 30, ward: 1, sac: 1,
+        desc: "Deal AGI-based damage to all foes. Chance to kill targets."
+    },
+    1218: {
+        name: "Falling Apple", type: 2, func: 34, calc: 2,
+        args: [1.1, 3, 0.25, 0.08],
+        range: 17, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage to six random foes, sometimes lower WIS, ignoring position."
+    },
+    1219: {
+        name: "Glittering Apple", type: 1, func: 44, calc: 0,
+        args: [0.2, 3, 0, 0, 0, 1220, 16],
+        range: 3, prob: 70,
+        desc: "Raise WIS by 20% of her WIS, self and adjacent allies revive with 75% HP on death."
+    },
+    1220: {
+        name: "Glittering Apple", type: 16, func: 6, calc: 0,
+        args: [0.75],
+        range: 21, prob: 100,
+        desc: "-"
+    },
+    1221: {
+        name: "Thorn of the Grove", type: 2, func: 52, calc: 3,
+        args: [1.5, 2, 1000, 6, 1, 1, 121, 120],
+        range: 19, prob: 30, ward: 1,
+        desc: "Deal heavy AGI-based damage and absorb DEF from four random foes."
+    },
+    1222: {
+        name: "Paling of the Grove", type: 1, func: 1, calc: 0,
+        args: [0.12, 9],
+        range: 3, prob: 70,
+        desc: "Raise ATK, DEF, WIS and AGI of self and adjacent allies."
+    },
+    1223: {
+        name: "Trailblazer", type: 2, func: 4, calc: 1,
+        args: [1.35, 8, 0.25, 4000],
+        range: 20, prob: 30, ward: 1, sac: 1,
+        desc: "Deal ATK-based damage and sometimes burn five random foes, ignoring position."
+    },
+    1224: {
+        name: "Smoldering Coals", type: 2, func: 4, calc: 2,
+        args: [1.6],
+        range: 314, prob: 30, ward: 2,
+        desc: "Deal heavy WIS-based damage to up to four foes. Increased if fewer foes."
+    },
+    1225: {
+        name: "Bustling Broom", type: 5, func: 27, calc: 0,
+        args: [2, 2, 78, 79],
+        range: 21, prob: 50,
+        desc: "Evade enemy WIS-based attack skills."
+    },
+    1226: {
+        name: "Gift of Fire", type: 2, func: 4, calc: 1,
+        args: [2.1, 8, 0.25, 2500],
+        range: 16, prob: 30, ward: 1, sac: 1,
+        desc: "Massive ATK-based damage and sometimes burn three random foes, ignoring position."
+    },
+    1227: {
+        name: "Scold", type: 2, func: 4, calc: 1,
+        args: [1],
+        range: 20, prob: 30, ward: 1, sac: 1,
+        desc: "Deal ATK-based damage to five random foes, ignoring position."
+    },
+    1228: {
+        name: "Ice Blade", type: 2, func: 3, calc: 1,
+        args: [1.25, 3, 0.3],
+        range: 19, prob: 30, ward: 1,
+        desc: "Deal ATK-based damage to four random foes and sometimes freeze them."
+    },
+    1229: {
+        name: "Iron Heel Ward", type: 1, func: 44, calc: 1,
+        args: [0.23, 1, 0, 0, 0, 1.5, 14],
+        range: 3, prob: 70,
+        desc: "Raise ATK of self/adjacent familiars by 23% of his ATK; raise their AGI as his HP decreases."
+    },
+    1230: {
+        name: "Hail Arrows", type: 2, func: 4, calc: 1,
+        args: [1.45],
+        range: 20, prob: 30, ward: 1,
+        desc: "Deal ATK-based damage to five random foes, ignoring position."
+    },
+    1231: {
+        name: "Secrets of the Hunt", type: 1, func: 44, calc: 1,
+        args: [0.1, 4, 0, 0, 0, 0.2, 1],
+        range: 3, prob: 70,
+        desc: "Raise AGI/ATK of self and adjacent familiars by 10% and 20% of its ATK respectively."
+    },
+    1232: {
+        name: "Vicious Scratch", type: 2, func: 3, calc: 1,
+        args: [2],
+        range: 23, prob: 30, ward: 1, sac: 1,
+        desc: "Deal massive ATK-based damage to two random foes."
+    },
+    1233: {
+        name: "Icy Rage", type: 2, func: 34, calc: 2,
+        args: [1.35, 4, 1, 0.04],
+        range: 315, prob: 30, ward: 2,
+        desc: "WIS-based DMG and reduce AGI of up to 5 foes. Increased if fewer foes."
+    },
+    1234: {
+        name: "Icy Love", type: 1, func: 44, calc: 0,
+        args: [0.27, 2, 0, 0, 0, 0.18, 3],
+        range: 3, prob: 70,
+        desc: "Raise DEF/WIS of self and adjacent allies by 27%/18% of her WIS."
+    },
+    1245: {
+        name: "Revelation of Death", type: 2, func: 52, calc: 1,
+        args: [1.05, 2, 1000, 6, 1, 1, 121, 120],
+        range: 17, prob: 30, ward: 1,
+        desc: "Deal ATK-based damage and absorb DEF from six random foes."
+    },
+    1246: {
+        name: "Grace of the Angel", type: 5, func: 14, calc: 1,
+        args: [1],
+        range: 2, prob: 50, ward: 1,
+        desc: "Take damage in place of nearby ally and counter."
+    },
     10001: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
         args: [1],
@@ -16732,6 +16877,18 @@ var SkillDatabase = {
         args: [1.2, 4, 0.4, 0.15],
         range: 5, prob: 100, ward: 1, isAutoAttack: true,
         desc: "ATK-based damage to one foe and sometimes lower AGI of target."
+    },
+    10186: {
+        name: "Standard Action", type: 2, func: 4, calc: 2,
+        args: [1.2],
+        range: 6, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "WIS-based damage to up to two foes."
+    },
+    10187: {
+        name: "Standard Action", type: 2, func: 3, calc: 1,
+        args: [1.2],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
     },
     9001: {
         name: "Abject Horror", type: 20, func: 1002, calc: 0,
@@ -17728,28 +17885,6 @@ function assert(condition, message) {
         throw message;
     }
 }
-/// <reference path="affliction/Affliction.ts"/>
-/// <reference path="interfaces/DamagePhaseData.ts"/>
-/// <reference path="BattleBackground.ts"/>
-/// <reference path="BattleDebugger.ts"/>
-/// <reference path="BattleGraphic.ts"/>
-/// <reference path="BattleLogger.ts"/>
-/// <reference path="BrigGenerator.ts"/>
-/// <reference path="Card.ts"/>
-/// <reference path="CardManager.ts"/>
-/// <reference path="CsRandom.ts"/>
-/// <reference path="FamDatabase.ts"/>
-/// <reference path="FamProvider.ts"/>
-/// <reference path="Formation.ts"/>
-/// <reference path="Helper.ts"/>
-/// <reference path="../lib/jquery.d.ts"/>
-/// <reference path="Player.ts"/>
-/// <reference path="Skill.ts"/>
-/// <reference path="SkillCalcType.ts"/>
-/// <reference path="SkillDatabase.ts"/>
-/// <reference path="SkillProvider.ts"/>
-/// <reference path="SkillRange.ts"/>
-/// <reference path="Util.ts"/>
 var BattleModel = (function () {
     function BattleModel(data, option, tierListString) {
         if (option === void 0) { option = {}; }
