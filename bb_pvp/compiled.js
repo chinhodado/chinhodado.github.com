@@ -603,6 +603,8 @@ var ENUM;
         SkillFunc[SkillFunc["PROTECT_COUNTER_DEBUFF_INDIRECT"] = 66] = "PROTECT_COUNTER_DEBUFF_INDIRECT";
         SkillFunc[SkillFunc["DAMAGE_PASSIVE"] = 1001] = "DAMAGE_PASSIVE";
         SkillFunc[SkillFunc["DEFENSE_PASSIVE"] = 1002] = "DEFENSE_PASSIVE";
+        SkillFunc[SkillFunc["AFFLICTION_PROB_BUFF_PASSIVE"] = 1003] = "AFFLICTION_PROB_BUFF_PASSIVE";
+        SkillFunc[SkillFunc["AFFLICTION_PASSIVE"] = 1005] = "AFFLICTION_PASSIVE";
         SkillFunc[SkillFunc["EXTRA_TURN_PASSIVE"] = 1006] = "EXTRA_TURN_PASSIVE";
     })(ENUM.SkillFunc || (ENUM.SkillFunc = {}));
     var SkillFunc = ENUM.SkillFunc;
@@ -2626,6 +2628,24 @@ var Card = (function () {
         }
         else {
             return 1;
+        }
+    };
+    Card.prototype.getPassiveAfflictionProbabilityBuffEffect = function (target) {
+        var passiveSkill = this.passiveSkills[0];
+        if (passiveSkill && passiveSkill.skillFunc === ENUM.SkillFunc.AFFLICTION_PROB_BUFF_PASSIVE) {
+            return passiveSkill.logic.getEffectRatio(this, target, passiveSkill);
+        }
+        else {
+            return 1;
+        }
+    };
+    Card.prototype.getPassiveAffliction = function (target) {
+        var passiveSkill = this.passiveSkills[0];
+        if (passiveSkill && passiveSkill.skillFunc === ENUM.SkillFunc.AFFLICTION_PASSIVE) {
+            return passiveSkill.logic.getAfflictionPassive(this, target, passiveSkill);
+        }
+        else {
+            return null;
         }
     };
     Card.prototype.adjustByNewDebuffLogic = function (type, value, originalValue) {
@@ -7595,6 +7615,30 @@ var famDatabase = {
         img: "2c8", rarity: 5, evo: 3,
         fullName: "Virginal, Ice Queen"
     },
+    11689: {
+        name: "Thanatos", stats: [25532, 23452, 22834, 14016, 18544],
+        skills: [989, 990],
+        passiveSkills: [9005],
+        autoAttack: 10061,
+        img: "362", rarity: 6, evo: 2,
+        fullName: "Thanatos, Death Incarnate II"
+    },
+    11602: {
+        name: "Lancelot", stats: [23127, 25098, 20093, 17461, 18533],
+        skills: [909, 910],
+        passiveSkills: [9003],
+        autoAttack: 10108,
+        img: "28e", rarity: 6, evo: 2,
+        fullName: "Lancelot of the Lake II"
+    },
+    11841: {
+        name: "Van", stats: [25662, 25521, 20126, 14633, 18555],
+        skills: [1164, 1165],
+        passiveSkills: [9009],
+        autoAttack: 10103,
+        img: "425", rarity: 6, evo: 2,
+        fullName: "Van, Shadow Hunter II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -8618,7 +8662,8 @@ var AfflictionSkillLogic = (function (_super) {
     AfflictionSkillLogic.processAffliction = function (executor, target, skill, fixedProb) {
         var type = skill.skillFuncArg2;
         var prob = fixedProb ? fixedProb : skill.skillFuncArg3;
-        if (!type) {
+        prob *= executor.getPassiveAfflictionProbabilityBuffEffect(target);
+        if (Math.random() > prob || !type) {
             return;
         }
         var option = {};
@@ -8636,25 +8681,23 @@ var AfflictionSkillLogic = (function (_super) {
         if (skill.skillFuncArg5) {
             option.missProb = skill.skillFuncArg5;
         }
-        if (Math.random() <= prob) {
-            target.setAffliction(type, option);
-            if (type === ENUM.AfflictionType.POISON) {
-                var percent = target.getPoisonPercent();
-            }
-            var logger = BattleLogger.getInstance();
-            logger.addMinorEvent({
-                executorId: executor.id,
-                targetId: target.id,
-                type: ENUM.MinorEventType.AFFLICTION,
-                affliction: {
-                    type: type,
-                    duration: option.turnNum,
-                    percent: percent,
-                    missProb: option.missProb
-                },
-                description: target.name + " is now " + ENUM.AfflictionType[type],
-            });
+        target.setAffliction(type, option);
+        if (type === ENUM.AfflictionType.POISON) {
+            var percent = target.getPoisonPercent();
         }
+        var logger = BattleLogger.getInstance();
+        logger.addMinorEvent({
+            executorId: executor.id,
+            targetId: target.id,
+            type: ENUM.MinorEventType.AFFLICTION,
+            affliction: {
+                type: type,
+                duration: option.turnNum,
+                percent: percent,
+                missProb: option.missProb
+            },
+            description: target.name + " is now " + ENUM.AfflictionType[type],
+        });
     };
     return AfflictionSkillLogic;
 })(SkillLogic);
@@ -9644,7 +9687,7 @@ var BasePassiveSkillLogic = (function (_super) {
         _super.apply(this, arguments);
     }
     BasePassiveSkillLogic.prototype.willBeExecuted = function (data) {
-        throw new Error("This is undefined for passive skills (except for extra turn passive)!");
+        throw new Error("This is undefined for passive skills (except for extra turn passive and affliction passive)!");
     };
     BasePassiveSkillLogic.prototype.execute = function (data) {
         throw new Error("There's nothing to execute for passive skills!");
@@ -9652,8 +9695,47 @@ var BasePassiveSkillLogic = (function (_super) {
     BasePassiveSkillLogic.prototype.getEffectRatio = function (executor, comparator, passiveSkill) {
         throw new Error("Implement this!");
     };
+    BasePassiveSkillLogic.prototype.getAfflictionPassive = function (executor, comparator, passiveSkill) {
+        throw new Error("Implement this!");
+    };
     return BasePassiveSkillLogic;
 })(SkillLogic);
+var AfflictionPassiveSkillLogic = (function (_super) {
+    __extends(AfflictionPassiveSkillLogic, _super);
+    function AfflictionPassiveSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    AfflictionPassiveSkillLogic.prototype.getAfflictionPassive = function (executor, target, passiveSkill) {
+        if (executor.rarity > target.rarity) {
+            var afflictionSkill = new Skill(passiveSkill.id);
+            afflictionSkill.skillFuncArg1 = 0;
+            afflictionSkill.skillFuncArg2 = passiveSkill.skillFuncArg4;
+            afflictionSkill.skillFuncArg3 = passiveSkill.skillFuncArg1;
+            afflictionSkill.skillFuncArg4 = passiveSkill.skillFuncArg5;
+            afflictionSkill.skillFuncArg5 = passiveSkill.skillFuncArg6;
+            return afflictionSkill;
+        }
+        else {
+            return null;
+        }
+    };
+    return AfflictionPassiveSkillLogic;
+})(BasePassiveSkillLogic);
+var AfflictionProbabilityBuffPassiveSkillLogic = (function (_super) {
+    __extends(AfflictionProbabilityBuffPassiveSkillLogic, _super);
+    function AfflictionProbabilityBuffPassiveSkillLogic() {
+        _super.apply(this, arguments);
+    }
+    AfflictionProbabilityBuffPassiveSkillLogic.prototype.getEffectRatio = function (executor, target, passiveSkill) {
+        if (executor.rarity > target.rarity) {
+            return 1 + passiveSkill.skillFuncArg1;
+        }
+        else {
+            return 1;
+        }
+    };
+    return AfflictionProbabilityBuffPassiveSkillLogic;
+})(BasePassiveSkillLogic);
 var DamagePassiveSkillLogic = (function (_super) {
     __extends(DamagePassiveSkillLogic, _super);
     function DamagePassiveSkillLogic() {
@@ -9771,6 +9853,10 @@ var SkillLogicFactory = (function () {
                 return new DamagePassiveSkillLogic();
             case ENUM.SkillFunc.DEFENSE_PASSIVE:
                 return new DefensePassiveSkillLogic();
+            case ENUM.SkillFunc.AFFLICTION_PROB_BUFF_PASSIVE:
+                return new AfflictionProbabilityBuffPassiveSkillLogic();
+            case ENUM.SkillFunc.AFFLICTION_PASSIVE:
+                return new AfflictionPassiveSkillLogic();
             case ENUM.SkillFunc.EXTRA_TURN_PASSIVE:
                 return new ExtraTurnPassiveSkillLogic();
             default:
@@ -16902,11 +16988,23 @@ var SkillDatabase = {
         range: 0, prob: 100,
         desc: "Increase damage to lower rarities by up to 20%."
     },
+    9003: {
+        name: "Grace of the Lake", type: 20, func: 1005, calc: 0,
+        args: [0.3, 0, 0, 3, 2],
+        range: 0, prob: 100,
+        desc: "Up to 30% chance to freeze lower rarities when being attacked."
+    },
     9004: {
         name: "Coldblood Claw", type: 20, func: 1006, calc: 0,
         args: [0.1],
         range: 0, prob: 100,
         desc: "Up to 10% chance to reproduce the previous attack action."
+    },
+    9005: {
+        name: "Death Wish", type: 20, func: 1003, calc: 0,
+        args: [1],
+        range: 0, prob: 100,
+        desc: "Increase success rate of affliction against lower rarities."
     },
     9006: {
         name: "Breakwater", type: 20, func: 1002, calc: 0,
@@ -16925,6 +17023,12 @@ var SkillDatabase = {
         args: [0.25],
         range: 0, prob: 100,
         desc: "Increase damage to lower rarities by up to 25%."
+    },
+    9009: {
+        name: "Exorcism Trap", type: 20, func: 1005, calc: 0,
+        args: [0.5, 0, 0, 8, 3000],
+        range: 0, prob: 100,
+        desc: "Up to 50% chance to burn lower rarities when being attacked."
     },
     9010: {
         name: "Decree of Death", type: 20, func: 1002, calc: 0,
@@ -18067,6 +18171,16 @@ var BattleModel = (function () {
         }
         else {
             BuffSkillLogic.processRemainHpBuff(target, false);
+        }
+        this.processPostDamageAffliction(data.attacker, target, damage);
+    };
+    BattleModel.prototype.processPostDamageAffliction = function (attacker, target, damage) {
+        if (damage < 0 || attacker.isDead || target.justEvaded || attacker.justMissed) {
+            return;
+        }
+        var skill = target.getPassiveAffliction(attacker);
+        if (skill !== null) {
+            AfflictionSkillLogic.processAffliction(target, attacker, skill);
         }
     };
     BattleModel.prototype.getWouldBeDamage = function (data) {
