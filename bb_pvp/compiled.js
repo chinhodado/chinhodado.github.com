@@ -17,6 +17,8 @@ var Affliction = (function () {
                 return "Poisoned";
             case ENUM.AfflictionType.SILENT:
                 return "Silent";
+            case ENUM.AfflictionType.CONFUSE:
+                return "Confused";
             case ENUM.AfflictionType.BURN:
                 return "Burned";
             default:
@@ -45,6 +47,9 @@ var Affliction = (function () {
     };
     Affliction.prototype.getType = function () {
         return this.type;
+    };
+    Affliction.canConfuse = function (skillType) {
+        return skillType === ENUM.SkillType.ACTIVE;
     };
     return Affliction;
 })();
@@ -104,6 +109,26 @@ var BurnAffliction = (function (_super) {
     };
     BurnAffliction.STACK_NUM = 3;
     return BurnAffliction;
+})(Affliction);
+var ConfuseAffliction = (function (_super) {
+    __extends(ConfuseAffliction, _super);
+    function ConfuseAffliction() {
+        _super.call(this, ENUM.AfflictionType.CONFUSE);
+        this.validTurnNum = 0;
+    }
+    ConfuseAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    ConfuseAffliction.prototype.update = function () {
+        if (--this.validTurnNum <= 0) {
+            this.clear();
+        }
+    };
+    ConfuseAffliction.prototype.add = function (option) {
+        this.validTurnNum = option.turnNum;
+        this.confuseProb = option.confuseProb;
+    };
+    return ConfuseAffliction;
 })(Affliction);
 var DisabledAffliction = (function (_super) {
     __extends(DisabledAffliction, _super);
@@ -218,6 +243,8 @@ var AfflictionFactory = (function () {
                 return new SilentAffliction();
             case ENUM.AfflictionType.BURN:
                 return new BurnAffliction();
+            case ENUM.AfflictionType.CONFUSE:
+                return new ConfuseAffliction();
             default:
                 throw new Error("Invalid affliction type!");
         }
@@ -799,6 +826,7 @@ var ENUM;
         AfflictionType[AfflictionType["FROZEN"] = 3] = "FROZEN";
         AfflictionType[AfflictionType["DISABLE"] = 4] = "DISABLE";
         AfflictionType[AfflictionType["SILENT"] = 5] = "SILENT";
+        AfflictionType[AfflictionType["CONFUSE"] = 6] = "CONFUSE";
         AfflictionType[AfflictionType["BLIND"] = 7] = "BLIND";
         AfflictionType[AfflictionType["BURN"] = 8] = "BURN";
     })(ENUM.AfflictionType || (ENUM.AfflictionType = {}));
@@ -2404,6 +2432,16 @@ var Card = (function () {
     Card.prototype.willMiss = function () {
         return (this.affliction) ? this.affliction.canMiss() : false;
     };
+    Card.prototype.canConfuse = function () {
+        return this.hasAffliction(ENUM.AfflictionType.CONFUSE);
+    };
+    Card.prototype.hasAffliction = function (type) {
+        if (this.isDead) {
+            return false;
+        }
+        var currentType = this.getAfflictionType();
+        return currentType === type;
+    };
     Card.prototype.getAfflictionType = function () {
         return this.affliction ? this.affliction.getType() : null;
     };
@@ -2421,6 +2459,14 @@ var Card = (function () {
         }
         else {
             return this.affliction.damage;
+        }
+    };
+    Card.prototype.getConfuseProb = function () {
+        if (!this.affliction || this.affliction.type !== ENUM.AfflictionType.CONFUSE) {
+            return undefined;
+        }
+        else {
+            return this.affliction.confuseProb;
         }
     };
     Card.prototype.updateAffliction = function () {
@@ -2846,6 +2892,18 @@ var CardManager = (function () {
             var currentOppCard = oppCards[executorIndex + offsetArray[i]];
             if (currentOppCard && !currentOppCard.isDead) {
                 return currentOppCard;
+            }
+        }
+        return null;
+    };
+    CardManager.prototype.getNearestSingleFriendTarget = function (executor) {
+        var friendCards = this.getPlayerCurrentMainCards(executor.player);
+        var executorIndex = executor.formationColumn;
+        var offsetArray = [0, -1, 1, -2, 2, -3, 3, -4, 4];
+        for (var i = 0; i < offsetArray.length; i++) {
+            var currentFriendCard = friendCards[executorIndex + offsetArray[i]];
+            if (currentFriendCard && !currentFriendCard.isDead) {
+                return currentFriendCard;
             }
         }
         return null;
@@ -7639,6 +7697,34 @@ var famDatabase = {
         img: "425", rarity: 6, evo: 2,
         fullName: "Van, Shadow Hunter II"
     },
+    11397: {
+        name: "Terra", stats: [19053, 7267, 17006, 22498, 18100],
+        skills: [575, 576],
+        autoAttack: 10007,
+        img: "325", rarity: 5, evo: 2,
+        fullName: "Arcanan Terra II"
+    },
+    11816: {
+        name: "Pallas", stats: [18501, 24990, 15998, 5858, 18252],
+        skills: [1026, 1027],
+        autoAttack: 10133,
+        img: "1b1", rarity: 5, evo: 2,
+        fullName: "Pallas, Goddess of Protection II"
+    },
+    11802: {
+        name: "Medb", stats: [21231, 5999, 14893, 20906, 18219],
+        skills: [1131, 1132],
+        autoAttack: 10001,
+        img: "494", rarity: 5, evo: 2,
+        fullName: "Medb, Jealous Queen II"
+    },
+    21877: {
+        name: "Renenet", stats: [23328, 10078, 16343, 22132, 18365],
+        skills: [1185, 1186],
+        autoAttack: 10007,
+        img: "2cb", rarity: 5, evo: 3,
+        fullName: "Renenet, Goddess of Wealth"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -8671,7 +8757,7 @@ var AfflictionSkillLogic = (function (_super) {
             if (type === ENUM.AfflictionType.POISON) {
                 option.percent = skill.skillFuncArg4;
             }
-            else if (type === ENUM.AfflictionType.SILENT || type === ENUM.AfflictionType.BLIND) {
+            else if (type === ENUM.AfflictionType.SILENT || type === ENUM.AfflictionType.BLIND || type === ENUM.AfflictionType.CONFUSE) {
                 option.turnNum = skill.skillFuncArg4;
             }
             else if (type === ENUM.AfflictionType.BURN) {
@@ -8679,7 +8765,12 @@ var AfflictionSkillLogic = (function (_super) {
             }
         }
         if (skill.skillFuncArg5) {
-            option.missProb = skill.skillFuncArg5;
+            if (type === ENUM.AfflictionType.BLIND) {
+                option.missProb = skill.skillFuncArg5;
+            }
+            else if (type === ENUM.AfflictionType.CONFUSE) {
+                option.confuseProb = skill.skillFuncArg5;
+            }
         }
         target.setAffliction(type, option);
         if (type === ENUM.AfflictionType.POISON) {
@@ -10155,6 +10246,17 @@ var Skill = (function () {
     };
     Skill.prototype.getReady = function (executor) {
         this.range.getReady(executor);
+    };
+    Skill.prototype.isConfused = function () {
+        return this.range.isConfused;
+    };
+    Skill.prototype.clearConfuse = function () {
+        this.range.isConfused = false;
+    };
+    Skill.prototype.setConfuse = function (prob) {
+        if (Affliction.canConfuse(this.skillType)) {
+            this.range.setConfuse(prob);
+        }
     };
     return Skill;
 })();
@@ -12987,6 +13089,18 @@ var SkillDatabase = {
         range: 8, prob: 30, ward: 1, sac: 1,
         desc: "Deal AGI-based damage to all foes and sometimes paralyze targets."
     },
+    575: {
+        name: "Chaotic World", type: 1, func: 19, calc: 0,
+        args: [0, 6, 0.6, 2, 0.6],
+        range: 7, prob: 70,
+        desc: "Chance to confuse up to three foes at start of battle."
+    },
+    576: {
+        name: "Culling Out", type: 2, func: 4, calc: 2,
+        args: [1.25],
+        range: 20, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage to five random foes, ignoring position."
+    },
     577: {
         name: "Triple Tails", type: 2, func: 3, calc: 3,
         args: [1.5],
@@ -14954,6 +15068,18 @@ var SkillDatabase = {
         range: 3, prob: 70,
         desc: "Raise WIS and reduce magical damage taken by self and adjacent familiars."
     },
+    1026: {
+        name: "Spear of Justice", type: 2, func: 4, calc: 1,
+        args: [1.05, 6, 0.1, 2, 0.6],
+        range: 315, prob: 30, ward: 1,
+        desc: "ATK-based DMG to and sometimes confuse up to five foes. Increased if fewer foes."
+    },
+    1027: {
+        name: "Prayer of War", type: 1, func: 51, calc: 0,
+        args: [0, 14, 2000, 6, 0.35, 1, 121, 120, 43],
+        range: 7, prob: 70,
+        desc: "Absorbs ATK/DEF/WIS/AGI from up to three foes at the beginning of battles."
+    },
     1028: {
         name: "Chaotic World", type: 1, func: 19, calc: 0,
         args: [0, 6, 1, 2, 1],
@@ -15512,6 +15638,18 @@ var SkillDatabase = {
         range: 3, prob: 70,
         desc: "Raise WIS/AGI of self and adjacent familiars when its HP decreases."
     },
+    1131: {
+        name: "Dark Geis", type: 2, func: 4, calc: 2,
+        args: [1.25, 6, 0.1, 2, 0.6],
+        range: 20, prob: 30, ward: 2,
+        desc: "WIS-based DMG, sometimes confuse five random foes, ignoring position."
+    },
+    1132: {
+        name: "Bullwark", type: 1, func: 44, calc: 0,
+        args: [0.3, 17, 0, 0, 0, 0.15, 3],
+        range: 3, prob: 70,
+        desc: "Raise HP and WIS of self and adjacent familiars by 30% and 15% of its WIS respectively."
+    },
     1133: {
         name: "Harvesting Scythe", type: 2, func: 4, calc: 3,
         args: [1.7],
@@ -15817,6 +15955,24 @@ var SkillDatabase = {
         args: [2],
         range: 23, prob: 30, ward: 2, sac: 1,
         desc: "Deal massive WIS-based damage to two random foes, ignoring position."
+    },
+    1185: {
+        name: "Cursed Cobra", type: 2, func: 4, calc: 2,
+        args: [1.3, 6, 0.1, 2, 0.6],
+        range: 315, prob: 30, ward: 2,
+        desc: "WIS-based DMG to and sometimes confuse up to five foes. Increased if fewer foes."
+    },
+    1186: {
+        name: "Fortuitous Refrain", type: 1, func: 44, calc: 0,
+        args: [0.2, 3, 0, 0, 0, 1187, 16],
+        range: 3, prob: 70,
+        desc: "Raise WIS by 20%/Revive with 75% HP after being killed, self and adjacent familiars."
+    },
+    1187: {
+        name: "Fortuitous Refrain", type: 16, func: 6, calc: 0,
+        args: [0.75],
+        range: 21, prob: 100,
+        desc: "-"
     },
     1190: {
         name: "Thundercall Horn", type: 2, func: 4, calc: 3,
@@ -17390,7 +17546,10 @@ var BaseRange = (function () {
         return baseTargets;
     };
     BaseRange.prototype.getReady = function (executor, skillCondFunc) {
-        throw new Error("Implement this");
+        if (this.isConfused) {
+            this.confusedCache = Math.random() < this.confuseProb;
+        }
+        this.currentIndex = 0;
     };
     BaseRange.prototype.hasValidTarget = function (executor, condFunc) {
         this.getReady(executor, condFunc);
@@ -17409,18 +17568,57 @@ var BaseRange = (function () {
         return hasValid;
     };
     BaseRange.prototype.getCondFunc = function (executor) {
+        var _this = this;
+        var isSameGroup = function (card) { return _this.isSameGroup(executor, card); };
         return function (card) {
-            if (card.isDead || (card.getPlayerId() === executor.getPlayerId())) {
+            if (card.isDead || isSameGroup(card)) {
                 return false;
             }
             return true;
         };
+    };
+    BaseRange.prototype.getSelfOrOppositeAsFriend = function (executor) {
+        var _this = this;
+        var condFunc = function (card) { return _this.isSameGroup(executor, card) &&
+            executor.formationColumn === card.formationColumn; };
+        return this.getBaseTargets(condFunc)[0];
     };
     BaseRange.prototype.satisfyDeadCondition = function (card, selectDead) {
         return (card.isDead && selectDead) || (!card.isDead && !selectDead);
     };
     BaseRange.prototype.getTarget = function (executor) {
         return this.targets[this.currentIndex++];
+    };
+    BaseRange.prototype.isSameGroup = function (card1, card2) {
+        if (this.isConfused) {
+            if (this.isDuplicative) {
+                return (Math.random() <= this.confuseProb) !== (card1.getPlayerId() === card2.getPlayerId());
+            }
+            else {
+                return this.confusedCache !== (card1.getPlayerId() === card2.getPlayerId());
+            }
+        }
+        return card1.getPlayerId() === card2.getPlayerId();
+    };
+    BaseRange.prototype.getGroup = function (executor) {
+        var battle = BattleModel.getInstance();
+        if (this.isConfused) {
+            if (this.isDuplicative) {
+                return Math.random() <= this.confuseProb ?
+                    battle.getOppositePlayer(executor.player).id : executor.getPlayerId();
+            }
+            else {
+                return this.confusedCache ?
+                    battle.getOppositePlayer(executor.player).id : executor.getPlayerId();
+            }
+        }
+        return executor.getPlayerId();
+    };
+    BaseRange.prototype.setConfuse = function (prob) {
+        this.isConfused = true;
+        this.confuseProb = prob - 0.1;
+        if (this.confuseProb < 0)
+            this.confuseProb = 0;
     };
     return BaseRange;
 })();
@@ -17431,17 +17629,14 @@ var BothSidesRange = (function (_super) {
         this.selectDead = selectDead;
     }
     BothSidesRange.prototype.getReady = function (executor) {
-        var targets = [];
-        this.currentIndex = 0;
-        var leftCard = CardManager.getInstance().getLeftSideCard(executor);
-        if (leftCard && this.satisfyDeadCondition(leftCard, this.selectDead)) {
-            targets.push(leftCard);
-        }
-        var rightCard = CardManager.getInstance().getRightSideCard(executor);
-        if (rightCard && this.satisfyDeadCondition(rightCard, this.selectDead)) {
-            targets.push(rightCard);
-        }
-        this.targets = targets;
+        _super.prototype.getReady.call(this, executor);
+        this.targets = this.getBaseTargets(this.getCondFunc(executor));
+    };
+    BothSidesRange.prototype.getCondFunc = function (executor) {
+        var _this = this;
+        return function (card) { return _this.isSameGroup(executor, card) &&
+            _this.satisfyDeadCondition(card, _this.selectDead) &&
+            (executor.formationColumn === card.formationColumn + 1 || executor.formationColumn === card.formationColumn - 1); };
     };
     return BothSidesRange;
 })(BaseRange);
@@ -17451,16 +17646,13 @@ var SelfImmediateRightRange = (function (_super) {
         _super.apply(this, arguments);
     }
     SelfImmediateRightRange.prototype.getReady = function (executor) {
-        var targets = [];
-        this.currentIndex = 0;
-        if (!executor.isDead) {
-            targets.push(executor);
-        }
-        var rightCard = CardManager.getInstance().getRightSideCard(executor);
-        if (rightCard && !rightCard.isDead) {
-            targets.push(rightCard);
-        }
-        this.targets = targets;
+        _super.prototype.getReady.call(this, executor);
+        this.targets = this.getBaseTargets(this.getCondFunc(executor));
+    };
+    SelfImmediateRightRange.prototype.getCondFunc = function (executor) {
+        var _this = this;
+        return function (card) { return !card.isDead && _this.isSameGroup(executor, card) &&
+            (executor.formationColumn === card.formationColumn || executor.formationColumn === card.formationColumn - 1); };
     };
     return SelfImmediateRightRange;
 })(BaseRange);
@@ -17470,16 +17662,13 @@ var SelfImmediateLeftRange = (function (_super) {
         _super.apply(this, arguments);
     }
     SelfImmediateLeftRange.prototype.getReady = function (executor) {
-        var targets = [];
-        this.currentIndex = 0;
-        if (!executor.isDead) {
-            targets.push(executor);
-        }
-        var leftCard = CardManager.getInstance().getLeftSideCard(executor);
-        if (leftCard && !leftCard.isDead) {
-            targets.push(leftCard);
-        }
-        this.targets = targets;
+        _super.prototype.getReady.call(this, executor);
+        this.targets = this.getBaseTargets(this.getCondFunc(executor));
+    };
+    SelfImmediateLeftRange.prototype.getCondFunc = function (executor) {
+        var _this = this;
+        return function (card) { return !card.isDead && _this.isSameGroup(executor, card) &&
+            (executor.formationColumn === card.formationColumn || executor.formationColumn === card.formationColumn + 1); };
     };
     return SelfImmediateLeftRange;
 })(BaseRange);
@@ -17511,6 +17700,7 @@ var EnemyRandomRange = (function (_super) {
     function EnemyRandomRange(id, numTarget) {
         _super.call(this, id);
         this.numTarget = numTarget;
+        this.isDuplicative = true;
     }
     EnemyRandomRange.prototype.getReady = function (executor) {
         this.numProcessed = 0;
@@ -17545,15 +17735,13 @@ var RightRange = (function (_super) {
         _super.apply(this, arguments);
     }
     RightRange.prototype.getReady = function (executor) {
-        var targets = [];
-        this.currentIndex = 0;
-        var partyCards = CardManager.getInstance().getPlayerCurrentMainCards(executor.player);
-        for (var i = executor.formationColumn + 1; i < 5; i++) {
-            if (!partyCards[i].isDead) {
-                targets.push(partyCards[i]);
-            }
-        }
-        this.targets = targets;
+        _super.prototype.getReady.call(this, executor);
+        this.targets = this.getBaseTargets(this.getCondFunc(executor));
+    };
+    RightRange.prototype.getCondFunc = function (executor) {
+        var _this = this;
+        return function (card) { return !card.isDead && _this.isSameGroup(executor, card) &&
+            (executor.formationColumn < card.formationColumn); };
     };
     return RightRange;
 })(BaseRange);
@@ -17564,12 +17752,14 @@ var SelfRange = (function (_super) {
         this.selectDead = selectDead;
     }
     SelfRange.prototype.getReady = function (executor) {
-        var targets = [];
-        this.currentIndex = 0;
-        if (this.satisfyDeadCondition(executor, this.selectDead)) {
-            targets.push(executor);
-        }
-        this.targets = targets;
+        _super.prototype.getReady.call(this, executor);
+        this.targets = this.getBaseTargets(this.getCondFunc(executor));
+    };
+    SelfRange.prototype.getCondFunc = function (executor) {
+        var _this = this;
+        return function (card) { return _this.isSameGroup(executor, card) &&
+            _this.satisfyDeadCondition(card, _this.selectDead) &&
+            executor.formationColumn === card.formationColumn; };
     };
     return SelfRange;
 })(BaseRange);
@@ -17579,20 +17769,15 @@ var SelfBothSidesRange = (function (_super) {
         _super.apply(this, arguments);
     }
     SelfBothSidesRange.prototype.getReady = function (executor) {
-        var targets = [];
-        this.currentIndex = 0;
-        var leftCard = CardManager.getInstance().getLeftSideCard(executor);
-        if (leftCard && !leftCard.isDead) {
-            targets.push(leftCard);
-        }
-        if (!executor.isDead) {
-            targets.push(executor);
-        }
-        var rightCard = CardManager.getInstance().getRightSideCard(executor);
-        if (rightCard && !rightCard.isDead) {
-            targets.push(rightCard);
-        }
-        this.targets = targets;
+        _super.prototype.getReady.call(this, executor);
+        this.targets = this.getBaseTargets(this.getCondFunc(executor));
+    };
+    SelfBothSidesRange.prototype.getCondFunc = function (executor) {
+        var _this = this;
+        return function (card) { return !card.isDead && _this.isSameGroup(executor, card) &&
+            (executor.formationColumn === card.formationColumn + 1 ||
+                executor.formationColumn === card.formationColumn ||
+                executor.formationColumn === card.formationColumn - 1); };
     };
     return SelfBothSidesRange;
 })(BaseRange);
@@ -17602,15 +17787,12 @@ var AllRange = (function (_super) {
         _super.apply(this, arguments);
     }
     AllRange.prototype.getReady = function (executor) {
-        var targets = [];
-        this.currentIndex = 0;
-        var partyCards = CardManager.getInstance().getPlayerCurrentMainCards(executor.player);
-        for (var i = 0; i < partyCards.length; i++) {
-            if (!partyCards[i].isDead) {
-                targets.push(partyCards[i]);
-            }
-        }
-        this.targets = targets;
+        _super.prototype.getReady.call(this, executor);
+        this.targets = this.getBaseTargets(this.getCondFunc(executor));
+    };
+    AllRange.prototype.getCondFunc = function (executor) {
+        var _this = this;
+        return function (card) { return !card.isDead && _this.isSameGroup(executor, card); };
     };
     return AllRange;
 })(BaseRange);
@@ -17622,13 +17804,21 @@ var EnemyNearRange = (function (_super) {
         this.maxDistance = EnemyNearRange.MAX_DISTANCE_FROM_CENTER[numTarget];
     }
     EnemyNearRange.prototype.getReady = function (executor) {
-        this.currentIndex = 0;
-        var centerEnemy = CardManager.getInstance().getNearestSingleOpponentTarget(executor);
+        _super.prototype.getReady.call(this, executor);
+        var battle = BattleModel.getInstance();
+        var executorPlayer = this.getGroup(executor);
+        var centerEnemy;
+        if (executorPlayer === executor.getPlayerId()) {
+            centerEnemy = CardManager.getInstance().getNearestSingleOpponentTarget(executor);
+        }
+        else {
+            centerEnemy = CardManager.getInstance().getNearestSingleFriendTarget(executor);
+        }
         if (!centerEnemy) {
             this.targets = [];
             return;
         }
-        var enemyCards = CardManager.getInstance().getEnemyCurrentMainCards(executor.player);
+        var enemyCards = CardManager.getInstance().getEnemyCurrentMainCards(battle.getPlayerById(executorPlayer));
         var offsetArray = [0, -1, 1, -2, 2];
         var targets = [];
         var targetCount = 0;
@@ -17660,16 +17850,8 @@ var EnemyAllRange = (function (_super) {
         _super.apply(this, arguments);
     }
     EnemyAllRange.prototype.getReady = function (executor) {
-        var enemyCards = CardManager.getInstance().getEnemyCurrentMainCards(executor.player);
-        var targets = [];
-        this.currentIndex = 0;
-        for (var i = 0; i < enemyCards.length; i++) {
-            var currentEnemyCard = enemyCards[i];
-            if (currentEnemyCard && !currentEnemyCard.isDead) {
-                targets.push(currentEnemyCard);
-            }
-        }
-        this.targets = targets;
+        _super.prototype.getReady.call(this, executor);
+        this.targets = this.getBaseTargets(this.getCondFunc(executor));
     };
     return EnemyAllRange;
 })(BaseRange);
@@ -17682,6 +17864,7 @@ var FriendRandomRange = (function (_super) {
         this.isUnique = RangeFactory.FRIEND_RANDOM_RANGE_TARGET_NUM[id];
         this.includeSelf = RangeFactory.INCLUDE_SELF[id];
         this.forcedSelf = RangeFactory.FORCED_SELF[id];
+        this.isDuplicative = !this.isUnique;
     }
     FriendRandomRange.prototype.getReady = function (executor, skillCondFunc) {
         var baseTargets = this.getBaseTargets(this.getCondFunc(executor, skillCondFunc));
@@ -17689,7 +17872,7 @@ var FriendRandomRange = (function (_super) {
         this.currentIndex = 0;
         var selfAllowed = false;
         for (var i = 0; i < baseTargets.length; i++) {
-            if (executor === baseTargets[i]) {
+            if (executor.formationColumn === baseTargets[i].formationColumn) {
                 selfAllowed = true;
                 break;
             }
@@ -17707,25 +17890,26 @@ var FriendRandomRange = (function (_super) {
         if (this.forcedSelf && selfAllowed) {
             var alreadyIncludedSelf = false;
             for (var i = 0; i < targets.length; i++) {
-                if (executor === targets[i]) {
+                if (executor.formationColumn === targets[i].formationColumn) {
                     alreadyIncludedSelf = true;
                     break;
                 }
             }
             if (!alreadyIncludedSelf) {
                 targets.shift();
-                targets.unshift(executor);
+                targets.unshift(this.getSelfOrOppositeAsFriend(executor));
             }
         }
         this.targets = targets;
     };
     FriendRandomRange.prototype.getCondFunc = function (executor, skillCondFunc) {
+        var _this = this;
         var selectDead = this.selectDead;
         var includeSelf = this.includeSelf;
         return function (card) {
-            if (card.getPlayerId() !== executor.getPlayerId())
+            if (!_this.isSameGroup(executor, card))
                 return false;
-            if (card.id === executor.id && !includeSelf)
+            if (card.formationColumn === executor.formationColumn && !includeSelf)
                 return false;
             if ((selectDead && !card.isDead) || (!selectDead && card.isDead))
                 return false;
@@ -17781,7 +17965,7 @@ var EnemyFrontMidAllRange = (function (_super) {
         _super.apply(this, arguments);
     }
     EnemyFrontMidAllRange.prototype.getReady = function (executor) {
-        this.currentIndex = 0;
+        _super.prototype.getReady.call(this, executor);
         var candidates = this.getBaseTargets(this.getCondFunc(executor));
         if (candidates.length) {
             var frontCards = this.getSameRowCards(candidates, ENUM.FormationRow.FRONT);
@@ -17803,7 +17987,7 @@ var EnemyFrontRearAllRange = (function (_super) {
         _super.apply(this, arguments);
     }
     EnemyFrontRearAllRange.prototype.getReady = function (executor) {
-        this.currentIndex = 0;
+        _super.prototype.getReady.call(this, executor);
         var candidates = this.getBaseTargets(this.getCondFunc(executor));
         if (candidates.length) {
             var frontCards = this.getSameRowCards(candidates, ENUM.FormationRow.FRONT);
@@ -17825,7 +18009,7 @@ var EnemyFrontAllRange = (function (_super) {
         _super.apply(this, arguments);
     }
     EnemyFrontAllRange.prototype.getReady = function (executor) {
-        this.currentIndex = 0;
+        _super.prototype.getReady.call(this, executor);
         var candidates = this.getBaseTargets(this.getCondFunc(executor));
         if (candidates.length) {
             candidates = this.getRowCandidates(candidates, ENUM.FormationRow.FRONT, true);
@@ -17840,7 +18024,7 @@ var EnemyMidAllRange = (function (_super) {
         _super.apply(this, arguments);
     }
     EnemyMidAllRange.prototype.getReady = function (executor) {
-        this.currentIndex = 0;
+        _super.prototype.getReady.call(this, executor);
         var candidates = this.getBaseTargets(this.getCondFunc(executor));
         if (candidates.length) {
             candidates = this.getRowCandidates(candidates, ENUM.FormationRow.MID, true);
@@ -17855,7 +18039,7 @@ var EnemyRearAllRange = (function (_super) {
         _super.apply(this, arguments);
     }
     EnemyRearAllRange.prototype.getReady = function (executor) {
-        this.currentIndex = 0;
+        _super.prototype.getReady.call(this, executor);
         var candidates = this.getBaseTargets(this.getCondFunc(executor));
         if (candidates.length) {
             candidates = this.getRowCandidates(candidates, ENUM.FormationRow.REAR, false);
@@ -17870,6 +18054,7 @@ var EnemyRowRandomRange = (function (_super) {
         _super.call(this, id);
         this.numTargets = numTargets;
         this.baseOnRangeType = baseOnRangeType;
+        this.isDuplicative = true;
     }
     EnemyRowRandomRange.prototype.getReady = function (executor) {
         this.numProcessed = 0;
@@ -18427,6 +18612,12 @@ var BattleModel = (function () {
                 skill: activeSkill
             };
             if (activeSkill.willBeExecuted(data)) {
+                if (currentCard.canConfuse()) {
+                    activeSkill.setConfuse(currentCard.getConfuseProb());
+                }
+                else if (activeSkill.isConfused()) {
+                    activeSkill.clearConfuse();
+                }
                 this.logger.addMajorEvent({
                     description: currentCard.name + " procs " + activeSkill.name,
                     executorId: currentCard.id,
@@ -18546,14 +18737,21 @@ var BattleModel = (function () {
         if (!attacker.canAttack() || attacker.isDead) {
             return;
         }
+        var skill = attacker.autoAttack;
+        if (attacker.canConfuse()) {
+            skill.setConfuse(attacker.getConfuseProb());
+        }
+        else if (skill.isConfused()) {
+            skill.clearConfuse();
+        }
         this.logger.addMajorEvent({
             description: attacker.name + " attacks!",
-            skillId: attacker.autoAttack.id,
+            skillId: skill.id,
             executorId: attacker.id
         });
-        attacker.autoAttack.execute({
+        skill.execute({
             executor: attacker,
-            skill: attacker.autoAttack
+            skill: skill
         });
     };
     BattleModel.prototype.processProtect = function (attacker, targetCard, attackSkill, targetsAttacked, scaledRatio, varyingRatio) {
