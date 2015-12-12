@@ -259,7 +259,7 @@ var BattleBackground = (function () {
         return BattleBackground.getLinkFromShortenedLink(shortenedLink);
     };
     BattleBackground.getLinkFromShortenedLink = function (shortenedLink) {
-        var firstPart = "http://img" + shortenedLink.charAt(0) + ".wikia.nocookie.net/bloodbrothersgame/images/";
+        var firstPart = "https://img" + shortenedLink.charAt(0) + ".wikia.nocookie.net/bloodbrothersgame/images/";
         var link = firstPart + shortenedLink.charAt(1) + "/" + shortenedLink.substring(1) + ".png";
         return link;
     };
@@ -8354,7 +8354,7 @@ function getTierList(whatToDoNext) {
     if (!localStorage.getItem("tierList") || needUpdate) {
         console.log("Fetching tier list...");
         $.ajax({
-            "url": "http://bloodbrothers-chinhodado.rhcloud.com/getTier/",
+            "url": "https://bloodbrothers-chinhodado.rhcloud.com/getTier/",
             "crossDomain": true,
             "dataType": "json",
             "success": makeCallback(whatToDoNext)
@@ -18134,7 +18134,7 @@ function pickRandomProperty(obj) {
     return keys[keys.length * Math.random() << 0];
 }
 function getScaledFamiliarWikiaImageLink(link, fullName, newWidth) {
-    var firstPart = "http://img" + link.charAt(0) + ".wikia.nocookie.net/bloodbrothersgame/images/thumb/" + link.charAt(1) + "/" + link.substring(1) + "/";
+    var firstPart = "https://img" + link.charAt(0) + ".wikia.nocookie.net/bloodbrothersgame/images/thumb/" + link.charAt(1) + "/" + link.substring(1) + "/";
     var urlName = fullName.replace(/,/g, "%2C").replace(/ /g, "_");
     var fileName = urlName + "_Figure.png";
     var newScaledLink = firstPart + fileName + "/" + newWidth + "px-" + fileName;
