@@ -7289,12 +7289,6 @@ var famDatabase = {
         img: "44b", rarity: 5, evo: 3,
         fullName: "Cu Chulainn, the Thunderbolt"
     },
-    1623: {
-        name: "Fomor Berserker", stats: [8910, 7170, 7140, 7360, 7510],
-        skills: [1145],
-        img: "291", rarity: 5, evo: 1,
-        fullName: "Fomor Berserker"
-    },
     11825: {
         name: "Pomona", stats: [20559, 17894, 13528, 11275, 18349],
         skills: [1137, 1138],
@@ -7724,6 +7718,82 @@ var famDatabase = {
         autoAttack: 10007,
         img: "2cb", rarity: 5, evo: 3,
         fullName: "Renenet, Goddess of Wealth"
+    },
+    21890: {
+        name: "Chuchunya", stats: [17309, 19422, 11492, 5533, 17493],
+        skills: [1238, 1239],
+        img: "31d", rarity: 4, evo: 2,
+        fullName: "Chuchunya, Tundra Guardian II"
+    },
+    11888: {
+        name: "Kosuke", stats: [15755, 16913, 14003, 5664, 17023],
+        skills: [1237],
+        autoAttack: 10188,
+        img: "454", rarity: 4, evo: 4,
+        fullName: "Kosuke, Master Ninja II"
+    },
+    11891: {
+        name: "Gorynich", stats: [18826, 14579, 17082, 12185, 18533],
+        skills: [1243, 1244],
+        autoAttack: 10190,
+        img: "395", rarity: 5, evo: 2,
+        fullName: "Gorynich, Snow Dragon II"
+    },
+    11892: {
+        name: "Nyx", stats: [16280, 14113, 16172, 4558, 17981],
+        skills: [1241, 1242],
+        autoAttack: 10189,
+        img: "32f", rarity: 4, evo: 2,
+        fullName: "Nyx, the Dark Wing II"
+    },
+    11890: {
+        name: "Chuchunya", stats: [12659, 13245, 11756, 6564, 12586],
+        skills: [1240],
+        img: "344", rarity: 4, evo: 4,
+        fullName: "Chuchunya, Iceberg Breaker II"
+    },
+    21886: {
+        name: "Skadi", stats: [21655, 24515, 19052, 7533, 18225],
+        skills: [1235, 1236],
+        img: "274", rarity: 5, evo: 3,
+        fullName: "Skadi, Goddess of Winter"
+    },
+    11723: {
+        name: "Veigr", stats: [17220, 17678, 15024, 11038, 9101],
+        skills: [1251],
+        autoAttack: 10191,
+        img: "298", rarity: 4, evo: 4,
+        fullName: "Veigr, Under-watch Captain II"
+    },
+    11922: {
+        name: "Ritho", stats: [25402, 24188, 24123, 10127, 18013],
+        skills: [1247],
+        autoAttack: 10145,
+        img: "4c0", rarity: 6, evo: 2,
+        fullName: "Ritho, King of the Giants II"
+    },
+    11767: {
+        name: "Ortlinde", stats: [25716, 23625, 21328, 15218, 18598],
+        skills: [1252, 1253],
+        passiveSkills: [9011],
+        autoAttack: 10103,
+        isMounted: true,
+        img: "10e", rarity: 6, evo: 2,
+        fullName: "Ortlinde, Silent Valkyrie II"
+    },
+    11774: {
+        name: "Gog", stats: [16724, 15197, 13052, 7884, 17201],
+        skills: [1250],
+        autoAttack: 10034,
+        img: "48e", rarity: 4, evo: 2,
+        fullName: "Gog, Giant II"
+    },
+    11710: {
+        name: "Muspell", stats: [22130, 16063, 17201, 15305, 13052],
+        skills: [1248, 1249],
+        autoAttack: 10192,
+        img: "1bc", rarity: 5, evo: 2,
+        fullName: "Muspell, Giant Knight II"
     },
 };
 var FamProvider = (function () {
@@ -8293,7 +8363,6 @@ function onBattleFinished() {
         startButton.style.display = "block";
     }
     else {
-        showStarRequest();
     }
 }
 function onSimulationFinished() {
@@ -16220,6 +16289,66 @@ var SkillDatabase = {
         range: 3, prob: 70,
         desc: "Raise DEF/WIS of self and adjacent allies by 27%/18% of her WIS."
     },
+    1235: {
+        name: "Rapid Fire", type: 2, func: 3, calc: 1,
+        args: [1.2],
+        range: 420, prob: 30, ward: 1,
+        desc: "Deal varying ATK-based damage to five random foes."
+    },
+    1236: {
+        name: "Hunter's Gait", type: 1, func: 1, calc: 0,
+        args: [0.3, 5],
+        range: 3, prob: 70,
+        desc: "Reduce physical damage taken by self and adjacent allies by 30%."
+    },
+    1237: {
+        name: "Ice Shuriken", type: 2, func: 3, calc: 1,
+        args: [1.85, 3, 0.35],
+        range: 16, prob: 30, ward: 1, sac: 1,
+        desc: "Deal heavy ATK-based damage and sometimes freeze three random foes."
+    },
+    1238: {
+        name: "Ice Smasher", type: 2, func: 33, calc: 1,
+        args: [1.6, 2, 0.4, 0.3],
+        range: 7, prob: 30, ward: 1,
+        desc: "Deal heavy ATK-based damage and sometimes lower DEF of up to three foes."
+    },
+    1239: {
+        name: "Revenge of the Wild", type: 3, func: 42, calc: 1,
+        args: [1.35, 2, 0.5, 0.45],
+        range: 21, prob: 50, ward: 1,
+        desc: "Unleash a counter attack when struck, sometimes lower DEF of target."
+    },
+    1240: {
+        name: "Bigfoot Stomp", type: 2, func: 3, calc: 1,
+        args: [1.9],
+        range: 6, prob: 30, ward: 1, sac: 1,
+        desc: "Deal heavy ATK-based damage to up to two foes."
+    },
+    1241: {
+        name: "Winds of Night", type: 2, func: 4, calc: 3,
+        args: [1.1],
+        range: 17, prob: 30, ward: 2,
+        desc: "Deal AGI-based damage to six random foes, ignoring position."
+    },
+    1242: {
+        name: "Might of Night", type: 1, func: 44, calc: 0,
+        args: [1.25, 14, 0, 0, 0, 2, 12],
+        range: 3, prob: 70,
+        desc: "Raise AGI/DEF of self and adjacent allies when its HP decreases."
+    },
+    1243: {
+        name: "Freezing Breath", type: 2, func: 4, calc: 3,
+        args: [1.85, 3, 0.3],
+        range: 19, prob: 30, ward: 3,
+        desc: "Deal heavy AGI-based DMG and sometimes freeze four random foes, ignoring position."
+    },
+    1244: {
+        name: "Sapping Snow", type: 1, func: 51, calc: 0,
+        args: [0, 9, 2500, 6, 0.35, 1, 121, 120, 43],
+        range: 7, prob: 70,
+        desc: "Absorbs AGI and DEF from up to three foes at the beginning of battles."
+    },
     1245: {
         name: "Revelation of Death", type: 2, func: 52, calc: 1,
         args: [1.05, 2, 1000, 6, 1, 1, 121, 120],
@@ -16231,6 +16360,47 @@ var SkillDatabase = {
         args: [1],
         range: 2, prob: 50, ward: 1,
         desc: "Take damage in place of nearby ally and counter."
+    },
+    1247: {
+        name: "Marmyadose ", type: 2, func: 52, calc: 1,
+        args: [1.8, 1, 1000, 6, 1, 1, 121, 120],
+        range: 7, prob: 30, ward: 1, sac: 1,
+        desc: "Deal heavy ATK-based damage and absorb ATK from up to three foes."
+    },
+    1248: {
+        name: "Lava Axe", type: 2, func: 7, calc: 1,
+        args: [2.25, 0.15],
+        range: 5, prob: 30, ward: 1,
+        desc: "Massive ATK-based damage to one foe and chance to kill target."
+    },
+    1249: {
+        name: "Lava Armor", type: 1, func: 1, calc: 0,
+        args: [0.8, 5, 6],
+        range: 21, prob: 70,
+        desc: "Reduce physical and magical damage taken by self greatly."
+    },
+    1250: {
+        name: "Wall Smasher", type: 2, func: 3, calc: 1,
+        args: [4.5],
+        range: 5, prob: 30, ward: 1, sac: 1,
+        desc: "Deal massive ATK-based damage to one foe."
+    },
+    1251: {
+        name: "Impregnable Wall", type: 5, func: 12, calc: 0,
+        range: 2, prob: 50, sac: 1,
+        desc: "Take damage in place of adjacent familiars."
+    },
+    1252: {
+        name: "Entangling Arrows", type: 2, func: 53, calc: 3,
+        args: [2.2, 4, 700, 6, 0.75, 1, 121, 120],
+        range: 16, prob: 30, ward: 2,
+        desc: "Massive AGI-based damage and absorb AGI from three random foes, ignoring position."
+    },
+    1253: {
+        name: "Souldrain Arrows", type: 2, func: 37, calc: 3,
+        args: [2.2, 0.1, 27, 21],
+        range: 16, prob: 30, ward: 2,
+        desc: "Massive AGI-based damage and drain HP from three random foes, ignoring position."
     },
     10001: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
@@ -17132,6 +17302,36 @@ var SkillDatabase = {
         range: 5, prob: 100, ward: 1, isAutoAttack: true,
         desc: "ATK-based damage to one foe."
     },
+    10188: {
+        name: "Standard Action", type: 2, func: 3, calc: 1,
+        args: [1.2, 3, 0.5],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage and sometimes freeze target."
+    },
+    10189: {
+        name: "Standard Action", type: 2, func: 4, calc: 1,
+        args: [1.2],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
+    10190: {
+        name: "Standard Action", type: 2, func: 4, calc: 1,
+        args: [1.2, 3, 0.4],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage and sometimes freeze target."
+    },
+    10191: {
+        name: "Standard Action", type: 2, func: 52, calc: 1,
+        args: [1.2, 2, 2000, 6, 1, 1, 121, 120],
+        range: 5, prob: 30, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage and absorb DEF from target."
+    },
+    10192: {
+        name: "Standard Action", type: 2, func: 7, calc: 1,
+        args: [1.2, 0.07],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage and chance to kill target."
+    },
     9001: {
         name: "Abject Horror", type: 20, func: 1002, calc: 0,
         args: [0.3],
@@ -17191,6 +17391,12 @@ var SkillDatabase = {
         args: [0.4],
         range: 0, prob: 100,
         desc: "Decrease damage from lower rarities by up to 40%"
+    },
+    9011: {
+        name: "Einherjar's Gift", type: 20, func: 1001, calc: 0,
+        args: [0.3],
+        range: 0, prob: 100,
+        desc: "Increase damage to lower rarities by up to 30%."
     },
 };
 var RangeFactory = (function () {
@@ -17365,7 +17571,8 @@ var RangeFactory = (function () {
         23: 2
     };
     RangeFactory.ENEMY_VARYING_RANDOM_RANGE_TARGET_NUM = {
-        419: 4
+        419: 4,
+        420: 5,
     };
     RangeFactory.ENEMY_ROW_RANDOM_RANGE_TARGET_NUM = {
         18: 3,
@@ -17528,6 +17735,7 @@ var RangeFactory = (function () {
     };
     RangeFactory.VaryingPatternParam = {
         419: [0.9, 1.0, 1.15, 1.35],
+        420: [0.8, 0.9, 1, 1.1, 1.2],
     };
     return RangeFactory;
 })();
