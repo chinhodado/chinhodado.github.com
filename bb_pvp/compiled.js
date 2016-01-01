@@ -7795,6 +7795,89 @@ var famDatabase = {
         img: "1bc", rarity: 5, evo: 2,
         fullName: "Muspell, Giant Knight II"
     },
+    11915: {
+        name: "Champion of Aquarius", stats: [19974, 4732, 18761, 19378, 18403],
+        skills: [1258, 1259],
+        autoAttack: 10195,
+        img: "202", rarity: 5, evo: 2,
+        fullName: "Champion of Aquarius II"
+    },
+    11932: {
+        name: "Halphas", stats: [17058, 16913, 12745, 5371, 17913],
+        skills: [1257],
+        autoAttack: 10194,
+        img: "496", rarity: 4, evo: 4,
+        fullName: "Halphas, Earl of Hell II"
+    },
+    21707: {
+        name: "Erupting Golem", stats: [20742, 18258, 19856, 12423, 17218],
+        skills: [1254, 1255],
+        img: "234", rarity: 5, evo: 3,
+        fullName: "Erupting Golem"
+    },
+    11775: {
+        name: "Magog", stats: [17049, 16648, 16161, 12380, 9000],
+        skills: [1256],
+        autoAttack: 10193,
+        img: "315", rarity: 4, evo: 2,
+        fullName: "Magog, Giant II"
+    },
+    11904: {
+        name: "Marsyas", stats: [15889, 6430, 10346, 17950, 17315],
+        skills: [1266],
+        autoAttack: 10007,
+        img: "3d2", rarity: 4, evo: 4,
+        fullName: "Marsyas, the Cursed Flute II"
+    },
+    21904: {
+        name: "Marsyas", stats: [12033, 8935, 10582, 13463, 11665],
+        skills: [1267],
+        autoAttack: 10007,
+        img: "348", rarity: 4, evo: 2,
+        fullName: "Marsyas, Calamity Caller II"
+    },
+    11905: {
+        name: "Apollo", stats: [22043, 15901, 14514, 10809, 18360],
+        skills: [1268, 1269],
+        autoAttack: 10061,
+        img: "307", rarity: 5, evo: 2,
+        fullName: "Apollo, God of the Sun II"
+    },
+    21902: {
+        name: "Amphion", stats: [23414, 9122, 15352, 22364, 18186],
+        skills: [1264, 1265],
+        autoAttack: 10007,
+        img: "136", rarity: 5, evo: 3,
+        fullName: "Amphion, Hymn of Death"
+    },
+    11909: {
+        name: "Amaterasu", stats: [24102, 12553, 23387, 23387, 18403],
+        skills: [1262, 1263],
+        autoAttack: 10016,
+        img: "3d1", rarity: 6, evo: 2,
+        fullName: "Amaterasu, Light of the Sun II"
+    },
+    11653: {
+        name: "Acanthus", stats: [16616, 6129, 10419, 17493, 17894],
+        skills: [1270, 1271],
+        autoAttack: 10007,
+        img: "148", rarity: 4, evo: 2,
+        fullName: "Acanthus, the Gilded Thorn II"
+    },
+    11908: {
+        name: "Hyacinth", stats: [13476, 10391, 10321, 7966, 12366],
+        skills: [1272],
+        autoAttack: 10005,
+        img: "182", rarity: 4, evo: 4,
+        fullName: "Hyacinth, the Death Dealer II"
+    },
+    11712: {
+        name: "Vesta", stats: [19552, 20397, 15500, 7581, 18219],
+        skills: [1260, 1261],
+        autoAttack: 10196,
+        img: "10b", rarity: 5, evo: 2,
+        fullName: "Vesta, Flame Witch II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -9044,12 +9127,17 @@ var BuffSkillLogic = (function (_super) {
                     case ENUM.StatusType.WIS:
                     case ENUM.StatusType.AGI:
                         var skillMod = skill.skillFuncArg1;
-                        if (skill.skillFunc === ENUM.SkillFunc.ONHIT_BUFF) {
+                        if (skill.skillCalcType === 6) {
                             if (skill.skillFuncArg4 === 0) {
-                                throw new Error("Not sure what needs to happen here when arg4 = 0 for onhit buff. Check the manual.");
+                                throw new Error("Not sure what needs to happen here when arg4 = 0 for skillCalcType = 6. Check the manual.");
                             }
                             else {
-                                var buffAmount = Math.round(skillMod * skill.skillFuncArg4 * 100);
+                                if (skill.skillFunc === ENUM.SkillFunc.ONHIT_BUFF) {
+                                    var buffAmount = Math.round(skillMod * skill.skillFuncArg4 * 100);
+                                }
+                                else {
+                                    buffAmount = Math.round(skillMod * skill.skillFuncArg4);
+                                }
                             }
                         }
                         else {
@@ -15981,7 +16069,7 @@ var SkillDatabase = {
         name: "Lust for Life", type: 2, func: 6, calc: 0,
         args: [0.5],
         range: 2, prob: 50,
-        desc: "Revive and restore with 50% HP of adjacent familiars."
+        desc: "Revive adjacent allies with 50% of their HP."
     },
     1178: {
         name: "Swarm of Flies", type: 2, func: 37, calc: 3,
@@ -16401,6 +16489,120 @@ var SkillDatabase = {
         args: [2.2, 0.1, 27, 21],
         range: 16, prob: 30, ward: 2,
         desc: "Massive AGI-based damage and drain HP from three random foes, ignoring position."
+    },
+    1254: {
+        name: "Volcanic Bomb", type: 2, func: 3, calc: 1,
+        args: [2.1, 8, 1, 2500],
+        range: 7, prob: 30, ward: 1,
+        desc: "Massive ATK-based damage and burn up to three foes."
+    },
+    1255: {
+        name: "Hardened Lava", type: 3, func: 39, calc: 6,
+        args: [1, 2, 0, 60, 5],
+        range: 21, prob: 70,
+        desc: "Greatly increase DEF of self when being attacked."
+    },
+    1256: {
+        name: "Destructive Urge", type: 3, func: 39, calc: 6,
+        args: [1, 1, 2, 50, 5],
+        range: 21, prob: 50, sac: 1,
+        desc: "Greatly increase ATK and DEF of self when being attacked."
+    },
+    1257: {
+        name: "Raise Morale", type: 1, func: 44, calc: 6,
+        args: [1, 1, 0, 2500, 0, 1, 4, 0, 1500],
+        range: 3, prob: 70, sac: 1,
+        desc: "Raise AGI and ATK of self and adjacent allies at start of battle."
+    },
+    1258: {
+        name: "Chilling Deluge", type: 2, func: 4, calc: 2,
+        args: [1.75, 3, 0.3],
+        range: 19, prob: 30, ward: 2,
+        desc: "Deal heavy WIS-based damage and sometimes freeze four random foes, ignoring position."
+    },
+    1259: {
+        name: "Aquarius Boon", type: 1, func: 44, calc: 0,
+        args: [2, 13, 0, 0, 0, 0.6, 5],
+        range: 3, prob: 70,
+        desc: "Reduce physical dmg taken by self&adjacent allies; raise their WIS when her HP decreases."
+    },
+    1260: {
+        name: "Sacrificial Fire", type: 2, func: 4, calc: 1,
+        args: [1.1, 8, 0.25, 3500],
+        range: 17, prob: 30, ward: 1,
+        desc: "Deal ATK-based damage and sometimes burn six random foes, ignoring position."
+    },
+    1261: {
+        name: "Draw Heat", type: 1, func: 51, calc: 0,
+        args: [0, 7, 3000, 6, 0.4, 1, 121, 120, 43],
+        range: 7, prob: 70,
+        desc: "Absorbs ATK and AGI from up to three foes at start of battles."
+    },
+    1262: {
+        name: "Shower of Light", type: 2, func: 4, calc: 2,
+        args: [1.4],
+        range: 8, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage to all foes, ignoring position."
+    },
+    1263: {
+        name: "Grace of the Sun", type: 1, func: 44, calc: 0,
+        args: [0.26, 2, 0, 0, 0, 0.5, 6],
+        range: 21, prob: 70,
+        desc: "Raise DEF by 26% of its WIS, and reduce magic damage taken by self by 50%."
+    },
+    1264: {
+        name: "Piercing Sound", type: 2, func: 4, calc: 2,
+        args: [1.25],
+        range: 315, prob: 30, ward: 2,
+        desc: "Deal WIS-based damage to up to five foes, ignoring position. Increased if fewer foes."
+    },
+    1265: {
+        name: "Melody of Hatred", type: 1, func: 19, calc: 0,
+        args: [0, 2, 0.4],
+        range: 7, prob: 70,
+        desc: "Chance to paralyze up to three foes at start of battle."
+    },
+    1266: {
+        name: "Deafening Sound", type: 2, func: 4, calc: 2,
+        args: [1.6, 2, 0.3],
+        range: 19, prob: 30, ward: 2, sac: 1,
+        desc: "Heavy WIS-based DMG to and sometimes paralyze four random foes, ignoring position."
+    },
+    1267: {
+        name: "Ode to Calamity", type: 2, func: 4, calc: 2,
+        args: [1.55],
+        range: 16, prob: 30, ward: 2, sac: 1,
+        desc: "Deal heavy WIS-based damage to three random foes, ignoring position."
+    },
+    1268: {
+        name: "Coronal Arrows", type: 2, func: 4, calc: 3,
+        args: [1.2],
+        range: 17, prob: 30, ward: 2,
+        desc: "Deal AGI-based damage to six random foes, ignoring position."
+    },
+    1269: {
+        name: "Wall of Flame", type: 1, func: 44, calc: 1,
+        args: [0.22, 3, 0, 0, 0, 0.19, 4],
+        range: 3, prob: 70,
+        desc: "Raise WIS/AGI of self and adjacent allies by 22%/19% of his ATK."
+    },
+    1270: {
+        name: "Thorn Lash", type: 2, func: 4, calc: 2,
+        args: [1.65],
+        range: 19, prob: 30, ward: 2,
+        desc: "Deal heavy WIS-based damage to four random foes, ignoring position."
+    },
+    1271: {
+        name: "Paling of Thorns", type: 1, func: 44, calc: 2,
+        args: [0.07, 4, 0, 0, 0, 0.15, 3],
+        range: 3, prob: 70,
+        desc: "Raise WIS/AGI of self and adjacent allies by 15%/7% of her WIS."
+    },
+    1272: {
+        name: "Weighted Discus", type: 2, func: 4, calc: 3,
+        args: [2],
+        range: 23, prob: 30, ward: 2, sac: 1,
+        desc: "Deal massive AGI-based damage to two random foes, ignoring position."
     },
     10001: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
@@ -17331,6 +17533,30 @@ var SkillDatabase = {
         args: [1.2, 0.07],
         range: 5, prob: 100, ward: 1, isAutoAttack: true,
         desc: "ATK-based damage and chance to kill target."
+    },
+    10193: {
+        name: "Standard Action", type: 2, func: 4, calc: 1,
+        args: [0.7],
+        range: 6, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to up to two foes."
+    },
+    10194: {
+        name: "Standard Action", type: 2, func: 3, calc: 1,
+        args: [1.4],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
+    },
+    10195: {
+        name: "Standard Action", type: 2, func: 4, calc: 2,
+        args: [1],
+        range: 5, prob: 100, ward: 2, isAutoAttack: true,
+        desc: "WIS-based damage to one foe."
+    },
+    10196: {
+        name: "Standard Action", type: 2, func: 4, calc: 1,
+        args: [1.2],
+        range: 5, prob: 100, ward: 1, isAutoAttack: true,
+        desc: "ATK-based damage to one foe."
     },
     9001: {
         name: "Abject Horror", type: 20, func: 1002, calc: 0,
