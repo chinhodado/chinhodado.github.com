@@ -7878,6 +7878,58 @@ var famDatabase = {
         img: "10b", rarity: 5, evo: 2,
         fullName: "Vesta, Flame Witch II"
     },
+    11936: {
+        name: "Hervor", stats: [17751, 18157, 14535, 14120, 5506],
+        skills: [1283],
+        autoAttack: 10041,
+        img: "385", rarity: 4, evo: 4,
+        fullName: "Hervor, the Cursed Blade II"
+    },
+    21914: {
+        name: "Taromaiti", stats: [17385, 18241, 12033, 6151, 17309],
+        skills: [1276, 1277],
+        img: "1bd", rarity: 4, evo: 2,
+        fullName: "Taromaiti, Fallen Goddess II"
+    },
+    11934: {
+        name: "Wepwawet", stats: [16230, 15851, 11634, 6881, 17533],
+        skills: [1275],
+        img: "17b", rarity: 4, evo: 4,
+        fullName: "Wepwawet, the Vanguard II"
+    },
+    21615: {
+        name: "Zaphkiel", stats: [22700, 7602, 17657, 22190, 18318],
+        skills: [1273, 1274],
+        autoAttack: 10007,
+        img: "27e", rarity: 5, evo: 3,
+        fullName: "Zaphkiel, the Blessed Rain"
+    },
+    11914: {
+        name: "Taromaiti", stats: [12890, 12999, 10538, 7419, 12734],
+        skills: [1278],
+        img: "152", rarity: 4, evo: 4,
+        fullName: "Taromaiti, Depraved Queen II"
+    },
+    11624: {
+        name: "Kapoonis", stats: [21935, 11719, 13160, 16139, 18295],
+        skills: [1280, 1281],
+        autoAttack: 10003,
+        img: "378", rarity: 5, evo: 2,
+        fullName: "Kapoonis, Thunder Magus II"
+    },
+    11917: {
+        name: "Sir", stats: [25748, 24578, 22455, 10571, 18501],
+        skills: [1279],
+        img: "44e", rarity: 6, evo: 2,
+        fullName: "Sir Galahad, Knight Champion II"
+    },
+    11330: {
+        name: "Orpheus", stats: [17212, 6162, 13658, 16529, 16497],
+        skills: [1282],
+        autoAttack: 10186,
+        img: "3bb", rarity: 4, evo: 2,
+        fullName: "Orpheus, Fallen Hero II"
+    },
 };
 var FamProvider = (function () {
     function FamProvider() {
@@ -16603,6 +16655,72 @@ var SkillDatabase = {
         args: [2],
         range: 23, prob: 30, ward: 2, sac: 1,
         desc: "Deal massive AGI-based damage to two random foes, ignoring position."
+    },
+    1273: {
+        name: "Stinging Rain", type: 2, func: 4, calc: 2,
+        args: [1.6],
+        range: 314, prob: 30, ward: 2,
+        desc: "Deal heavy WIS-based damage to up to four foes ignoring position. Increased if fewer foes."
+    },
+    1274: {
+        name: "Sapping Rain", type: 1, func: 44, calc: 2,
+        args: [0.07, 4, 0, 0, 0, 0.14, 3],
+        range: 3, prob: 70,
+        desc: "Raise WIS/AGI of self and adjacent allies by 14%/7% of her WIS."
+    },
+    1275: {
+        name: "Eviscerating Claws", type: 2, func: 52, calc: 3,
+        args: [1.35, 4, 1000, 6, 0.5, 1, 121, 120],
+        range: 19, prob: 30, ward: 1, sac: 1,
+        desc: "Deal AGI-based damage and absorb AGI from four random foes."
+    },
+    1276: {
+        name: "Depraved Blade", type: 2, func: 3, calc: 1,
+        args: [2.6],
+        range: 23, prob: 30, ward: 1,
+        desc: "Deal massive ATK-based damage to two random foes."
+    },
+    1277: {
+        name: "Corruption's Allure", type: 1, func: 51, calc: 0,
+        args: [0, 7, 1000, 6, 0.5, 1, 121, 120, 43],
+        range: 6, prob: 70,
+        desc: "Absorbs ATK and AGI from up to two foes at start of battles."
+    },
+    1278: {
+        name: "Apostate Blade", type: 2, func: 3, calc: 1,
+        args: [2],
+        range: 23, prob: 30, ward: 1, sac: 1,
+        desc: "Deal massive ATK-based damage to two random foes."
+    },
+    1279: {
+        name: "Unsullied Strike", type: 2, func: 52, calc: 3,
+        args: [1.45, 4, 1000, 6, 0.5, 1, 121, 120],
+        range: 20, prob: 30, ward: 1, sac: 1,
+        desc: "Deal AGI-based damage and absorb AGI from five random foes."
+    },
+    1280: {
+        name: "Galvanic Cyclone", type: 2, func: 34, calc: 2,
+        args: [1.7, 3, 1, 0.06],
+        range: 8, prob: 30, ward: 2,
+        desc: "Deal heavy WIS-based damage to all foes and lower WIS of targets."
+    },
+    1281: {
+        name: "Galvanic Rebirth", type: 2, func: 6, calc: 0,
+        args: [0.7],
+        range: 122, prob: 50,
+        desc: "Revive two random familiars with 70% of their HP."
+    },
+    1282: {
+        name: "Melody of the Beyond", type: 16, func: 19, calc: 0,
+        args: [0, 5, 1, 1],
+        range: 8, prob: 70, sac: 1,
+        desc: "Silence all foes for one turn upon his death."
+    },
+    1283: {
+        name: "Shield of Valor", type: 5, func: 14, calc: 1,
+        args: [1],
+        range: 2, prob: 50, ward: 1, sac: 1,
+        desc: "Take damage in place of adjacent familiars and counter."
     },
     10001: {
         name: "Standard Action", type: 2, func: 4, calc: 2,
