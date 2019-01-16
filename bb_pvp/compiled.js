@@ -1469,7 +1469,7 @@ var BattleGraphic = (function () {
                 else {
                     option.noNestedAttackAnim = true;
                 }
-                function getCallback(graphic, majorIndex, minorIndex, option, target, procEffect, exploSet) {
+                var getCallback = function (graphic, majorIndex, minorIndex, option, target, procEffect, exploSet) {
                     return function () {
                         for (var i = 0; i < exploSet.length; i++) {
                             exploSet[i].opacity(0);
@@ -1480,7 +1480,7 @@ var BattleGraphic = (function () {
                         graphic.displayPostDamage(target.getPlayerId(), target.formationColumn, majorIndex, minorIndex);
                         graphic.displayMinorEventAnimation(majorIndex, minorIndex + 1, option);
                     };
-                }
+                };
                 for (i = 0; i < exploSet.length; i++) {
                     if (i === exploSet.length - 1) {
                         var callback = getCallback(that, majorIndex, minorIndex, option, target, procEffect, exploSet);
@@ -7954,8 +7954,8 @@ var FamProvider = (function () {
                 this.tierList[tier] = [];
                 for (var key in famDatabase) {
                     if (famDatabase.hasOwnProperty(key)) {
-                        var name = famDatabase[key].fullName;
-                        if (allTierList[tier].indexOf(name) !== -1) {
+                        var name_1 = famDatabase[key].fullName;
+                        if (allTierList[tier].indexOf(name_1) !== -1) {
                             this.tierList[tier].push(key);
                         }
                     }
@@ -7969,7 +7969,7 @@ var FamProvider = (function () {
             this.allIdList = [];
             for (var key in famDatabase) {
                 if (famDatabase.hasOwnProperty(key) && !famDatabase[key].isWarlord) {
-                    this.allIdList.push(key);
+                    this.allIdList.push(+key);
                 }
             }
         }
@@ -8062,8 +8062,8 @@ var SkillProvider = (function () {
             this.availableSkillsForSelect = [];
             for (var key in SkillDatabase) {
                 if (SkillDatabase.hasOwnProperty(key)) {
-                    if (this.isAvailableForSelect(key)) {
-                        this.availableSkillsForSelect.push(key);
+                    if (this.isAvailableForSelect(+key)) {
+                        this.availableSkillsForSelect.push(+key);
                     }
                 }
             }
@@ -8075,8 +8075,8 @@ var SkillProvider = (function () {
             this.openingSkillList = [];
             for (var key in SkillDatabase) {
                 if (SkillDatabase.hasOwnProperty(key)) {
-                    if (this.isAvailableForSelect(key) && SkillDatabase[key].type === ENUM.SkillType.OPENING) {
-                        this.openingSkillList.push(key);
+                    if (this.isAvailableForSelect(+key) && SkillDatabase[key].type === ENUM.SkillType.OPENING) {
+                        this.openingSkillList.push(+key);
                     }
                 }
             }
@@ -8088,8 +8088,8 @@ var SkillProvider = (function () {
             this.activeSkillList = [];
             for (var key in SkillDatabase) {
                 if (SkillDatabase.hasOwnProperty(key)) {
-                    if (this.isAvailableForSelect(key) && SkillDatabase[key].type === ENUM.SkillType.ACTIVE) {
-                        this.activeSkillList.push(key);
+                    if (this.isAvailableForSelect(+key) && SkillDatabase[key].type === ENUM.SkillType.ACTIVE) {
+                        this.activeSkillList.push(+key);
                     }
                 }
             }
@@ -8101,9 +8101,9 @@ var SkillProvider = (function () {
             this.reactiveSkillList = [];
             for (var key in SkillDatabase) {
                 if (SkillDatabase.hasOwnProperty(key)) {
-                    if (this.isAvailableForSelect(key) && (SkillDatabase[key].type === ENUM.SkillType.DEFENSE ||
+                    if (this.isAvailableForSelect(+key) && (SkillDatabase[key].type === ENUM.SkillType.DEFENSE ||
                         SkillDatabase[key].type === ENUM.SkillType.PROTECT || SkillDatabase[key].type === ENUM.SkillType.EVADE)) {
-                        this.reactiveSkillList.push(key);
+                        this.reactiveSkillList.push(+key);
                     }
                 }
             }
@@ -8115,8 +8115,8 @@ var SkillProvider = (function () {
             this.onDeathSkillList = [];
             for (var key in SkillDatabase) {
                 if (SkillDatabase.hasOwnProperty(key)) {
-                    if (this.isAvailableForSelect(key) && SkillDatabase[key].type === ENUM.SkillType.ACTION_ON_DEATH) {
-                        this.onDeathSkillList.push(key);
+                    if (this.isAvailableForSelect(+key) && SkillDatabase[key].type === ENUM.SkillType.ACTION_ON_DEATH) {
+                        this.onDeathSkillList.push(+key);
                     }
                 }
             }
@@ -8551,9 +8551,10 @@ function playGame() {
     BattleGraphic.PLAY_MODE = 'AUTO';
     BattleDebugger.IS_DEBUG_MODE = false;
     document.getElementById('startButton').onclick = function () {
-        this.disabled = true;
+        var button = this;
+        button.disabled = true;
         if (ENUM.Setting.IS_MOBILE) {
-            this.style.display = "none";
+            button.style.display = "none";
         }
         BattleGraphic.getInstance().resetInitialField();
         BattleGraphic.getInstance().displayMajorEventAnimation(0);
