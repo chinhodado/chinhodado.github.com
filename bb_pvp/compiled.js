@@ -1,256 +1,3 @@
-var Affliction = (function () {
-    function Affliction(type) {
-        this.type = type;
-        this.finished = false;
-    }
-    Affliction.getAfflictionAdjective = function (type) {
-        switch (type) {
-            case ENUM.AfflictionType.BLIND:
-                return "Blinded";
-            case ENUM.AfflictionType.DISABLE:
-                return "Disabled";
-            case ENUM.AfflictionType.FROZEN:
-                return "Frozen";
-            case ENUM.AfflictionType.PARALYSIS:
-                return "Paralyzed";
-            case ENUM.AfflictionType.POISON:
-                return "Poisoned";
-            case ENUM.AfflictionType.SILENT:
-                return "Silent";
-            case ENUM.AfflictionType.CONFUSE:
-                return "Confused";
-            case ENUM.AfflictionType.BURN:
-                return "Burned";
-            default:
-                throw new Error("Invalid affliction type!");
-        }
-    };
-    Affliction.prototype.canAttack = function () {
-        throw new Error("Implement this");
-    };
-    Affliction.prototype.canUseSkill = function () {
-        return this.canAttack();
-    };
-    Affliction.prototype.canMiss = function () {
-        return false;
-    };
-    Affliction.prototype.update = function (card) {
-        throw new Error("Implement this");
-    };
-    Affliction.prototype.add = function (option) {
-    };
-    Affliction.prototype.isFinished = function () {
-        return this.finished;
-    };
-    Affliction.prototype.clear = function () {
-        this.finished = true;
-    };
-    Affliction.prototype.getType = function () {
-        return this.type;
-    };
-    Affliction.canConfuse = function (skillType) {
-        return skillType === ENUM.SkillType.ACTIVE;
-    };
-    return Affliction;
-})();
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var BlindAffliction = (function (_super) {
-    __extends(BlindAffliction, _super);
-    function BlindAffliction() {
-        _super.call(this, ENUM.AfflictionType.BLIND);
-        this.missProb = 0;
-        this.finished = false;
-        this.validTurnNum = 0;
-    }
-    BlindAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    BlindAffliction.prototype.canMiss = function () {
-        return Math.random() <= this.missProb;
-    };
-    BlindAffliction.prototype.update = function () {
-        if (--this.validTurnNum <= 0) {
-            this.clear();
-        }
-    };
-    BlindAffliction.prototype.add = function (option) {
-        this.validTurnNum = option.turnNum;
-        this.missProb = option.missProb;
-    };
-    return BlindAffliction;
-})(Affliction);
-var BurnAffliction = (function (_super) {
-    __extends(BurnAffliction, _super);
-    function BurnAffliction() {
-        _super.call(this, ENUM.AfflictionType.BURN);
-        this.damage = 0;
-        this.values = [];
-    }
-    BurnAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    BurnAffliction.prototype.update = function (card) {
-        BattleModel.getInstance().damageToTargetDirectly(card, this.damage, "burn");
-    };
-    BurnAffliction.prototype.add = function (option) {
-        var arr = this.values;
-        arr.push(option.damage);
-        arr.sort(function (a, b) { return b - a; });
-        this.damage = 0;
-        for (var i = 0; i < BurnAffliction.STACK_NUM; i++) {
-            if (arr[i]) {
-                this.damage += arr[i];
-            }
-        }
-    };
-    BurnAffliction.STACK_NUM = 3;
-    return BurnAffliction;
-})(Affliction);
-var ConfuseAffliction = (function (_super) {
-    __extends(ConfuseAffliction, _super);
-    function ConfuseAffliction() {
-        _super.call(this, ENUM.AfflictionType.CONFUSE);
-        this.validTurnNum = 0;
-    }
-    ConfuseAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    ConfuseAffliction.prototype.update = function () {
-        if (--this.validTurnNum <= 0) {
-            this.clear();
-        }
-    };
-    ConfuseAffliction.prototype.add = function (option) {
-        this.validTurnNum = option.turnNum;
-        this.confuseProb = option.confuseProb;
-    };
-    return ConfuseAffliction;
-})(Affliction);
-var DisabledAffliction = (function (_super) {
-    __extends(DisabledAffliction, _super);
-    function DisabledAffliction() {
-        _super.call(this, ENUM.AfflictionType.DISABLE);
-    }
-    DisabledAffliction.prototype.canAttack = function () {
-        return this.isFinished();
-    };
-    DisabledAffliction.prototype.update = function () {
-        this.clear();
-    };
-    return DisabledAffliction;
-})(Affliction);
-var FrozenAffliction = (function (_super) {
-    __extends(FrozenAffliction, _super);
-    function FrozenAffliction() {
-        _super.call(this, ENUM.AfflictionType.FROZEN);
-    }
-    FrozenAffliction.prototype.canAttack = function () {
-        return this.isFinished();
-    };
-    FrozenAffliction.prototype.update = function () {
-        this.clear();
-    };
-    return FrozenAffliction;
-})(Affliction);
-var ParalysisAffliction = (function (_super) {
-    __extends(ParalysisAffliction, _super);
-    function ParalysisAffliction() {
-        _super.call(this, ENUM.AfflictionType.PARALYSIS);
-    }
-    ParalysisAffliction.prototype.canAttack = function () {
-        return this.isFinished();
-    };
-    ParalysisAffliction.prototype.update = function () {
-        this.clear();
-    };
-    return ParalysisAffliction;
-})(Affliction);
-var PoisonAffliction = (function (_super) {
-    __extends(PoisonAffliction, _super);
-    function PoisonAffliction() {
-        _super.call(this, ENUM.AfflictionType.POISON);
-        this.percent = 0;
-        this.finished = false;
-    }
-    PoisonAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    PoisonAffliction.prototype.update = function (card) {
-        var damage = Math.floor(card.originalStats.hp * this.percent / 100);
-        if (damage > PoisonAffliction.MAX_DAMAGE) {
-            damage = PoisonAffliction.MAX_DAMAGE;
-        }
-        BattleModel.getInstance().damageToTargetDirectly(card, damage, "poison");
-    };
-    PoisonAffliction.prototype.add = function (option) {
-        var percent = option.percent;
-        if (!percent) {
-            percent = PoisonAffliction.DEFAULT_PERCENT;
-        }
-        this.percent += percent;
-        var maxPercent = percent * PoisonAffliction.MAX_STACK_NUM;
-        if (this.percent > maxPercent) {
-            this.percent = maxPercent;
-        }
-    };
-    PoisonAffliction.DEFAULT_PERCENT = 5;
-    PoisonAffliction.MAX_STACK_NUM = 2;
-    PoisonAffliction.MAX_DAMAGE = 99999;
-    return PoisonAffliction;
-})(Affliction);
-var SilentAffliction = (function (_super) {
-    __extends(SilentAffliction, _super);
-    function SilentAffliction() {
-        _super.call(this, ENUM.AfflictionType.SILENT);
-        this.validTurnNum = 0;
-    }
-    SilentAffliction.prototype.canAttack = function () {
-        return true;
-    };
-    SilentAffliction.prototype.canUseSkill = function () {
-        return this.isFinished();
-    };
-    SilentAffliction.prototype.update = function () {
-        if (--this.validTurnNum <= 0) {
-            this.clear();
-        }
-    };
-    SilentAffliction.prototype.add = function (option) {
-        this.validTurnNum = option.turnNum;
-    };
-    return SilentAffliction;
-})(Affliction);
-var AfflictionFactory = (function () {
-    function AfflictionFactory() {
-    }
-    AfflictionFactory.getAffliction = function (type) {
-        switch (type) {
-            case ENUM.AfflictionType.BLIND:
-                return new BlindAffliction();
-            case ENUM.AfflictionType.DISABLE:
-                return new DisabledAffliction();
-            case ENUM.AfflictionType.FROZEN:
-                return new FrozenAffliction();
-            case ENUM.AfflictionType.PARALYSIS:
-                return new ParalysisAffliction();
-            case ENUM.AfflictionType.POISON:
-                return new PoisonAffliction();
-            case ENUM.AfflictionType.SILENT:
-                return new SilentAffliction();
-            case ENUM.AfflictionType.BURN:
-                return new BurnAffliction();
-            case ENUM.AfflictionType.CONFUSE:
-                return new ConfuseAffliction();
-            default:
-                throw new Error("Invalid affliction type!");
-        }
-    };
-    return AfflictionFactory;
-})();
 var BattleBackground = (function () {
     function BattleBackground() {
     }
@@ -293,7 +40,7 @@ var BattleBackground = (function () {
         "4a5/48645b3ae0106d4f96fa0bf3ad6239b8"
     ];
     return BattleBackground;
-})();
+}());
 var Status = (function () {
     function Status() {
         this.atk = 0;
@@ -314,7 +61,7 @@ var Status = (function () {
         this.isNewLogic = {};
     }
     return Status;
-})();
+}());
 var BattleDebugger = (function () {
     function BattleDebugger() {
         if (BattleDebugger._instance) {
@@ -403,8 +150,8 @@ var BattleDebugger = (function () {
         var lastEventField = logger.getFieldAtMajorIndex(lastEventIndex);
         var field = logger.getFieldAtMajorIndex(majorIndex);
         for (var p = 1; p <= 2; p++) {
-            var playerCards = field[("player" + p + "Cards")];
-            var lastPlayerCards = lastEventField[("player" + p + "Cards")];
+            var playerCards = field["player" + p + "Cards"];
+            var lastPlayerCards = lastEventField["player" + p + "Cards"];
             for (var f = 0; f < 5; f++) {
                 var stats = playerCards[f].stats;
                 var originalStats = playerCards[f].originalStats;
@@ -515,7 +262,7 @@ var BattleDebugger = (function () {
                     (infoText.skillProbability ? "<br>" + infoText.skillProbability : "") +
                     (infoText.hpShield ? "<br>" + infoText.hpShield : "") +
                     (infoText.affliction ? "<br>" + infoText.affliction : "");
-                var lastEventCard = lastEventField[("player" + p + "Cards")][f];
+                var lastEventCard = lastEventField["player" + p + "Cards"][f];
                 graphic.displayHP(lastEventCard.stats.hp / lastEventCard.originalStats.hp * 100, p, f, 0);
             }
         }
@@ -551,13 +298,14 @@ var BattleDebugger = (function () {
     BattleDebugger.IS_DEBUG_MODE = true;
     BattleDebugger._instance = null;
     return BattleDebugger;
-})();
+}());
 var ENUM;
 (function (ENUM) {
+    var Setting;
     (function (Setting) {
         Setting[Setting["IS_MOBILE"] = 0] = "IS_MOBILE";
-    })(ENUM.Setting || (ENUM.Setting = {}));
-    var Setting = ENUM.Setting;
+    })(Setting = ENUM.Setting || (ENUM.Setting = {}));
+    var SkillType;
     (function (SkillType) {
         SkillType[SkillType["OPENING"] = 1] = "OPENING";
         SkillType[SkillType["ACTIVE"] = 2] = "ACTIVE";
@@ -567,15 +315,15 @@ var ENUM;
         SkillType[SkillType["EVADE"] = 6] = "EVADE";
         SkillType[SkillType["ACTION_ON_DEATH"] = 16] = "ACTION_ON_DEATH";
         SkillType[SkillType["PASSIVE"] = 20] = "PASSIVE";
-    })(ENUM.SkillType || (ENUM.SkillType = {}));
-    var SkillType = ENUM.SkillType;
+    })(SkillType = ENUM.SkillType || (ENUM.SkillType = {}));
+    var SkillCategory;
     (function (SkillCategory) {
         SkillCategory[SkillCategory["OPENING"] = 10] = "OPENING";
         SkillCategory[SkillCategory["ACTIVE"] = 20] = "ACTIVE";
         SkillCategory[SkillCategory["REACTIVE"] = 30] = "REACTIVE";
         SkillCategory[SkillCategory["ACTION_ON_DEATH"] = 16] = "ACTION_ON_DEATH";
-    })(ENUM.SkillCategory || (ENUM.SkillCategory = {}));
-    var SkillCategory = ENUM.SkillCategory;
+    })(SkillCategory = ENUM.SkillCategory || (ENUM.SkillCategory = {}));
+    var SkillFunc;
     (function (SkillFunc) {
         SkillFunc[SkillFunc["BUFF"] = 1] = "BUFF";
         SkillFunc[SkillFunc["DEBUFF"] = 2] = "DEBUFF";
@@ -633,8 +381,8 @@ var ENUM;
         SkillFunc[SkillFunc["AFFLICTION_PROB_BUFF_PASSIVE"] = 1003] = "AFFLICTION_PROB_BUFF_PASSIVE";
         SkillFunc[SkillFunc["AFFLICTION_PASSIVE"] = 1005] = "AFFLICTION_PASSIVE";
         SkillFunc[SkillFunc["EXTRA_TURN_PASSIVE"] = 1006] = "EXTRA_TURN_PASSIVE";
-    })(ENUM.SkillFunc || (ENUM.SkillFunc = {}));
-    var SkillFunc = ENUM.SkillFunc;
+    })(SkillFunc = ENUM.SkillFunc || (ENUM.SkillFunc = {}));
+    var SkillCalcType;
     (function (SkillCalcType) {
         SkillCalcType[SkillCalcType["DEFAULT"] = 0] = "DEFAULT";
         SkillCalcType[SkillCalcType["ATK"] = 1] = "ATK";
@@ -647,24 +395,24 @@ var ENUM;
         SkillCalcType[SkillCalcType["ATK_WIS"] = 8] = "ATK_WIS";
         SkillCalcType[SkillCalcType["ATK_AGI"] = 9] = "ATK_AGI";
         SkillCalcType[SkillCalcType["WIS_AGI"] = 10] = "WIS_AGI";
-    })(ENUM.SkillCalcType || (ENUM.SkillCalcType = {}));
-    var SkillCalcType = ENUM.SkillCalcType;
+    })(SkillCalcType = ENUM.SkillCalcType || (ENUM.SkillCalcType = {}));
+    var ProtectAttackType;
     (function (ProtectAttackType) {
         ProtectAttackType[ProtectAttackType["ALL"] = 0] = "ALL";
         ProtectAttackType[ProtectAttackType["NORMAL"] = 1] = "NORMAL";
         ProtectAttackType[ProtectAttackType["SKILL"] = 2] = "SKILL";
         ProtectAttackType[ProtectAttackType["NOT_COUNTER"] = 3] = "NOT_COUNTER";
         ProtectAttackType[ProtectAttackType["COUNTER"] = 4] = "COUNTER";
-    })(ENUM.ProtectAttackType || (ENUM.ProtectAttackType = {}));
-    var ProtectAttackType = ENUM.ProtectAttackType;
+    })(ProtectAttackType = ENUM.ProtectAttackType || (ENUM.ProtectAttackType = {}));
+    var StatType;
     (function (StatType) {
         StatType[StatType["HP"] = 0] = "HP";
         StatType[StatType["ATK"] = 1] = "ATK";
         StatType[StatType["DEF"] = 2] = "DEF";
         StatType[StatType["WIS"] = 3] = "WIS";
         StatType[StatType["AGI"] = 4] = "AGI";
-    })(ENUM.StatType || (ENUM.StatType = {}));
-    var StatType = ENUM.StatType;
+    })(StatType = ENUM.StatType || (ENUM.StatType = {}));
+    var StatusType;
     (function (StatusType) {
         StatusType[StatusType["ATK"] = 1] = "ATK";
         StatusType[StatusType["DEF"] = 2] = "DEF";
@@ -694,8 +442,8 @@ var ENUM;
         StatusType[StatusType["REMAIN_HP_DEF_WIS_AGI_UP"] = 28] = "REMAIN_HP_DEF_WIS_AGI_UP";
         StatusType[StatusType["REMAIN_HP_ATK_WIS_AGI_UP"] = 29] = "REMAIN_HP_ATK_WIS_AGI_UP";
         StatusType[StatusType["WILL_ATTACK_AGAIN_PASSIVE"] = 30] = "WILL_ATTACK_AGAIN_PASSIVE";
-    })(ENUM.StatusType || (ENUM.StatusType = {}));
-    var StatusType = ENUM.StatusType;
+    })(StatusType = ENUM.StatusType || (ENUM.StatusType = {}));
+    var BuffStatusType;
     (function (BuffStatusType) {
         BuffStatusType[BuffStatusType["ATK"] = 1] = "ATK";
         BuffStatusType[BuffStatusType["DEF"] = 2] = "DEF";
@@ -711,8 +459,8 @@ var ENUM;
         BuffStatusType[BuffStatusType["ATK_DEF_AGI"] = 12] = "ATK_DEF_AGI";
         BuffStatusType[BuffStatusType["DEF_WIS_AGI"] = 13] = "DEF_WIS_AGI";
         BuffStatusType[BuffStatusType["ALL_STATUS"] = 14] = "ALL_STATUS";
-    })(ENUM.BuffStatusType || (ENUM.BuffStatusType = {}));
-    var BuffStatusType = ENUM.BuffStatusType;
+    })(BuffStatusType = ENUM.BuffStatusType || (ENUM.BuffStatusType = {}));
+    var SkillRange;
     (function (SkillRange) {
         SkillRange[SkillRange["PASSIVE"] = 0] = "PASSIVE";
         SkillRange[SkillRange["EITHER_SIDE"] = 1] = "EITHER_SIDE";
@@ -812,14 +560,14 @@ var ENUM;
         SkillRange[SkillRange["ENEMY_FRONT_MID_ALL_SCALED"] = 215] = "ENEMY_FRONT_MID_ALL_SCALED";
         SkillRange[SkillRange["ENEMY_FRONT_REAR_ALL_SCALED"] = 234] = "ENEMY_FRONT_REAR_ALL_SCALED";
         SkillRange[SkillRange["ENEMY_VARYING_RANDOM_4"] = 419] = "ENEMY_VARYING_RANDOM_4";
-    })(ENUM.SkillRange || (ENUM.SkillRange = {}));
-    var SkillRange = ENUM.SkillRange;
+    })(SkillRange = ENUM.SkillRange || (ENUM.SkillRange = {}));
+    var WardType;
     (function (WardType) {
         WardType[WardType["PHYSICAL"] = 1] = "PHYSICAL";
         WardType[WardType["MAGICAL"] = 2] = "MAGICAL";
         WardType[WardType["BREATH"] = 3] = "BREATH";
-    })(ENUM.WardType || (ENUM.WardType = {}));
-    var WardType = ENUM.WardType;
+    })(WardType = ENUM.WardType || (ENUM.WardType = {}));
+    var AfflictionType;
     (function (AfflictionType) {
         AfflictionType[AfflictionType["POISON"] = 1] = "POISON";
         AfflictionType[AfflictionType["PARALYSIS"] = 2] = "PARALYSIS";
@@ -829,22 +577,22 @@ var ENUM;
         AfflictionType[AfflictionType["CONFUSE"] = 6] = "CONFUSE";
         AfflictionType[AfflictionType["BLIND"] = 7] = "BLIND";
         AfflictionType[AfflictionType["BURN"] = 8] = "BURN";
-    })(ENUM.AfflictionType || (ENUM.AfflictionType = {}));
-    var AfflictionType = ENUM.AfflictionType;
+    })(AfflictionType = ENUM.AfflictionType || (ENUM.AfflictionType = {}));
+    var BattleTurnOrderType;
     (function (BattleTurnOrderType) {
         BattleTurnOrderType[BattleTurnOrderType["AGI"] = 0] = "AGI";
         BattleTurnOrderType[BattleTurnOrderType["ATK"] = 1] = "ATK";
         BattleTurnOrderType[BattleTurnOrderType["WIS"] = 2] = "WIS";
         BattleTurnOrderType[BattleTurnOrderType["DEF"] = 3] = "DEF";
         BattleTurnOrderType[BattleTurnOrderType["HP"] = 4] = "HP";
-    })(ENUM.BattleTurnOrderType || (ENUM.BattleTurnOrderType = {}));
-    var BattleTurnOrderType = ENUM.BattleTurnOrderType;
+    })(BattleTurnOrderType = ENUM.BattleTurnOrderType || (ENUM.BattleTurnOrderType = {}));
+    var FormationRow;
     (function (FormationRow) {
         FormationRow[FormationRow["REAR"] = 3] = "REAR";
         FormationRow[FormationRow["MID"] = 2] = "MID";
         FormationRow[FormationRow["FRONT"] = 1] = "FRONT";
-    })(ENUM.FormationRow || (ENUM.FormationRow = {}));
-    var FormationRow = ENUM.FormationRow;
+    })(FormationRow = ENUM.FormationRow || (ENUM.FormationRow = {}));
+    var FormationType;
     (function (FormationType) {
         FormationType[FormationType["SKEIN_5"] = 0] = "SKEIN_5";
         FormationType[FormationType["VALLEY_5"] = 1] = "VALLEY_5";
@@ -858,14 +606,14 @@ var ENUM;
         FormationType[FormationType["PINCER_5"] = 9] = "PINCER_5";
         FormationType[FormationType["SAW_5"] = 10] = "SAW_5";
         FormationType[FormationType["HYDRA_5"] = 11] = "HYDRA_5";
-    })(ENUM.FormationType || (ENUM.FormationType = {}));
-    var FormationType = ENUM.FormationType;
+    })(FormationType = ENUM.FormationType || (ENUM.FormationType = {}));
+    var BattleType;
     (function (BattleType) {
         BattleType[BattleType["BLOOD_CLASH"] = 1] = "BLOOD_CLASH";
         BattleType[BattleType["NORMAL"] = 2] = "NORMAL";
         BattleType[BattleType["COLISEUM"] = 3] = "COLISEUM";
-    })(ENUM.BattleType || (ENUM.BattleType = {}));
-    var BattleType = ENUM.BattleType;
+    })(BattleType = ENUM.BattleType || (ENUM.BattleType = {}));
+    var RandomBrigType;
     (function (RandomBrigType) {
         RandomBrigType[RandomBrigType["NONE"] = 0] = "NONE";
         RandomBrigType[RandomBrigType["ALL"] = 1] = "ALL";
@@ -880,8 +628,8 @@ var ENUM;
         RandomBrigType[RandomBrigType["AP_UP"] = 10] = "AP_UP";
         RandomBrigType[RandomBrigType["A_ONLY"] = 11] = "A_ONLY";
         RandomBrigType[RandomBrigType["A_UP"] = 12] = "A_UP";
-    })(ENUM.RandomBrigType || (ENUM.RandomBrigType = {}));
-    var RandomBrigType = ENUM.RandomBrigType;
+    })(RandomBrigType = ENUM.RandomBrigType || (ENUM.RandomBrigType = {}));
+    var RandomBrigText;
     (function (RandomBrigText) {
         RandomBrigText[RandomBrigText["all"] = 1] = "all";
         RandomBrigText[RandomBrigText["Tier X+"] = 2] = "Tier X+";
@@ -895,8 +643,8 @@ var ENUM;
         RandomBrigText[RandomBrigText["Tier A+ and up"] = 10] = "Tier A+ and up";
         RandomBrigText[RandomBrigText["Tier A"] = 11] = "Tier A";
         RandomBrigText[RandomBrigText["Tier A and up"] = 12] = "Tier A and up";
-    })(ENUM.RandomBrigText || (ENUM.RandomBrigText = {}));
-    var RandomBrigText = ENUM.RandomBrigText;
+    })(RandomBrigText = ENUM.RandomBrigText || (ENUM.RandomBrigText = {}));
+    var MinorEventType;
     (function (MinorEventType) {
         MinorEventType[MinorEventType["HP"] = 1] = "HP";
         MinorEventType[MinorEventType["STATUS"] = 2] = "STATUS";
@@ -908,8 +656,8 @@ var ENUM;
         MinorEventType[MinorEventType["REVIVE"] = 7] = "REVIVE";
         MinorEventType[MinorEventType["RESERVE_SWITCH"] = 8] = "RESERVE_SWITCH";
         MinorEventType[MinorEventType["BC_ADDPROB"] = 9] = "BC_ADDPROB";
-    })(ENUM.MinorEventType || (ENUM.MinorEventType = {}));
-    var MinorEventType = ENUM.MinorEventType;
+    })(MinorEventType = ENUM.MinorEventType || (ENUM.MinorEventType = {}));
+    var RarityType;
     (function (RarityType) {
         RarityType[RarityType["COMMON"] = 1] = "COMMON";
         RarityType[RarityType["UNCOMMON"] = 2] = "UNCOMMON";
@@ -917,17 +665,16 @@ var ENUM;
         RarityType[RarityType["EPIC"] = 4] = "EPIC";
         RarityType[RarityType["LEGEND"] = 5] = "LEGEND";
         RarityType[RarityType["MYTHIC"] = 6] = "MYTHIC";
-    })(ENUM.RarityType || (ENUM.RarityType = {}));
-    var RarityType = ENUM.RarityType;
+    })(RarityType = ENUM.RarityType || (ENUM.RarityType = {}));
+    var BonusType;
     (function (BonusType) {
         BonusType[BonusType["COLISEUM"] = 1] = "COLISEUM";
-    })(ENUM.BonusType || (ENUM.BonusType = {}));
-    var BonusType = ENUM.BonusType;
+    })(BonusType = ENUM.BonusType || (ENUM.BonusType = {}));
+    var AddProbability;
     (function (AddProbability) {
         AddProbability[AddProbability["BLOODCLASH"] = 10] = "BLOODCLASH";
         AddProbability[AddProbability["COLISEUM"] = 3] = "COLISEUM";
-    })(ENUM.AddProbability || (ENUM.AddProbability = {}));
-    var AddProbability = ENUM.AddProbability;
+    })(AddProbability = ENUM.AddProbability || (ENUM.AddProbability = {}));
 })(ENUM || (ENUM = {}));
 var BattleGraphic = (function () {
     function BattleGraphic() {
@@ -1089,7 +836,7 @@ var BattleGraphic = (function () {
         for (var p = 1; p <= 2; p++) {
             for (var f = 0; f < 5; f++) {
                 var image = SVG.get("p" + p + "f" + f + "image");
-                var card = field[("player" + p + "Cards")][f];
+                var card = field["player" + p + "Cards"][f];
                 image.load(getScaledFamiliarWikiaImageLink(card.imageLink, card.fullName, BattleGraphic.IMAGE_WIDTH_BIG));
             }
         }
@@ -1139,7 +886,7 @@ var BattleGraphic = (function () {
     };
     BattleGraphic.prototype.displayDamageTextAndHP = function (playerId, famIndex, majorIndex, minorIndex) {
         var field = this.logger.getFieldAtMinorIndex(majorIndex, minorIndex);
-        var targetInfo = field[("player" + playerId + "Cards")][famIndex];
+        var targetInfo = field["player" + playerId + "Cards"][famIndex];
         var stats = targetInfo.stats;
         var originalStats = targetInfo.originalStats;
         var center_x = this.coordArray[playerId][famIndex][0];
@@ -1210,7 +957,7 @@ var BattleGraphic = (function () {
         for (var player = 1; player <= 2; player++) {
             for (var fam = 0; fam < 5; fam++) {
                 var svgAfflictTxt = this.getAfflictionText(player, fam);
-                var data = field[("player" + player + "Cards")][fam];
+                var data = field["player" + player + "Cards"][fam];
                 if (!data.affliction) {
                     svgAfflictTxt.hide();
                     svgAfflictTxt.text('-');
@@ -1857,7 +1604,7 @@ var BattleGraphic = (function () {
     BattleGraphic.AFFLICTION_TEXT_STROKE_WIDTH = BattleGraphic.wr + 'px';
     BattleGraphic._instance = null;
     return BattleGraphic;
-})();
+}());
 var BattleLogger = (function () {
     function BattleLogger() {
         this.minorEventLog = [];
@@ -2045,12 +1792,67 @@ var BattleLogger = (function () {
     BattleLogger.WARNINGTEXT_DISPLAYED = false;
     BattleLogger._instance = null;
     return BattleLogger;
-})();
+}());
+var Affliction = (function () {
+    function Affliction(type) {
+        this.type = type;
+        this.finished = false;
+    }
+    Affliction.getAfflictionAdjective = function (type) {
+        switch (type) {
+            case ENUM.AfflictionType.BLIND:
+                return "Blinded";
+            case ENUM.AfflictionType.DISABLE:
+                return "Disabled";
+            case ENUM.AfflictionType.FROZEN:
+                return "Frozen";
+            case ENUM.AfflictionType.PARALYSIS:
+                return "Paralyzed";
+            case ENUM.AfflictionType.POISON:
+                return "Poisoned";
+            case ENUM.AfflictionType.SILENT:
+                return "Silent";
+            case ENUM.AfflictionType.CONFUSE:
+                return "Confused";
+            case ENUM.AfflictionType.BURN:
+                return "Burned";
+            default:
+                throw new Error("Invalid affliction type!");
+        }
+    };
+    Affliction.prototype.canAttack = function () {
+        throw new Error("Implement this");
+    };
+    Affliction.prototype.canUseSkill = function () {
+        return this.canAttack();
+    };
+    Affliction.prototype.canMiss = function () {
+        return false;
+    };
+    Affliction.prototype.update = function (card) {
+        throw new Error("Implement this");
+    };
+    Affliction.prototype.add = function (option) {
+    };
+    Affliction.prototype.isFinished = function () {
+        return this.finished;
+    };
+    Affliction.prototype.clear = function () {
+        this.finished = true;
+    };
+    Affliction.prototype.getType = function () {
+        return this.type;
+    };
+    Affliction.canConfuse = function (skillType) {
+        return skillType === ENUM.SkillType.ACTIVE;
+    };
+    return Affliction;
+}());
 var BrigGenerator = (function () {
     function BrigGenerator() {
     }
-    BrigGenerator.getRandomBrig = function (randomMode, tierListString, isBloodclash) {
-        var randomList = FamProvider.getRandomFamList(+randomMode, tierListString);
+    BrigGenerator.getRandomBrig = function (randomMode, isBloodclash) {
+        var randomList = FamProvider.getRandomFamList(+randomMode);
         var brigIds = [];
         var maxIndex = isBloodclash ? 9 : 4;
         if (isBloodclash) {
@@ -2064,7 +1866,7 @@ var BrigGenerator = (function () {
         }
         return brigIds;
     };
-    BrigGenerator.initializeBrigs = function (data, option, tierListString) {
+    BrigGenerator.initializeBrigs = function (data, option) {
         if (option === void 0) { option = {}; }
         var battle = BattleModel.getInstance();
         var isBloodClash = battle.isBloodClash;
@@ -2072,11 +1874,8 @@ var BrigGenerator = (function () {
         var p2_cardIds = [];
         var p1_warlordSkillIds = [];
         var p2_warlordSkillIds = [];
-        if (!tierListString) {
-            tierListString = localStorage["tierList"];
-        }
         if (option.p1RandomMode) {
-            p1_cardIds = BrigGenerator.getRandomBrig(option.p1RandomMode, tierListString, isBloodClash);
+            p1_cardIds = BrigGenerator.getRandomBrig(option.p1RandomMode, isBloodClash);
             p1_warlordSkillIds = BrigGenerator.getSmartWarlordSkills();
         }
         else {
@@ -2084,7 +1883,7 @@ var BrigGenerator = (function () {
             p1_warlordSkillIds = data.p1_warlordSkillIds;
         }
         if (option.p2RandomMode) {
-            p2_cardIds = BrigGenerator.getRandomBrig(option.p2RandomMode, tierListString, isBloodClash);
+            p2_cardIds = BrigGenerator.getRandomBrig(option.p2RandomMode, isBloodClash);
             p2_warlordSkillIds = BrigGenerator.getSmartWarlordSkills();
         }
         else {
@@ -2169,7 +1968,7 @@ var BrigGenerator = (function () {
         return skills;
     };
     return BrigGenerator;
-})();
+}());
 var Stats = (function () {
     function Stats(hp, atk, def, wis, agi) {
         this.hp = hp;
@@ -2179,7 +1978,218 @@ var Stats = (function () {
         this.agi = agi;
     }
     return Stats;
+}());
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
 })();
+var BlindAffliction = (function (_super) {
+    __extends(BlindAffliction, _super);
+    function BlindAffliction() {
+        var _this = _super.call(this, ENUM.AfflictionType.BLIND) || this;
+        _this.missProb = 0;
+        _this.finished = false;
+        _this.validTurnNum = 0;
+        return _this;
+    }
+    BlindAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    BlindAffliction.prototype.canMiss = function () {
+        return Math.random() <= this.missProb;
+    };
+    BlindAffliction.prototype.update = function () {
+        if (--this.validTurnNum <= 0) {
+            this.clear();
+        }
+    };
+    BlindAffliction.prototype.add = function (option) {
+        this.validTurnNum = option.turnNum;
+        this.missProb = option.missProb;
+    };
+    return BlindAffliction;
+}(Affliction));
+var BurnAffliction = (function (_super) {
+    __extends(BurnAffliction, _super);
+    function BurnAffliction() {
+        var _this = _super.call(this, ENUM.AfflictionType.BURN) || this;
+        _this.damage = 0;
+        _this.values = [];
+        return _this;
+    }
+    BurnAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    BurnAffliction.prototype.update = function (card) {
+        BattleModel.getInstance().damageToTargetDirectly(card, this.damage, "burn");
+    };
+    BurnAffliction.prototype.add = function (option) {
+        var arr = this.values;
+        arr.push(option.damage);
+        arr.sort(function (a, b) { return b - a; });
+        this.damage = 0;
+        for (var i = 0; i < BurnAffliction.STACK_NUM; i++) {
+            if (arr[i]) {
+                this.damage += arr[i];
+            }
+        }
+    };
+    BurnAffliction.STACK_NUM = 3;
+    return BurnAffliction;
+}(Affliction));
+var ConfuseAffliction = (function (_super) {
+    __extends(ConfuseAffliction, _super);
+    function ConfuseAffliction() {
+        var _this = _super.call(this, ENUM.AfflictionType.CONFUSE) || this;
+        _this.validTurnNum = 0;
+        return _this;
+    }
+    ConfuseAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    ConfuseAffliction.prototype.update = function () {
+        if (--this.validTurnNum <= 0) {
+            this.clear();
+        }
+    };
+    ConfuseAffliction.prototype.add = function (option) {
+        this.validTurnNum = option.turnNum;
+        this.confuseProb = option.confuseProb;
+    };
+    return ConfuseAffliction;
+}(Affliction));
+var DisabledAffliction = (function (_super) {
+    __extends(DisabledAffliction, _super);
+    function DisabledAffliction() {
+        return _super.call(this, ENUM.AfflictionType.DISABLE) || this;
+    }
+    DisabledAffliction.prototype.canAttack = function () {
+        return this.isFinished();
+    };
+    DisabledAffliction.prototype.update = function () {
+        this.clear();
+    };
+    return DisabledAffliction;
+}(Affliction));
+var FrozenAffliction = (function (_super) {
+    __extends(FrozenAffliction, _super);
+    function FrozenAffliction() {
+        return _super.call(this, ENUM.AfflictionType.FROZEN) || this;
+    }
+    FrozenAffliction.prototype.canAttack = function () {
+        return this.isFinished();
+    };
+    FrozenAffliction.prototype.update = function () {
+        this.clear();
+    };
+    return FrozenAffliction;
+}(Affliction));
+var ParalysisAffliction = (function (_super) {
+    __extends(ParalysisAffliction, _super);
+    function ParalysisAffliction() {
+        return _super.call(this, ENUM.AfflictionType.PARALYSIS) || this;
+    }
+    ParalysisAffliction.prototype.canAttack = function () {
+        return this.isFinished();
+    };
+    ParalysisAffliction.prototype.update = function () {
+        this.clear();
+    };
+    return ParalysisAffliction;
+}(Affliction));
+var PoisonAffliction = (function (_super) {
+    __extends(PoisonAffliction, _super);
+    function PoisonAffliction() {
+        var _this = _super.call(this, ENUM.AfflictionType.POISON) || this;
+        _this.percent = 0;
+        _this.finished = false;
+        return _this;
+    }
+    PoisonAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    PoisonAffliction.prototype.update = function (card) {
+        var damage = Math.floor(card.originalStats.hp * this.percent / 100);
+        if (damage > PoisonAffliction.MAX_DAMAGE) {
+            damage = PoisonAffliction.MAX_DAMAGE;
+        }
+        BattleModel.getInstance().damageToTargetDirectly(card, damage, "poison");
+    };
+    PoisonAffliction.prototype.add = function (option) {
+        var percent = option.percent;
+        if (!percent) {
+            percent = PoisonAffliction.DEFAULT_PERCENT;
+        }
+        this.percent += percent;
+        var maxPercent = percent * PoisonAffliction.MAX_STACK_NUM;
+        if (this.percent > maxPercent) {
+            this.percent = maxPercent;
+        }
+    };
+    PoisonAffliction.DEFAULT_PERCENT = 5;
+    PoisonAffliction.MAX_STACK_NUM = 2;
+    PoisonAffliction.MAX_DAMAGE = 99999;
+    return PoisonAffliction;
+}(Affliction));
+var SilentAffliction = (function (_super) {
+    __extends(SilentAffliction, _super);
+    function SilentAffliction() {
+        var _this = _super.call(this, ENUM.AfflictionType.SILENT) || this;
+        _this.validTurnNum = 0;
+        return _this;
+    }
+    SilentAffliction.prototype.canAttack = function () {
+        return true;
+    };
+    SilentAffliction.prototype.canUseSkill = function () {
+        return this.isFinished();
+    };
+    SilentAffliction.prototype.update = function () {
+        if (--this.validTurnNum <= 0) {
+            this.clear();
+        }
+    };
+    SilentAffliction.prototype.add = function (option) {
+        this.validTurnNum = option.turnNum;
+    };
+    return SilentAffliction;
+}(Affliction));
+var AfflictionFactory = (function () {
+    function AfflictionFactory() {
+    }
+    AfflictionFactory.getAffliction = function (type) {
+        switch (type) {
+            case ENUM.AfflictionType.BLIND:
+                return new BlindAffliction();
+            case ENUM.AfflictionType.DISABLE:
+                return new DisabledAffliction();
+            case ENUM.AfflictionType.FROZEN:
+                return new FrozenAffliction();
+            case ENUM.AfflictionType.PARALYSIS:
+                return new ParalysisAffliction();
+            case ENUM.AfflictionType.POISON:
+                return new PoisonAffliction();
+            case ENUM.AfflictionType.SILENT:
+                return new SilentAffliction();
+            case ENUM.AfflictionType.BURN:
+                return new BurnAffliction();
+            case ENUM.AfflictionType.CONFUSE:
+                return new ConfuseAffliction();
+            default:
+                throw new Error("Invalid affliction type!");
+        }
+    };
+    return AfflictionFactory;
+}());
 var Card = (function () {
     function Card(dbId, player, nth, skills, customStats, bonusType) {
         this.bcAddedProb = 0;
@@ -2722,7 +2732,7 @@ var Card = (function () {
     Card.NEW_DEBUFF_LOW_LIMIT_FACTOR = 0.4;
     Card.COLISEUM_HP_MULTI_FACTOR = 3;
     return Card;
-})();
+}());
 var CardManager = (function () {
     function CardManager() {
         if (CardManager._instance) {
@@ -3063,7 +3073,7 @@ var CardManager = (function () {
     };
     CardManager._instance = null;
     return CardManager;
-})();
+}());
 var CsRandom = (function () {
     function CsRandom(seed) {
         this.seedArray = [];
@@ -3152,7 +3162,7 @@ var CsRandom = (function () {
     CsRandom.MSEED = 161803398;
     CsRandom.MZ = 0;
     return CsRandom;
-})();
+}());
 var famDatabase = {
     11261: {
         name: "Rahab", stats: [14073, 12597, 15498, 9004, 16754],
@@ -7934,10 +7944,10 @@ var famDatabase = {
 var FamProvider = (function () {
     function FamProvider() {
     }
-    FamProvider.getTierList = function (tierToGet, allTierString) {
+    FamProvider.getTierList = function (tierToGet) {
         if (!this.tierList) {
             this.tierList = {};
-            var allTierList = JSON.parse(allTierString);
+            var allTierList = TierList;
             var tierArray = ["X+", "X", "S+", "S", "A+", "A", "B", "C"];
             for (var i = 0; i < tierArray.length; i++) {
                 var tier = tierArray[i];
@@ -7965,13 +7975,13 @@ var FamProvider = (function () {
         }
         return this.allIdList;
     };
-    FamProvider.getRandomFamList = function (type, allTierString) {
-        var tierXP = this.getTierList("X+", allTierString);
-        var tierX = this.getTierList("X", allTierString);
-        var tierSP = this.getTierList("S+", allTierString);
-        var tierS = this.getTierList("S", allTierString);
-        var tierAP = this.getTierList("A+", allTierString);
-        var tierA = this.getTierList("A", allTierString);
+    FamProvider.getRandomFamList = function (type) {
+        var tierXP = this.getTierList("X+");
+        var tierX = this.getTierList("X");
+        var tierSP = this.getTierList("S+");
+        var tierS = this.getTierList("S");
+        var tierAP = this.getTierList("A+");
+        var tierA = this.getTierList("A");
         switch (type) {
             case ENUM.RandomBrigType.ALL:
                 return this.getAllFamiliarList();
@@ -8007,7 +8017,7 @@ var FamProvider = (function () {
     FamProvider.tierList = null;
     FamProvider.allIdList = null;
     return FamProvider;
-})();
+}());
 var Formation = (function () {
     function Formation(type) {
         this.type = type;
@@ -8043,7 +8053,7 @@ var Formation = (function () {
     Formation.UNI_PROC_ORDER = {};
     Formation.whyfoo = Formation.initialize();
     return Formation;
-})();
+}());
 var SkillProvider = (function () {
     function SkillProvider() {
     }
@@ -8124,7 +8134,7 @@ var SkillProvider = (function () {
     SkillProvider.reactiveSkillList = null;
     SkillProvider.onDeathSkillList = null;
     return SkillProvider;
-})();
+}());
 function setPreviousChoices() {
     if (localStorage.getItem("f0") && localStorage.getItem("f0") !== "null") {
         for (var i = 0; i < 10; i++) {
@@ -8434,10 +8444,10 @@ function getBattleDataOption() {
                 var key = "p" + player + "f" + famIndex + arr[statIndex].toLowerCase();
                 var stat = getURLParameter(key);
                 if (stat) {
-                    if (!data[("p" + player + "_customStats")][famIndex]) {
-                        data[("p" + player + "_customStats")][famIndex] = {};
+                    if (!data["p" + player + "_customStats"][famIndex]) {
+                        data["p" + player + "_customStats"][famIndex] = {};
                     }
-                    data[("p" + player + "_customStats")][famIndex][arr[statIndex].toLowerCase()] = +stat;
+                    data["p" + player + "_customStats"][famIndex][arr[statIndex].toLowerCase()] = +stat;
                     localStorage.setItem(key, stat);
                 }
             }
@@ -8449,10 +8459,10 @@ function getBattleDataOption() {
                 var key = "p" + player + "f" + famIndex + "s" + skillIndex;
                 var customSkillId = getURLParameter(key);
                 if (customSkillId) {
-                    if (!data[("p" + player + "_customSkills")][famIndex]) {
-                        data[("p" + player + "_customSkills")][famIndex] = [];
+                    if (!data["p" + player + "_customSkills"][famIndex]) {
+                        data["p" + player + "_customSkills"][famIndex] = [];
                     }
-                    data[("p" + player + "_customSkills")][famIndex][skillIndex] = +customSkillId;
+                    data["p" + player + "_customSkills"][famIndex][skillIndex] = +customSkillId;
                     localStorage.setItem(key, customSkillId);
                 }
             }
@@ -8536,43 +8546,6 @@ function prepareField() {
     };
     img.src = rndBgLink;
 }
-function getTierList(whatToDoNext) {
-    var needUpdate = false;
-    var currentTime = new Date().getTime();
-    var lastUpdatedTime = localStorage.getItem("lastTierUpdateTime");
-    if (!lastUpdatedTime) {
-        needUpdate = true;
-    }
-    else {
-        var elapsedTime = currentTime - lastUpdatedTime;
-        needUpdate = elapsedTime >= 1000 * 60 * 60 * 24;
-    }
-    function makeCallback(cb) {
-        return function (data) {
-            updateTierList(data);
-            if (cb) {
-                cb();
-            }
-        };
-    }
-    if (!localStorage.getItem("tierList") || needUpdate) {
-        console.log("Fetching tier list...");
-        $.ajax({
-            "url": "https://bloodbrothers-chinhodado.rhcloud.com/getTier/",
-            "crossDomain": true,
-            "dataType": "json",
-            "success": makeCallback(whatToDoNext)
-        });
-    }
-    else {
-        if (whatToDoNext)
-            whatToDoNext();
-    }
-}
-function updateTierList(data) {
-    localStorage.setItem("tierList", JSON.stringify(data));
-    localStorage.setItem("lastTierUpdateTime", "" + new Date().getTime());
-}
 function playGame() {
     prepareField();
     BattleGraphic.PLAY_MODE = 'AUTO';
@@ -8634,14 +8607,13 @@ function startSynchronousSim(data, option, NUM_BATTLE) {
     var winCountTable = {};
     BattleModel.IS_MASS_SIMULATION = true;
     BattleGraphic.GRAPHIC_DISABLED = true;
-    var tierList = localStorage.getItem("tierList");
     var startTime = new Date().getTime();
     var intervalCount = 0;
     var NUM_CHUNK = 100;
     var CHUNK_SIZE = NUM_BATTLE / NUM_CHUNK;
     var interval = setInterval(function () {
         for (var i = 0; i < CHUNK_SIZE; i++) {
-            var newGame = new BattleModel(data, option, tierList);
+            var newGame = new BattleModel(data, option);
             var resultBattle = newGame.startBattle();
             BattleModel.resetAll();
             if (resultBattle.playerWon.id === 1) {
@@ -8736,7 +8708,6 @@ function startWorkerSim(data, option, NUM_BATTLE) {
         workerPool[w].postMessage({
             data: data,
             option: option,
-            tierList: localStorage.getItem("tierList"),
             numBattle: NUM_BATTLE / NUM_WORKER
         });
     }
@@ -8768,7 +8739,7 @@ var Player = (function () {
         this.multiplier = multiplier;
     }
     return Player;
-})();
+}());
 var SkillLogic = (function () {
     function SkillLogic() {
         this.battleModel = BattleModel.getInstance();
@@ -8831,11 +8802,11 @@ var SkillLogic = (function () {
         }
     };
     return SkillLogic;
-})();
+}());
 var AbsorbSkillLogic = (function (_super) {
     __extends(AbsorbSkillLogic, _super);
     function AbsorbSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     AbsorbSkillLogic.prototype.execute = function (data) {
         var skill = data.skill;
@@ -8936,11 +8907,11 @@ var AbsorbSkillLogic = (function (_super) {
         }
     };
     return AbsorbSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var AfflictionSkillLogic = (function (_super) {
     __extends(AfflictionSkillLogic, _super);
     function AfflictionSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     AfflictionSkillLogic.prototype.execute = function (data) {
         data.skill.getReady(data.executor);
@@ -8995,11 +8966,11 @@ var AfflictionSkillLogic = (function (_super) {
         });
     };
     return AfflictionSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var AttackSkillLogic = (function (_super) {
     __extends(AttackSkillLogic, _super);
     function AttackSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     AttackSkillLogic.prototype.willBeExecuted = function (data) {
         var hasTarget = data.skill.range.hasValidTarget(data.executor);
@@ -9141,11 +9112,11 @@ var AttackSkillLogic = (function (_super) {
         }
     };
     return AttackSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var BuffSkillLogic = (function (_super) {
     __extends(BuffSkillLogic, _super);
     function BuffSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     BuffSkillLogic.prototype.willBeExecuted = function (data) {
         var hasTarget = data.skill.range.hasValidTarget(data.executor);
@@ -9260,13 +9231,14 @@ var BuffSkillLogic = (function (_super) {
         }
     };
     return BuffSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var ClearStatusSkillLogic = (function (_super) {
     __extends(ClearStatusSkillLogic, _super);
     function ClearStatusSkillLogic() {
-        _super.apply(this, arguments);
-        this.condFunc = function (x) { return true; };
-        this.isDispelled = false;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.condFunc = function (x) { return true; };
+        _this.isDispelled = false;
+        return _this;
     }
     ClearStatusSkillLogic.prototype.willBeExecuted = function (data) {
         var hasValidTarget = data.skill.range.hasValidTarget(data.executor, this.getCondFunc());
@@ -9296,29 +9268,31 @@ var ClearStatusSkillLogic = (function (_super) {
         }
     };
     return ClearStatusSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var DispellSkillLogic = (function (_super) {
     __extends(DispellSkillLogic, _super);
     function DispellSkillLogic() {
-        _super.call(this);
-        this.condFunc = function (x) { return x > 0; };
-        this.isDispelled = true;
+        var _this = _super.call(this) || this;
+        _this.condFunc = function (x) { return x > 0; };
+        _this.isDispelled = true;
+        return _this;
     }
     return DispellSkillLogic;
-})(ClearStatusSkillLogic);
+}(ClearStatusSkillLogic));
 var ClearDebuffSkillLogic = (function (_super) {
     __extends(ClearDebuffSkillLogic, _super);
     function ClearDebuffSkillLogic() {
-        _super.call(this);
-        this.condFunc = function (x) { return x < 0; };
-        this.isDispelled = false;
+        var _this = _super.call(this) || this;
+        _this.condFunc = function (x) { return x < 0; };
+        _this.isDispelled = false;
+        return _this;
     }
     return ClearDebuffSkillLogic;
-})(ClearStatusSkillLogic);
+}(ClearStatusSkillLogic));
 var CounterSkillLogic = (function (_super) {
     __extends(CounterSkillLogic, _super);
     function CounterSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     CounterSkillLogic.prototype.willBeExecuted = function (data) {
         return _super.prototype.willBeExecuted.call(this, data) && !data.attacker.isDead;
@@ -9342,11 +9316,11 @@ var CounterSkillLogic = (function (_super) {
         }
     };
     return CounterSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var CounterDebuffSkillLogic = (function (_super) {
     __extends(CounterDebuffSkillLogic, _super);
     function CounterDebuffSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     CounterDebuffSkillLogic.prototype.execute = function (data) {
         _super.prototype.execute.call(this, data);
@@ -9356,12 +9330,13 @@ var CounterDebuffSkillLogic = (function (_super) {
         }
     };
     return CounterDebuffSkillLogic;
-})(CounterSkillLogic);
+}(CounterSkillLogic));
 var ProtectSkillLogic = (function (_super) {
     __extends(ProtectSkillLogic, _super);
     function ProtectSkillLogic() {
-        _super.apply(this, arguments);
-        this.counter = false;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.counter = false;
+        return _this;
     }
     ProtectSkillLogic.prototype.willBeExecuted = function (data) {
         data.skill.getReady(data.executor);
@@ -9424,12 +9399,13 @@ var ProtectSkillLogic = (function (_super) {
         return toReturn;
     };
     return ProtectSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var CounterDispellSkillLogic = (function (_super) {
     __extends(CounterDispellSkillLogic, _super);
     function CounterDispellSkillLogic() {
-        _super.apply(this, arguments);
-        this.condFunc = function (x) { return x > 0; };
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.condFunc = function (x) { return x > 0; };
+        return _this;
     }
     CounterDispellSkillLogic.prototype.willBeExecuted = function (data) {
         var range = RangeFactory.getRange(data.skill.skillFuncArg3);
@@ -9471,11 +9447,11 @@ var CounterDispellSkillLogic = (function (_super) {
         return toReturn;
     };
     return CounterDispellSkillLogic;
-})(ProtectSkillLogic);
+}(ProtectSkillLogic));
 var CounterDrainSkillLogic = (function (_super) {
     __extends(CounterDrainSkillLogic, _super);
     function CounterDrainSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     CounterDrainSkillLogic.prototype.execute = function (data) {
         var skill = data.skill;
@@ -9491,11 +9467,11 @@ var CounterDrainSkillLogic = (function (_super) {
         }
     };
     return CounterDrainSkillLogic;
-})(CounterSkillLogic);
+}(CounterSkillLogic));
 var DebuffAfflictionSkillLogic = (function (_super) {
     __extends(DebuffAfflictionSkillLogic, _super);
     function DebuffAfflictionSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     DebuffAfflictionSkillLogic.prototype.execute = function (data) {
         var tempDebuffSkillLogic = new DebuffSkillLogic();
@@ -9511,11 +9487,11 @@ var DebuffAfflictionSkillLogic = (function (_super) {
         tempAfflictionSkillLogic.execute(data);
     };
     return DebuffAfflictionSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var DebuffSkillLogic = (function (_super) {
     __extends(DebuffSkillLogic, _super);
     function DebuffSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     DebuffSkillLogic.prototype.execute = function (data) {
         var skill = data.skill;
@@ -9607,11 +9583,11 @@ var DebuffSkillLogic = (function (_super) {
         }
     };
     return DebuffSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var DrainSkillLogic = (function (_super) {
     __extends(DrainSkillLogic, _super);
     function DrainSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     DrainSkillLogic.prototype.willBeExecuted = function (data) {
         var hasValidTarget = data.skill.range.hasValidTarget(data.executor, this.getCondFunc());
@@ -9637,11 +9613,11 @@ var DrainSkillLogic = (function (_super) {
         }
     };
     return DrainSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var EvadeSkillLogic = (function (_super) {
     __extends(EvadeSkillLogic, _super);
     function EvadeSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     EvadeSkillLogic.prototype.willBeExecuted = function (data) {
         var skill = data.skill;
@@ -9677,11 +9653,11 @@ var EvadeSkillLogic = (function (_super) {
         return {};
     };
     return EvadeSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var HealSkillLogic = (function (_super) {
     __extends(HealSkillLogic, _super);
     function HealSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     HealSkillLogic.prototype.willBeExecuted = function (data) {
         var hasValidTarget = data.skill.range.hasValidTarget(data.executor, this.getCondFunc());
@@ -9704,11 +9680,11 @@ var HealSkillLogic = (function (_super) {
         }
     };
     return HealSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var MultiBuffSkillLogic = (function (_super) {
     __extends(MultiBuffSkillLogic, _super);
     function MultiBuffSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     MultiBuffSkillLogic.prototype.execute = function (data) {
         _super.prototype.execute.call(this, data);
@@ -9722,11 +9698,11 @@ var MultiBuffSkillLogic = (function (_super) {
         _super.prototype.execute.call(this, data);
     };
     return MultiBuffSkillLogic;
-})(BuffSkillLogic);
+}(BuffSkillLogic));
 var MultiDebuffSkillLogic = (function (_super) {
     __extends(MultiDebuffSkillLogic, _super);
     function MultiDebuffSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     MultiDebuffSkillLogic.prototype.execute = function (data) {
         _super.prototype.execute.call(this, data);
@@ -9740,12 +9716,13 @@ var MultiDebuffSkillLogic = (function (_super) {
         _super.prototype.execute.call(this, data);
     };
     return MultiDebuffSkillLogic;
-})(DebuffSkillLogic);
+}(DebuffSkillLogic));
 var OnHitBuffSkillLogic = (function (_super) {
     __extends(OnHitBuffSkillLogic, _super);
     function OnHitBuffSkillLogic() {
-        _super.apply(this, arguments);
-        this.executionLeft = OnHitBuffSkillLogic.UNINITIALIZED_VALUE;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.executionLeft = OnHitBuffSkillLogic.UNINITIALIZED_VALUE;
+        return _this;
     }
     OnHitBuffSkillLogic.prototype.willBeExecuted = function (data) {
         if (this.executionLeft === OnHitBuffSkillLogic.UNINITIALIZED_VALUE) {
@@ -9772,12 +9749,13 @@ var OnHitBuffSkillLogic = (function (_super) {
     };
     OnHitBuffSkillLogic.UNINITIALIZED_VALUE = -1234;
     return OnHitBuffSkillLogic;
-})(BuffSkillLogic);
+}(BuffSkillLogic));
 var OnHitDebuffSkillLogic = (function (_super) {
     __extends(OnHitDebuffSkillLogic, _super);
     function OnHitDebuffSkillLogic() {
-        _super.apply(this, arguments);
-        this.executionLeft = OnHitDebuffSkillLogic.UNINITIALIZED_VALUE;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.executionLeft = OnHitDebuffSkillLogic.UNINITIALIZED_VALUE;
+        return _this;
     }
     OnHitDebuffSkillLogic.prototype.willBeExecuted = function (data) {
         var hasTarget = data.skill.range.hasValidTarget(data.executor);
@@ -9809,12 +9787,13 @@ var OnHitDebuffSkillLogic = (function (_super) {
     };
     OnHitDebuffSkillLogic.UNINITIALIZED_VALUE = -1234;
     return OnHitDebuffSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var ProtectCounterSkillLogic = (function (_super) {
     __extends(ProtectCounterSkillLogic, _super);
     function ProtectCounterSkillLogic() {
-        _super.call(this);
-        this.counter = true;
+        var _this = _super.call(this) || this;
+        _this.counter = true;
+        return _this;
     }
     ProtectCounterSkillLogic.prototype.execute = function (data) {
         var toReturn = this.executeProtectPhase(data);
@@ -9830,11 +9809,11 @@ var ProtectCounterSkillLogic = (function (_super) {
         return toReturn;
     };
     return ProtectCounterSkillLogic;
-})(ProtectSkillLogic);
+}(ProtectSkillLogic));
 var ProtectCounterDebuffSkillLogic = (function (_super) {
     __extends(ProtectCounterDebuffSkillLogic, _super);
     function ProtectCounterDebuffSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     ProtectCounterDebuffSkillLogic.prototype.execute = function (data) {
         var toReturn = _super.prototype.execute.call(this, data);
@@ -9845,11 +9824,11 @@ var ProtectCounterDebuffSkillLogic = (function (_super) {
         return toReturn;
     };
     return ProtectCounterDebuffSkillLogic;
-})(ProtectCounterSkillLogic);
+}(ProtectCounterSkillLogic));
 var ProtectReflectSkillLogic = (function (_super) {
     __extends(ProtectReflectSkillLogic, _super);
     function ProtectReflectSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     ProtectReflectSkillLogic.prototype.willBeExecuted = function (data) {
         var skill = data.skill;
@@ -9885,11 +9864,11 @@ var ProtectReflectSkillLogic = (function (_super) {
     };
     ProtectReflectSkillLogic.REFLECT_AFFLICTION_PROBABILITY = 0.2;
     return ProtectReflectSkillLogic;
-})(ProtectSkillLogic);
+}(ProtectSkillLogic));
 var RandomSkillLogic = (function (_super) {
     __extends(RandomSkillLogic, _super);
     function RandomSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     RandomSkillLogic.prototype.execute = function (data) {
         var randSkillsId = SkillDatabase[data.skill.id].randSkills;
@@ -9911,11 +9890,11 @@ var RandomSkillLogic = (function (_super) {
         }
     };
     return RandomSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var ReviveSkillLogic = (function (_super) {
     __extends(ReviveSkillLogic, _super);
     function ReviveSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     ReviveSkillLogic.prototype.willBeExecuted = function (data) {
         var hasValidTarget = data.skill.range.hasValidTarget(data.executor);
@@ -9938,11 +9917,11 @@ var ReviveSkillLogic = (function (_super) {
         }
     };
     return ReviveSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var SurviveSkillLogic = (function (_super) {
     __extends(SurviveSkillLogic, _super);
     function SurviveSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     SurviveSkillLogic.prototype.willBeExecuted = function (data) {
         var hpRatio = data.executor.getHpRatio();
@@ -9958,11 +9937,11 @@ var SurviveSkillLogic = (function (_super) {
         });
     };
     return SurviveSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var TurnOrderChangeSkillLogic = (function (_super) {
     __extends(TurnOrderChangeSkillLogic, _super);
     function TurnOrderChangeSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     TurnOrderChangeSkillLogic.prototype.willBeExecuted = function (data) {
         return _super.prototype.willBeExecuted.call(this, data) && !this.battleModel.turnOrderChanged;
@@ -9980,11 +9959,11 @@ var TurnOrderChangeSkillLogic = (function (_super) {
         });
     };
     return TurnOrderChangeSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var BasePassiveSkillLogic = (function (_super) {
     __extends(BasePassiveSkillLogic, _super);
     function BasePassiveSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     BasePassiveSkillLogic.prototype.willBeExecuted = function (data) {
         throw new Error("This is undefined for passive skills (except for extra turn passive and affliction passive)!");
@@ -9999,11 +9978,11 @@ var BasePassiveSkillLogic = (function (_super) {
         throw new Error("Implement this!");
     };
     return BasePassiveSkillLogic;
-})(SkillLogic);
+}(SkillLogic));
 var AfflictionPassiveSkillLogic = (function (_super) {
     __extends(AfflictionPassiveSkillLogic, _super);
     function AfflictionPassiveSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     AfflictionPassiveSkillLogic.prototype.getAfflictionPassive = function (executor, target, passiveSkill) {
         if (executor.rarity > target.rarity) {
@@ -10020,11 +9999,11 @@ var AfflictionPassiveSkillLogic = (function (_super) {
         }
     };
     return AfflictionPassiveSkillLogic;
-})(BasePassiveSkillLogic);
+}(BasePassiveSkillLogic));
 var AfflictionProbabilityBuffPassiveSkillLogic = (function (_super) {
     __extends(AfflictionProbabilityBuffPassiveSkillLogic, _super);
     function AfflictionProbabilityBuffPassiveSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     AfflictionProbabilityBuffPassiveSkillLogic.prototype.getEffectRatio = function (executor, target, passiveSkill) {
         if (executor.rarity > target.rarity) {
@@ -10035,11 +10014,11 @@ var AfflictionProbabilityBuffPassiveSkillLogic = (function (_super) {
         }
     };
     return AfflictionProbabilityBuffPassiveSkillLogic;
-})(BasePassiveSkillLogic);
+}(BasePassiveSkillLogic));
 var DamagePassiveSkillLogic = (function (_super) {
     __extends(DamagePassiveSkillLogic, _super);
     function DamagePassiveSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     DamagePassiveSkillLogic.prototype.getEffectRatio = function (executor, target, passiveSkill) {
         if (executor.rarity > target.rarity) {
@@ -10050,11 +10029,11 @@ var DamagePassiveSkillLogic = (function (_super) {
         }
     };
     return DamagePassiveSkillLogic;
-})(BasePassiveSkillLogic);
+}(BasePassiveSkillLogic));
 var DefensePassiveSkillLogic = (function (_super) {
     __extends(DefensePassiveSkillLogic, _super);
     function DefensePassiveSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     DefensePassiveSkillLogic.prototype.getEffectRatio = function (executor, attacker, passiveSkill) {
         if (executor.rarity > attacker.rarity) {
@@ -10065,17 +10044,17 @@ var DefensePassiveSkillLogic = (function (_super) {
         }
     };
     return DefensePassiveSkillLogic;
-})(BasePassiveSkillLogic);
+}(BasePassiveSkillLogic));
 var ExtraTurnPassiveSkillLogic = (function (_super) {
     __extends(ExtraTurnPassiveSkillLogic, _super);
     function ExtraTurnPassiveSkillLogic() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     ExtraTurnPassiveSkillLogic.prototype.willBeExecuted = function (data) {
         return Math.random() <= data.skill.skillFuncArg1;
     };
     return ExtraTurnPassiveSkillLogic;
-})(BasePassiveSkillLogic);
+}(BasePassiveSkillLogic));
 var SkillLogicFactory = (function () {
     function SkillLogicFactory() {
     }
@@ -10164,7 +10143,7 @@ var SkillLogicFactory = (function () {
         }
     };
     return SkillLogicFactory;
-})();
+}());
 var Skill = (function () {
     function Skill(skillId) {
         var skillData = SkillDatabase[skillId];
@@ -10468,7 +10447,7 @@ var Skill = (function () {
         }
     };
     return Skill;
-})();
+}());
 function getDamageCalculatedByATK(attacker, defender, ignorePosition) {
     var ATTACK_FACTOR = 0.3;
     var DIFF_FACTOR = 0.2;
@@ -18082,7 +18061,7 @@ var RangeFactory = (function () {
         420: [0.8, 0.9, 1, 1.1, 1.2],
     };
     return RangeFactory;
-})();
+}());
 var BaseRange = (function () {
     function BaseRange(id) {
         this.id = id;
@@ -18173,12 +18152,13 @@ var BaseRange = (function () {
             this.confuseProb = 0;
     };
     return BaseRange;
-})();
+}());
 var BothSidesRange = (function (_super) {
     __extends(BothSidesRange, _super);
     function BothSidesRange(id, selectDead) {
-        _super.call(this, id);
-        this.selectDead = selectDead;
+        var _this = _super.call(this, id) || this;
+        _this.selectDead = selectDead;
+        return _this;
     }
     BothSidesRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
@@ -18191,11 +18171,11 @@ var BothSidesRange = (function (_super) {
             (executor.formationColumn === card.formationColumn + 1 || executor.formationColumn === card.formationColumn - 1); };
     };
     return BothSidesRange;
-})(BaseRange);
+}(BaseRange));
 var SelfImmediateRightRange = (function (_super) {
     __extends(SelfImmediateRightRange, _super);
     function SelfImmediateRightRange() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     SelfImmediateRightRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
@@ -18207,11 +18187,11 @@ var SelfImmediateRightRange = (function (_super) {
             (executor.formationColumn === card.formationColumn || executor.formationColumn === card.formationColumn - 1); };
     };
     return SelfImmediateRightRange;
-})(BaseRange);
+}(BaseRange));
 var SelfImmediateLeftRange = (function (_super) {
     __extends(SelfImmediateLeftRange, _super);
     function SelfImmediateLeftRange() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     SelfImmediateLeftRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
@@ -18223,11 +18203,11 @@ var SelfImmediateLeftRange = (function (_super) {
             (executor.formationColumn === card.formationColumn || executor.formationColumn === card.formationColumn + 1); };
     };
     return SelfImmediateLeftRange;
-})(BaseRange);
+}(BaseRange));
 var RandomRange = (function (_super) {
     __extends(RandomRange, _super);
     function RandomRange() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     RandomRange.prototype.hasValidTarget = function (executor, condFunc) {
         var baseTargets = this.getBaseTargets(this.getCondFunc(executor));
@@ -18246,13 +18226,14 @@ var RandomRange = (function (_super) {
         return hasValid;
     };
     return RandomRange;
-})(BaseRange);
+}(BaseRange));
 var EnemyRandomRange = (function (_super) {
     __extends(EnemyRandomRange, _super);
     function EnemyRandomRange(id, numTarget) {
-        _super.call(this, id);
-        this.numTarget = numTarget;
-        this.isDuplicative = true;
+        var _this = _super.call(this, id) || this;
+        _this.numTarget = numTarget;
+        _this.isDuplicative = true;
+        return _this;
     }
     EnemyRandomRange.prototype.getReady = function (executor) {
         this.numProcessed = 0;
@@ -18267,11 +18248,11 @@ var EnemyRandomRange = (function (_super) {
         }
     };
     return EnemyRandomRange;
-})(RandomRange);
+}(RandomRange));
 var EitherSideRange = (function (_super) {
     __extends(EitherSideRange, _super);
     function EitherSideRange() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     EitherSideRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
@@ -18280,11 +18261,11 @@ var EitherSideRange = (function (_super) {
         }
     };
     return EitherSideRange;
-})(BothSidesRange);
+}(BothSidesRange));
 var RightRange = (function (_super) {
     __extends(RightRange, _super);
     function RightRange() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     RightRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
@@ -18296,12 +18277,13 @@ var RightRange = (function (_super) {
             (executor.formationColumn < card.formationColumn); };
     };
     return RightRange;
-})(BaseRange);
+}(BaseRange));
 var SelfRange = (function (_super) {
     __extends(SelfRange, _super);
     function SelfRange(id, selectDead) {
-        _super.call(this, id);
-        this.selectDead = selectDead;
+        var _this = _super.call(this, id) || this;
+        _this.selectDead = selectDead;
+        return _this;
     }
     SelfRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
@@ -18314,11 +18296,11 @@ var SelfRange = (function (_super) {
             executor.formationColumn === card.formationColumn; };
     };
     return SelfRange;
-})(BaseRange);
+}(BaseRange));
 var SelfBothSidesRange = (function (_super) {
     __extends(SelfBothSidesRange, _super);
     function SelfBothSidesRange() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     SelfBothSidesRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
@@ -18332,11 +18314,11 @@ var SelfBothSidesRange = (function (_super) {
                 executor.formationColumn === card.formationColumn - 1); };
     };
     return SelfBothSidesRange;
-})(BaseRange);
+}(BaseRange));
 var AllRange = (function (_super) {
     __extends(AllRange, _super);
     function AllRange() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     AllRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
@@ -18347,13 +18329,14 @@ var AllRange = (function (_super) {
         return function (card) { return !card.isDead && _this.isSameGroup(executor, card); };
     };
     return AllRange;
-})(BaseRange);
+}(BaseRange));
 var EnemyNearRange = (function (_super) {
     __extends(EnemyNearRange, _super);
     function EnemyNearRange(id, numTarget) {
-        _super.call(this, id);
-        this.numTarget = numTarget;
-        this.maxDistance = EnemyNearRange.MAX_DISTANCE_FROM_CENTER[numTarget];
+        var _this = _super.call(this, id) || this;
+        _this.numTarget = numTarget;
+        _this.maxDistance = EnemyNearRange.MAX_DISTANCE_FROM_CENTER[numTarget];
+        return _this;
     }
     EnemyNearRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
@@ -18395,28 +18378,29 @@ var EnemyNearRange = (function (_super) {
         5: 2
     };
     return EnemyNearRange;
-})(BaseRange);
+}(BaseRange));
 var EnemyAllRange = (function (_super) {
     __extends(EnemyAllRange, _super);
     function EnemyAllRange() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     EnemyAllRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
         this.targets = this.getBaseTargets(this.getCondFunc(executor));
     };
     return EnemyAllRange;
-})(BaseRange);
+}(BaseRange));
 var FriendRandomRange = (function (_super) {
     __extends(FriendRandomRange, _super);
     function FriendRandomRange(id, numTargets, selectDead) {
-        _super.call(this, id);
-        this.numTargets = numTargets;
-        this.selectDead = selectDead;
-        this.isUnique = RangeFactory.FRIEND_RANDOM_RANGE_TARGET_NUM[id];
-        this.includeSelf = RangeFactory.INCLUDE_SELF[id];
-        this.forcedSelf = RangeFactory.FORCED_SELF[id];
-        this.isDuplicative = !this.isUnique;
+        var _this = _super.call(this, id) || this;
+        _this.numTargets = numTargets;
+        _this.selectDead = selectDead;
+        _this.isUnique = RangeFactory.FRIEND_RANDOM_RANGE_TARGET_NUM[id];
+        _this.includeSelf = RangeFactory.INCLUDE_SELF[id];
+        _this.forcedSelf = RangeFactory.FORCED_SELF[id];
+        _this.isDuplicative = !_this.isUnique;
+        return _this;
     }
     FriendRandomRange.prototype.getReady = function (executor, skillCondFunc) {
         var baseTargets = this.getBaseTargets(this.getCondFunc(executor, skillCondFunc));
@@ -18471,11 +18455,11 @@ var FriendRandomRange = (function (_super) {
         };
     };
     return FriendRandomRange;
-})(RandomRange);
+}(RandomRange));
 var BaseRowRange = (function (_super) {
     __extends(BaseRowRange, _super);
     function BaseRowRange() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     BaseRowRange.prototype.getSameRowCards = function (cards, row) {
         var returnArr = [];
@@ -18510,11 +18494,11 @@ var BaseRowRange = (function (_super) {
     };
     BaseRowRange.ROW_TYPE_COUNT = 3;
     return BaseRowRange;
-})(BaseRange);
+}(BaseRange));
 var EnemyFrontMidAllRange = (function (_super) {
     __extends(EnemyFrontMidAllRange, _super);
     function EnemyFrontMidAllRange() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     EnemyFrontMidAllRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
@@ -18532,11 +18516,11 @@ var EnemyFrontMidAllRange = (function (_super) {
         this.targets = candidates;
     };
     return EnemyFrontMidAllRange;
-})(BaseRowRange);
+}(BaseRowRange));
 var EnemyFrontRearAllRange = (function (_super) {
     __extends(EnemyFrontRearAllRange, _super);
     function EnemyFrontRearAllRange() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     EnemyFrontRearAllRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
@@ -18554,11 +18538,11 @@ var EnemyFrontRearAllRange = (function (_super) {
         this.targets = candidates;
     };
     return EnemyFrontRearAllRange;
-})(BaseRowRange);
+}(BaseRowRange));
 var EnemyFrontAllRange = (function (_super) {
     __extends(EnemyFrontAllRange, _super);
     function EnemyFrontAllRange() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     EnemyFrontAllRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
@@ -18569,11 +18553,11 @@ var EnemyFrontAllRange = (function (_super) {
         this.targets = candidates;
     };
     return EnemyFrontAllRange;
-})(BaseRowRange);
+}(BaseRowRange));
 var EnemyMidAllRange = (function (_super) {
     __extends(EnemyMidAllRange, _super);
     function EnemyMidAllRange() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     EnemyMidAllRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
@@ -18584,11 +18568,11 @@ var EnemyMidAllRange = (function (_super) {
         this.targets = candidates;
     };
     return EnemyMidAllRange;
-})(BaseRowRange);
+}(BaseRowRange));
 var EnemyRearAllRange = (function (_super) {
     __extends(EnemyRearAllRange, _super);
     function EnemyRearAllRange() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     EnemyRearAllRange.prototype.getReady = function (executor) {
         _super.prototype.getReady.call(this, executor);
@@ -18599,14 +18583,15 @@ var EnemyRearAllRange = (function (_super) {
         this.targets = candidates;
     };
     return EnemyRearAllRange;
-})(BaseRowRange);
+}(BaseRowRange));
 var EnemyRowRandomRange = (function (_super) {
     __extends(EnemyRowRandomRange, _super);
     function EnemyRowRandomRange(id, numTargets, baseOnRangeType) {
-        _super.call(this, id);
-        this.numTargets = numTargets;
-        this.baseOnRangeType = baseOnRangeType;
-        this.isDuplicative = true;
+        var _this = _super.call(this, id) || this;
+        _this.numTargets = numTargets;
+        _this.baseOnRangeType = baseOnRangeType;
+        _this.isDuplicative = true;
+        return _this;
     }
     EnemyRowRandomRange.prototype.getReady = function (executor) {
         this.numProcessed = 0;
@@ -18623,28 +18608,28 @@ var EnemyRowRandomRange = (function (_super) {
         }
     };
     return EnemyRowRandomRange;
-})(RandomRange);
+}(RandomRange));
 var EnemyRearRandomRange = (function (_super) {
     __extends(EnemyRearRandomRange, _super);
     function EnemyRearRandomRange(id, numTargets) {
-        _super.call(this, id, numTargets, ENUM.SkillRange.ENEMY_REAR_ALL);
+        return _super.call(this, id, numTargets, ENUM.SkillRange.ENEMY_REAR_ALL) || this;
     }
     return EnemyRearRandomRange;
-})(EnemyRowRandomRange);
+}(EnemyRowRandomRange));
 var EnemyFrontRandomRange = (function (_super) {
     __extends(EnemyFrontRandomRange, _super);
     function EnemyFrontRandomRange(id, numTargets) {
-        _super.call(this, id, numTargets, ENUM.SkillRange.ENEMY_FRONT_ALL);
+        return _super.call(this, id, numTargets, ENUM.SkillRange.ENEMY_FRONT_ALL) || this;
     }
     return EnemyFrontRandomRange;
-})(EnemyRowRandomRange);
+}(EnemyRowRandomRange));
 var EnemyMidRearRandomRange = (function (_super) {
     __extends(EnemyMidRearRandomRange, _super);
     function EnemyMidRearRandomRange(id, numTargets) {
-        _super.call(this, id, numTargets, ENUM.SkillRange.ENEMY_MID_ALL);
+        return _super.call(this, id, numTargets, ENUM.SkillRange.ENEMY_MID_ALL) || this;
     }
     return EnemyMidRearRandomRange;
-})(EnemyRowRandomRange);
+}(EnemyRowRandomRange));
 function getRandomArbitary(min, max) {
     return Math.random() * (max - min) + min;
 }
@@ -18727,7 +18712,7 @@ function assert(condition, message) {
     }
 }
 var BattleModel = (function () {
-    function BattleModel(data, option, tierListString) {
+    function BattleModel(data, option) {
         if (option === void 0) { option = {}; }
         this.isBloodClash = false;
         this.isColiseum = false;
@@ -18770,7 +18755,7 @@ var BattleModel = (function () {
         this.p2RandomMode = option.p2RandomMode ? option.p2RandomMode : ENUM.RandomBrigType.NONE;
         this.player1 = new Player(1, "Player 1", new Formation(p1_formation), 1);
         this.player2 = new Player(2, "Player 2", new Formation(p2_formation), 1);
-        BrigGenerator.initializeBrigs(data, option, tierListString);
+        BrigGenerator.initializeBrigs(data, option);
         this.cardManager.sortAllCurrentMainCards();
         graphic.displayFormationAndFamOnCanvas();
         if (!BattleDebugger.IS_DEBUG_MODE) {
@@ -19385,4 +19370,886 @@ var BattleModel = (function () {
     BattleModel.MAX_TURN_NUM = 5;
     BattleModel._instance = null;
     return BattleModel;
-})();
+}());
+var TierList = {
+    'X+': [
+        'Aegir, the Roaring Sea II',
+        'Crassus, the Lion General II',
+        'Hel, Goddess of Woe II',
+        'Lancelot of the Lake II',
+        'Ortlinde, Silent Valkyrie II',
+        'Poliahu, the Mauna Kea',
+        'Sabnock, Marquis of Hell II',
+        'Thanatos, Death Incarnate II',
+        'Van, Shadow Hunter II',
+        'Zepar, Blood-Annointed II'
+    ],
+    X: [
+        'A\'shi, Pterorider II',
+        'Adranus, Lava Beast II',
+        'Amaterasu, Light of the Sun II',
+        'Amethyst Dragon II',
+        'Andras, the Slayer II',
+        'Arcanan Death II',
+        'Arcanan Fool II',
+        'Arcanan Star II',
+        'Arcanan Sun II',
+        'Arcanan Temperance II',
+        'Arcanan Terra II',
+        'Ares, God of Ruin II',
+        'Aspidochelone, the Iceberg II',
+        'Ausra, the Fall Breeze II',
+        'Azazel, the Temptress II',
+        'Azi Dahaka II',
+        'Banshee Rider II',
+        'Bastet, Cat Goddess',
+        'Beatrice, the Luminescent II',
+        'Beelzebub, Glutton King II',
+        'Belle, Grimoire Keeper II',
+        'Brine Drake',
+        'Camazo, Knight of Bats II',
+        'Champion of Aquarius II',
+        'Chicomecoatl, the Bountiful II',
+        'Dauntless Justice',
+        'Dionysus, the Reveler',
+        'Emerald Dragon II',
+        'Fafnir, Fireclad Dragon II',
+        'Fenrir, Vengeful Beast',
+        'Garshasp, the Juggernaut',
+        'Gorynich, Snow Dragon II',
+        'Gunhild, Brass Pincers II',
+        'Guillaume, Fanatic',
+        'He Qiong, the Transcendent II',
+        'Helen, Swan Queen II',
+        'Heracles, Mightiest of Men II',
+        'Horus, the Falcon God II',
+        'Huitzilopochtli, God of War II',
+        'Idun, the Golden Apple II',
+        'Ixtab, Guardian of the Dead II',
+        'Intrepid Hand of Mercury',
+        'Isabella, the Waterbrand',
+        'Kaikias, the Hail God',
+        'Ker, the Despair Diamond',
+        'Kokopelli Mana II',
+        'Kokuanten, the Ominous II',
+        'Kushinada, Shamaness II',
+        'Lady Tatsuta, the Mapleleaf II',
+        'Laned, the Piercing Fist II',
+        'Laola, Demiwyrm Spearbearer II',
+        'Lippy, Candymancer II',
+        'Liza, Blood-Anointed',
+        'Lu Bu, the Peerless',
+        'Maisie, Grimoire Keeper II',
+        'Maleficent Chimaera II',
+        'Medb, Jealous Queen II',
+        'Menelaus, Vengeful King',
+        'Michael, Steelclad Angel II',
+        'Mormo, Nightmare II',
+        'Nidhogg, Iceclad Dragon II',
+        'Nike, Goddess of Victory II',
+        'Odoa, the Scarecrow II',
+        'Oenone, the Hailstorm',
+        'Pallas, Goddess of Protection II',
+        'Peri, Spirit of Fire II',
+        'Persephone, Spring Goddess  II',
+        'Pomona, Grove Goddess II',
+        'Qing Nu, Snowweaver II',
+        'Rapunzel, Grimoire Keeper II',
+        'Rattlebolt Wyvern',
+        'Renenet, Goddess of Wealth',
+        'Scathach, Shadow Goddess II',
+        'Shackled Red Wyrm II',
+        'Silver Dragon II',
+        'Sir Galahad, Knight Champion II',
+        'Sir Gawain, Sun Knight II',
+        'Skeleton King II',
+        'Snegurochka II',
+        'Spartacus, Rebel Gladiator II',
+        'Strigoi, Undying Warrior II',
+        'Triton, Lord of the Sea II',
+        'Tyr, God of War II',
+        'Ulfhe, Sword-Shield Master II',
+        'Urom, Mummy Lizardman II',
+        'Vidar, the Iron Heel II',
+        'Virginal, Ice Queen',
+        'Vlad, Swap II',
+        'Walutahanga, Guardian Dragon',
+        'Wrath, Beast of Sin II',
+        'Zeruel Angel of War, Swap',
+        'Zhu Rong, the Blazing Storm'
+    ],
+    'S+': [
+        'Ah Puch, Lord of Death',
+        'Alyssa, Black Cat Witch II',
+        'Aletheia, Knight Templar II',
+        'Ammit, Soul Destroyer II',
+        'Amphion, Hymn of Death',
+        'Amphisbaena II',
+        'Ankou, Harbinger of Death II',
+        'Anneberg, Steel Steed II',
+        'Apate, Goddess of Deceit',
+        'Apep the Chaotic',
+        'Apollo, God of the Sun II',
+        'Apsara, Spirit of Water II',
+        'Arcanan Circle of Fate',
+        'Arcanan Daemon II',
+        'Arcanan Emperor II',
+        'Arcanan Empress II',
+        'Arcanan Hanged Man II',
+        'Arcanan Hermit II',
+        'Arcanan High Priestess II',
+        'Arcanan Judgment II',
+        'Arcanan Lovers II',
+        'Arcanan Moon II',
+        'Arcanan Might II',
+        'Ashlee Steamsaw II',
+        'Aso, the Asura',
+        'Baba Yaga II',
+        'Bandersnatch, Beast Divine II',
+        'Befana, the Moonless Night',
+        'Belial, Lord of Vices',
+        'Benjamina, Wild Turkey',
+        'Bercilak, Green Knight II',
+        'Bijan, the Comet',
+        'Blazing Drake',
+        'Brass Rabbit',
+        'Briar, Grimoire Keeper II',
+        'Caassimolar, the Chimera II',
+        'Calais, the Gale II',
+        'Captain Jed II',
+        'Captain Kidd II',
+        'Chanchu, Hermit II',
+        'Crystallus Rex II',
+        'Cu Chulainn, the Thunderbolt',
+        'Cursebone Pterosaur II',
+        'Dagon II',
+        'Diana, the Crescent Moon',
+        'Danniel, Golden Paladin II',
+        'Darkwind Wyvern',
+        'Decaying Dragon',
+        'Demonblade Countess',
+        'Discordia, Bringer of Ruin',
+        'Djinn of the Lamp II',
+        'Dryas, Centaur Knight II',
+        'Elsa, Undead Bride II',
+        'Empusa, the Death Scythe',
+        'Erupting Golem',
+        'Etain, Scalewing Faerie II',
+        'Feathered Drake',
+        'Fell Bonedrake Knight',
+        'Ferocious Siege Tower',
+        'Frost Bearwolf II',
+        'Gabrielle, Angel of Sky II',
+        'Galatea, Nereid II',
+        'Gargoyle Gatekeeper II',
+        'Garmr, Watchhound II',
+        'Ghislandi, the Unchained II',
+        'Gigantopithecus II',
+        'Gilgamesh the Bold II',
+        'Goliath, Titanic Warden',
+        'Gremory, the Vermilion Moon',
+        'Gryla, Swap II',
+        'Guardian of the Grove II',
+        'Hei Long, the New Moon',
+        'Hel, Goddess of Death II',
+        'Hellscale Theropod',
+        'Hippocamp II',
+        'Hippolyta, Amazon Queen II',
+        'Hollofernyiges II',
+        'Hypnos, Lord of Dreams II',
+        'Ijiraq the Brinicle II',
+        'Impregnable Iron Golem',
+        'Infernal Wyrm Warden',
+        'Intrepid Hand of Jupiter',
+        'Intrepid Hand of Neptune',
+        'Intrepid Hand of Uranus',
+        'Intrepid Hand of Venus',
+        'Jabberwock, Phantom Dragon II',
+        'Jarilo, God of Fertility',
+        'Julia, Centaur Eques II',
+        'Juno, Goddess of Affection II',
+        'Kapoonis, Thunder Magus II',
+        'Karna, the Red Eye II',
+        'Kibitsuhiko, Ogre Slayer II',
+        'Kotyangwuti, Spider Spirit II',
+        'Lachesis, the Measurer II',
+        'Lamashtu, Fell Goddess',
+        'Lava Dragon II',
+        'Long Nu, Sea Princess',
+        'Lucan, Eagle Knight II',
+        'Lucifuge, Infernal Premier',
+        'Luot, Scout II',
+        'Magdal, Dragonmaster II',
+        'Managarmr, the Frost Moon II',
+        'Manannan mac Lir II',
+        'Mammi, Hare of the Harvest II',
+        'Marraco, Crusted Wyrm II',
+        'Melek, the Black Peacock II',
+        'Microraptor II',
+        'Mielikki, Bear Rider II',
+        'Millarca, Lady of Thorns II',
+        'Muramasa, the Cursed Katana II',
+        'Musashi, the Twinblade II',
+        'Neith, Goddess of War II',
+        'Nephthys, Ruler of Death',
+        'Nimue, Lady of the Lake II',
+        'Niu Mo Wang II',
+        'Odin, God of Victory II',
+        'Oscar the Green II',
+        'Ovinnik, Hex Beast II',
+        'Paladin of Ophiuchus II',
+        'Paladin of Taurus II',
+        'Pasiphae, the Brass Bull II',
+        'Pegasus Knight II',
+        'Pele, Volcano Shamaness II',
+        'Perendon the Pure',
+        'Phantasmal Succubus II',
+        'Pontifex Antiquus II',
+        'Prismatic Wyvern',
+        'Queen of the Waspmen II',
+        'Qiong Qi, World Eater II',
+        'Raging Cetus',
+        'Rampant Lion II',
+        'Ravaging Hafgufa II',
+        'Ritho, King of the Giants II',
+        'Rongo, Moai Master II',
+        'Rusalka, Spirit of Water II',
+        'Ryaum, Hussar Captain II',
+        'Sachiel, Angel of Water II',
+        'Sagacious Treant II',
+        'Phantom Knight, the Vagabond II',
+        'Saizo, Phantom Ninja II',
+        'Samedi, Dark Necromancer II',
+        'Samhain, Night Trampler',
+        'Scirocco, Father of Winds II',
+        'Sea Serpent II',
+        'Sedna, the Frozen Sea II',
+        'Seimei, Onmyoji II',
+        'Sigurd, Dragonslayer II',
+        'Sigiled Corpse Beast II',
+        'Skadi, Goddess of Winter',
+        'Srak, Exorcist II',
+        'Susanoo, Rowdy God II',
+        'Svadilfari II',
+        'Takemikazuchi, the Lightning II',
+        'Tanba, Founder of the Ninja II',
+        'Tangata Manu, Withering Gale',
+        'Tannin, Sea Dragon II',
+        'Thor, the Roaring Thunder',
+        'Tricia, Cauldron Witch II',
+        'Twar, the Moonlit Night II',
+        'Tyche, Goddess of Glory',
+        'Uscias, the Claiomh Solais II',
+        'Ullr, Starshooter II',
+        'Urcagu, the Grinder',
+        'Vesta, Flame Witch II',
+        'Vlad the Impaler II',
+        'Waheela, Dire Wolf II',
+        'Waltraute, Valiant Valkyrie II',
+        'War Bear II',
+        'Xuan Wu II',
+        'Ymir, Primordial Giant II',
+        'Zahhak, Dragon Marshal II',
+        'Zaphkiel, the Blessed Rain',
+        'Zeruel, Angel of War II',
+        'Zuniga, Guard Captain II'
+    ],
+    S: [
+        'Acanthus, the Gilded Thorn II',
+        'Achilles, Fallen Hero II',
+        'Aengus, the Charitable II',
+        'Afanc, Beast of the Deep II',
+        'Agate, Gem Tamer II',
+        'Aipaloovik, Sacred Dragon II',
+        'Ales Darkblood II',
+        'Alluring Merrow II',
+        'All-Seeing Keeper II',
+        'Andromalius, Eater of Lies II',
+        'Anubis, Keeper of the Dead II',
+        'Apocalyptic Beast II',
+        'Arcanan Chariot II',
+        'Arcanan Magus II',
+        'Archbishop of the Deep II',
+        'Archduke Ose II',
+        'Atalanta, Fowler II',
+        'Baal, Thunder Lord of Hell II',
+        'Bai Suzhen, Lady of Scales II',
+        'Bella, the Dazzling Flower II',
+        'Bergel, Frost Magus II',
+        'Bheara, Wastestrider II',
+        'Botis, Dasher of Hopes II',
+        'Brang Two-Heads II',
+        'Caim, Death Seeker II',
+        'Canhel, Guardian Dragon II',
+        'Cap\'n Jolly, Sea Scourge II',
+        'Carl, Giant Knight II',
+        'Cat Sith Magus Master II',
+        'Cat Sith Warlord II',
+        'Cat Sith Whipmaster II',
+        'Chariot Hippocamp II',
+        'Chuchunya, Tundra Guardian II',
+        'Chione, Fallen Heroine II',
+        'Circe, Fallen Heroine II',
+        'Clockwork Pumpkin II',
+        'Clockwork Viper II',
+        'Cocytus Dragon II',
+        'Cyclops, the Rocky Cliff II',
+        'Danzo, Falcon Ninja II',
+        'Dasher, Battle Reindeer II',
+        'Deimos, Terror Spear II',
+        'Domini, Pest Controller II',
+        'Doppeladler II',
+        'Europa, Fallen Heroine II',
+        'Etain, Butterfly Tamer II',
+        'Fenghuang, Bird Divine II',
+        'Fenrir II',
+        'Freyr, God of the Harvest II',
+        'Gathgoic the Other II',
+        'Gevi, Crystal Troll Master II',
+        'Grigo, Hobgoblin Slicer II',
+        'Gryla, the Lullaby II',
+        'Hagen, Dueling King II',
+        'Hash, Lizardman Cannoneer II',
+        'Hatshepsut, Mummy Queen II',
+        'Heinrich the Bold II',
+        'Hellawes, Fetter Witch II',
+        'Hermine, High Priestess II',
+        'Hina, Flame Serpent II',
+        'Hlokk, Blade of Thunder II',
+        'Hoska, the Firestroke II',
+        'Hundred-eyed Warrior II',
+        'Icarus, Fallen Hero II',
+        'Infested Cyclops II',
+        'Ishtar, Goddess of Love II',
+        'Jack o\' Frost II',
+        'Joro-gumo II',
+        'Kalevan, Swap II',
+        'Kekro, Demiwyrm Magus II',
+        'Koroku, the Death Stinger II',
+        'Kosuke, Master Ninja II',
+        'Lenore, the Sly Fox II',
+        'Loki, God of Cunning',
+        'Madprowl Lynx II',
+        'Magdal Dragonheart II',
+        'Malebranche, the Chimera II',
+        'Marchosias, Pit Beast II',
+        'Medea, Vengeful Queen II',
+        'Midas, the Wailing King II',
+        'Minerva, Goddess of War II',
+        'Minos, Judgment King II',
+        'Mizuchi, the Raging Storm II',
+        'Moloch, Soul Reaper II',
+        'Momoso, Pheasant Tamer II',
+        'Muspell, Giant Knight II',
+        'Negafok, Reindeer Rider II',
+        'Nicola, the Poison Fly II',
+        'Nyx, the Dark Wing II',
+        'Olan, Tricky Succubus II',
+        'Ollpheist II',
+        'Oka, Kunoichi II',
+        'Okypete, the Swiftwing II',
+        'Pagos, Camel Cavalryman II',
+        'Pakal, Jade King II',
+        'Pandora, Fallen Heroine II',
+        'Paladin of Aquarius II',
+        'Paladin of Cancer II',
+        'Paladin of Gemini II',
+        'Paladin of Leo II',
+        'Paladin of Sagittarius II',
+        'Paladin of Scorpio II',
+        'Paladin of Virgo II',
+        'Paris, Trueshot II',
+        'Peg Powler II',
+        'Pelops, Fallen Hero II',
+        'Peony, the Jiang Shi II',
+        'Petsuchos Minister II',
+        'Phlox, Avern Witch II',
+        'Premyslid, the Black King II',
+        'Ragnelle, the Moonlight II',
+        'Rovn, the Brass Panzer II',
+        'Scathing Hierophant',
+        'Scorching Marid II',
+        'Seismo Worm',
+        'Set, God of the Sands II',
+        'Sinbad the Adventurer II',
+        'Sir Brandiles, the Flameblade II',
+        'Sir Oliver, the Golden Sword II',
+        'Stalo, Glacial Giant II',
+        'Sugaar, the Thunderstorm II',
+        'Takshaka, Serpent King II',
+        'Telluric Drake II',
+        'Thunderbird II',
+        'Tiamat, Mother of Dragons II',
+        'Thoth, Hieroglypher II',
+        'Tormented Bone Beast II',
+        'Vepar, the Roiling Sea II',
+        'Vezat, Dragonbone Warrior II',
+        'Vivian Griffinrider II',
+        'Void Yaksha II',
+        'Vucub Caquix, the Barbarian II',
+        'Wang Yi, Lady of Iron II',
+        'Wicker Man II',
+        'Wolfert, Grave Keeper II',
+        'Wyrm Warden, Everwakeful II',
+        'Wyvern Gemwarden II',
+        'Yae, the Night Flower II'
+    ],
+    'A+': [
+        'Abyssal Rahab II',
+        'Aeneas, Fallen Hero II',
+        'Aeshma, the Tyrant II',
+        'Adara Luck Shot II',
+        'Adara Luck Shot, Swap II',
+        'Agathos, Wyrm of the Harvest II',
+        'Ain, Squirrel-back Faerie II',
+        'Aipaloovik, the Snowstorm II',
+        'Alberich, the Ceratophrys II',
+        'Alcina the Soulsucker II',
+        'Allocer, Great Duke of Hell II',
+        'Alp, Dynast of Darkness II',
+        'Amazon Berserker II',
+        'Ame no Uzume, the Lure II',
+        'Ancient Beetle Soldier II',
+        'Ancient Tree Golem II',
+        'Antaeus, Giant II',
+        'Asena, Wolfwoman II',
+        'Aslaug, the Lyre Bow II',
+        'Autolycus, Shrewd Warrior II',
+        'Azan, the Dragon Bone II',
+        'Badalisc, the Gourmet II',
+        'Bayam II',
+        'Belisama, Flame Goddess II',
+        'Brangane, the Enchanting II',
+        'Brass Tarantula II',
+        'Bronzeclad Hyena II',
+        'Caparisoned Barometz II',
+        'Cat Sith Swordswoman II',
+        'Cegila, Dragonian Incantator II',
+        'Charon, Greedy Ferryman II',
+        'Charybdis II',
+        'Chi-Hu II',
+        'Crystalwing Roc II',
+        'Delphyne, Thunder Dragon II',
+        'Dong, the Bloody Claw II',
+        'Druj Nasu, the Impure II',
+        'Dryad Archer II',
+        'Dunkleosteus, the Rendmaw II',
+        'Ebon Dragon II',
+        'Eric, Bloodaxe King II',
+        'Eros, the Golden Arrow II',
+        'Ettin II',
+        'Feng, Sanjiegun Master II',
+        'Fergus, Bold King II',
+        'Flame Dragon II',
+        'Fleetfoot Ornithomimus II',
+        'Figgo, Executioner II',
+        'Freyja, Earth Goddess II',
+        'Frostscale Plesiosaur II',
+        'Garuda II',
+        'Ghost Carriage Express II',
+        'Gilles, Mad Knight II',
+        'Gog, Giant II',
+        'Halphas, Earl of Hell II',
+        'Haokah, the Lightning Brave II',
+        'Hati, Icetail Wolf II',
+        'Hecatoncheir Rimetouch II',
+        'Hecatoncheir the Adamantine II',
+        'Hippogriff of Rites II',
+        'Hraesvelg, Corpse Feaster II',
+        'Hercinia the Blest II',
+        'Infested Minotaur II',
+        'Inhabited Ghost Ship II',
+        'Ira, Hypnotic Specter II',
+        'Iridescent Chalchiuhtotolin II',
+        'Ivy the Verdant II',
+        'Jarn, the Bladed Wolf II',
+        'Jason, Fallen Hero II',
+        'Jinx-eye Dragon II',
+        'Jormungandr, World Serpent II',
+        'Kagemaru, Master Ninja II',
+        'Kalevan, the Forest Green II',
+        'Kangana, the Maelstrom II',
+        'Kua Fu, Sun Chaser II',
+        'Kyteler the Corrupted II',
+        'Leupold, Wyvern Knight II',
+        'Linnorm, the Hailstorm II',
+        'Ljung, the Wrecker II',
+        'Long Feng, the Dragon Fist II',
+        'Louise, Twilight Swordswoman II',
+        'Lubberkin, Four Leaf Clover II',
+        'Magog, Giant II',
+        'Mammon, Raven Claw II',
+        'Marcus, Brave of Liberation II',
+        'Marsyas, the Cursed Flute II',
+        'Mathilda the Tarantula II',
+        'Melanippe, Wolfrider II',
+        'Moni the Dismemberer II',
+        'Montu, God of War II',
+        'Najeeba, the Mapleblade II',
+        'Narmer, Mummy King II',
+        'Nehasim the Seething II',
+        'Nergal, Abyssal Overseer II',
+        'Nin-Ridu',
+        'Olitiau, the Great Bat II',
+        'Orpheus, Fallen Hero II',
+        'Paladin of Aries II',
+        'Paladin of Capricorn II',
+        'Paladin of Pisces II',
+        'Palamedes, the Hawk\'s Eye II',
+        'Pazuzu, the Whirling Jinn II',
+        'Phoenix, the Metempsychosis II',
+        'Pixiu, the Wealthy II',
+        'Pollux, Fallen Hero II',
+        'Pumpkin Hangman II',
+        'Ragnar, Dragonslayer II',
+        'Rapse, the Bloody Horns II',
+        'Reinforced Gem Golem II',
+        'Ruprecht the Punisher II',
+        'Rustom, Zombie Ape II',
+        'Ruyi Zhenxian, the Ferocious II',
+        'Sasquatch Sweet Tooth II',
+        'Selkie, Lady of the Shore II',
+        'Sera, Exorcist II',
+        'Siby, Sea Seer II',
+        'Sigiled Skeleton Axeman II',
+        'Sihn, Moonlight King II',
+        'Shisen, the Flitting Bolt II',
+        'Simurgh, Bird Divine II',
+        'Skoll, Dark Wolf II',
+        'Skrimsl the Freezing II',
+        'Snow Queen II',
+        'Soura, Inferno Shaman II',
+        'Suan Ni II',
+        'Surtr the Fervent II',
+        'Taromaiti, Fallen Goddess II',
+        'Thundering Pterosaur II',
+        'Tomoe, the Lightning Arrow II',
+        'Tristan the Sorrowful II',
+        'Typhon II',
+        'Vafthruthnir, Elder Giant II',
+        'Valin the Terrible II',
+        'Vengeful Siege Horse II',
+        'Venusia, the Grace II',
+        'Wepwawet, the Vanguard II',
+        'Xaphan, the Foul Flame II',
+        'Yule Goat, Death Bringer II'
+    ],
+    A: [
+        'Anne, the Whirlwind II',
+        'Amon, Marquis of Blaze II',
+        'Astaroth, Duke of Fear II',
+        'Aurboda, the Great Mother II',
+        'Ausguss, Jailer II',
+        'Balgo, the Cursed Flame II',
+        'Batraz, the Immortal Hero II',
+        'Bennu, the Sun Bird II',
+        'Cat Sith Chillweaver II',
+        'Cuelebre the Ironscaled II',
+        'Dagr Sunrider II',
+        'Dein, Silent Bomber II',
+        'Desna, Mythic Wendigo II',
+        'Dharva Fangclad II',
+        'Dors, Demiwyrm Warrior II',
+        'Edgardo, Grand Inquisitor II',
+        'Eton, Eater of Darkness II',
+        'Flesh Collector Golem II',
+        'Gaiuz, Crashing Wave II',
+        'Gorlin Gold Helm II',
+        'Grandor, Giant of Old II',
+        'Gregory, the Masked Slayer II',
+        'Grellas Fellstaff II',
+        'Griffin Mount II',
+        'Hamad, the Sweeping Wind II',
+        'Hereward, Storm of Arrows II',
+        'Huan, Doomcaller II',
+        'Ijiraq, the Glacier II',
+        'Ioskeha',
+        'Iseult the Redeemer II',
+        'Jack, the Rusty II',
+        'Khepri, the Morning Sun II',
+        'Kijin, Heavenly Maiden II',
+        'Kobold Guard Captain II',
+        'Lahamu, Royal Viper II',
+        'Lanvall, Lizard Cavalier II',
+        'Latona, Wolfwoman II',
+        'Lucia, Petal-Shears II',
+        'Managarmr Frost Touch II',
+        'Mauthe Doog II',
+        'Nightblade, Archsage of Winds II',
+        'Odin Stormgod II',
+        'Onra, Ogre Lord II',
+        'Oniroku the Slayer II',
+        'Paladin of Libra II',
+        'Palna, the Vanguard II',
+        'Ramiel, Angel of the Storm II',
+        'Rasiel, Angel All-Knowing II',
+        'Reinforced Brass Gorilla II',
+        'Regin, the Brass Mantis II',
+        'Rohde, the Rose Thorn II',
+        'Saurva, the Lawless Lord II',
+        'Sekhmet Aflame II',
+        'Selk, Desert King II',
+        'Solsten the Really Wanted II',
+        'Spellforged Cyclops II',
+        'Taotie, the Gluttonous II',
+        'Tawiscara',
+        'Veigr, Under-watch Captain II',
+        'Venomhorn Karkadann II',
+        'Zagan II'
+    ],
+    B: [
+        'Agathos, the Ruinous II',
+        'Andorra the Indomitable II',
+        'Behemoth, Thunder Beast II',
+        'Bert, Foe Sweep II',
+        'Biast II',
+        'Black Knight, Soul Hunter II',
+        'Bolus, the Blue Bolt II',
+        'Borivoi, the Black Prince II',
+        'Botis, Earl of Hell II',
+        'Brass Snow-Leopard II',
+        'Bunga, the Stalwart II',
+        'Camael, Angel of Destruction II',
+        'Cassandra, the Tragic II',
+        'Cernunnos II',
+        'Charon, Darksun Ferryman II',
+        'Chaotic Magma Giant II',
+        'Chiyome, the Kamaitachi II',
+        'Chuchunya, Iceberg Breaker II',
+        'Crystal Gillant II',
+        'Dantalion, Duke of Hell II',
+        'Dark-Imbued Siege Horse II',
+        'Deborah, Knight Immaculate II',
+        'Denki the Raven II',
+        'Dire Bat Pegasus II',
+        'Douma, Bonze of the Dark II',
+        'Farwal the Glutton II',
+        'Evil Eye II',
+        'Fiendish Bat Demon II',
+        'Fimbul Frostclad II',
+        'Figgo, Torturer II',
+        'Fionn, the Meteor Sword II',
+        'Fomor the Savage II',
+        'Freila the Bountiful II',
+        'Gangaruda the Destroyer II',
+        'Ghislandi, Iron Heart II',
+        'Gilbert, Moth Handler II',
+        'Goviel, Hail Knight II',
+        'Gretch, Chimaera Mistress II',
+        'Griflet, Falcon Knight',
+        'Grim Executioner II',
+        'Grimoire Beast II',
+        'Hawke, Fleet Admiral II',
+        'Hrimthurs the Blizzard II',
+        'Hyacinth, the Death Dealer II',
+        'Icemelt Dragon II',
+        'Ignis Fatuus II',
+        'Infested Peryton II',
+        'Iron Golem II',
+        'Jaguar Guardian II',
+        'Kelaino, the Dark Cloud II',
+        'Lenore, the False II',
+        'Libuse, the Black Queen II',
+        'Ma-Gu the Enlightened II',
+        'Mammi, Spiritmancer II',
+        'Mari the Witch',
+        'Marsyas, Calamity Caller II',
+        'Melusine the Witch II',
+        'Merman Wave Rider II',
+        'Mizuchi, the Maelstrom II',
+        'Moloch, the Infernal Axe II',
+        'Moren, Rime Mage II',
+        'Ninurta, the Thunderclap II',
+        'Phantom Assassin II',
+        'Sir Bedwyr of the Garden II',
+        'Slagh, Carnage Incarnate II',
+        'Specter of the Mirror II',
+        'Steamwork Dragon',
+        'Sulima, Executioner II',
+        'Tangata Manu',
+        'Tepaxtl, Fatal Fang II',
+        'Thor, God of Lightning II',
+        'Twar, Ghost Archmage II',
+        'Two-Headed Stormwyrm II',
+        'Undead General, Hydarnes II',
+        'Ushabti II',
+        'Vucub Caquix, the Dark Wing II',
+        'Wu Chang the Infernal II',
+        'Yule Goat, the Blood-Stained II',
+        'Yulia, Snakesage II'
+    ],
+    C: [
+        'Adonis the Bard II',
+        'Aegis, the Bulwark',
+        'Ahab, the Colossal Anchor II',
+        'Almase the Gelid II',
+        'Alp, the Dead of Night II',
+        'Alviss, the Dismantler II',
+        'Amazon Warfist II',
+        'Antiope of the Axe II',
+        'Arachnaea the Divine II',
+        'Argos II',
+        'Artemisia Swiftfoot II',
+        'Attis the Amazonite Warrior II',
+        'Badrigo the Diamond Sword II',
+        'Baklus of Viper Armor II',
+        'Bare-Branch Treant II',
+        'Beheading Scarecrow II',
+        'Beguiling Succubus II',
+        'Black Cat Knight II',
+        'Bheara, Tree of Death II',
+        'Boudica, the Dawn Chief II',
+        'Brownies, the Uproarious II',
+        'Buraq, the Mourning II',
+        'Caim, the Dark Plume II',
+        'Cat Sith Leopard Queen II',
+        'Catoblepas Groundgazer II',
+        'Celestial Kirin II',
+        'Chanoir, the Crimson Scythe II',
+        'Chikagoro, Master Samurai II',
+        'Coco, Gorilla Bandit Chief II',
+        'Culann, Raving Gravekeeper II',
+        'Cursed Inugami II',
+        'Cursed Pumpkin Golem II',
+        'Dark Hrimthurs II',
+        'Depraved Satyr II',
+        'Dharva, the Shadowmoon II',
+        'Diaochan the Bewitching II',
+        'Diamond Guivre II',
+        'Donga the Exterminator II',
+        'Dovin, Bounty Mistress II',
+        'Earl Cat Sidhe II',
+        'Empusa the Alluring II',
+        'Enkidu the Invincible II',
+        'Enz Rumblefoot II',
+        'Esmereldathe Cunning II',
+        'Fafnir, Fire Dragon II',
+        'Flamel, Evil-eyed Alchemist II',
+        'Flauros, Duke of Leopards II',
+        'Furiae, the Fury II',
+        'Gazal the Emerald Arrow II',
+        'Gazer, the Tyrant\'s Eye II',
+        'Galahad, Drake Knight II',
+        'Golad the Mighty II',
+        'Golden Fur Gullinbursti II',
+        'Gorgon II',
+        'Granados, Lion King II',
+        'Gregoire, Weaponmaster II',
+        'Grendel the Cruel II',
+        'Guerson, Thunder Mage II',
+        'Hagen, Mad King II',
+        'Haokah, the Darkthunder II',
+        'Havers the Jade II',
+        'Heavy Automaton II',
+        'Hellfire Anzu II',
+        'Hervor, the Cursed Blade II',
+        'Hilde the Sapphire Talons II',
+        'Hippelaphe Thrallsong II',
+        'Hogni Ruinblade II',
+        'Houdi, the Illusory Flame II',
+        'Hydra II',
+        'Iamek, the Thunderstroke II',
+        'Iapetus the Earthquake II',
+        'Ibicella, Slaughter II',
+        'Ironstone Girtablilu II',
+        'Isegrim, the Lone Wolf II',
+        'Jeanne, Knight Templar II',
+        'Katiria Nullblade II',
+        'Kosche, the Scorching II',
+        'Kua Fu, the Eclipse II',
+        'Kuki, Pirate Busho II',
+        'Lahmu, Snake King II',
+        'Lailoken, Vile Magus II',
+        'Lamassu the Merciful II',
+        'Leon, Chaos Chanter II',
+        'Li Zhi, the Tiger\'s Roar II',
+        'Lia, Gladiator II',
+        'Lilith, the Night Witch II',
+        'Lindworm, the Black Rose II',
+        'Lycaon, Wolf King II',
+        'Macaca, the Headlong II',
+        'Makalipon, Sacred Fruit II',
+        'Master Zeku II',
+        'Marcus, Blood Warrior II',
+        'Maxe, the Ballista II',
+        'Moh Shuvuu, the Dread Bride II',
+        'Monos, Lesser Skull Ape',
+        'Mordred, Drake Knight',
+        'Mummy ++',
+        'Mummy II ++',
+        'Mystic Idol ++',
+        'Mystic Idol II ++',
+        'Naberius II',
+        'Narluce, Steel Knight II',
+        'Nessus, Centaur Gaoler II',
+        'Nicola, Corpse Handler II',
+        'Nidhogg, Ice Dragon II',
+        'Nightmare Charger II',
+        'Nine-tailed Fox II',
+        'Nuadha, the Shining Blade II',
+        'Oberon, Faerie King II',
+        'Oedipus, Tragic King II',
+        'Onyx Roc II',
+        'Ogre Marrowwalki II',
+        'Onra, Ogre of Darkness',
+        'Okypete, the Night Breeze II',
+        'Orthros',
+        'Pabilsag Venomclaw II',
+        'Pan of the Flute II',
+        'Paracelsus, Venomdagger II',
+        'Pazuzu, the Fiery One II',
+        'Peluda the Poison Flame II',
+        'Pendragon, the Scourge II',
+        'Petsuchos Executioner II',
+        'Phineus, the Augur King II',
+        'Pouliquen, Archibishop II',
+        'Prince Asterios II',
+        'Princeps, Angel of Doom II',
+        'Prowling Keeper II',
+        'Queen Echidna II',
+        'Qiong Qi, Man Eater II',
+        'Randolph the Crazed II',
+        'Ran, Phantom Killer II',
+        'Roksva, Jewel Master II',
+        'Rudolph, Spirit Warrior II',
+        'Santa, Bringer of Death II',
+        'Scylla II',
+        'Seiten Taisei II',
+        'Set, the Shadowstorm II',
+        'Sevia the Keen II',
+        'Shackled White Wyrm',
+        'Sigiled Ghost Knight II',
+        'Sir Kay the Golden Bat II',
+        'Sir Morholt, Everduelist II',
+        'Sphinx, Deathwatcher II',
+        'Skrimsl, Crystal Eternal II',
+        'Sun-God Lugh II',
+        'Surtr the Ashen II',
+        'Suzuka, Bandit Chief II',
+        'Talos',
+        'Tametomo, Master Archer II',
+        'Taromaiti, Depraved Queen II',
+        'Telida, the Goldback II',
+        'Tlahuizcal, the Calamity II',
+        'Tulok, Icebreaker II',
+        'Tuniq, Guardian Colossus II',
+        'Twintail Sandwalker II',
+        'Unbound Gargoyle II',
+        'Unbound Gem Golem II',
+        'Unicorn, Spirit Eater II',
+        'Uorko Maneater II',
+        'Vengeful Rattlebones II',
+        'Vepar, the Perpetual Night II',
+        'Wailing Banshee II',
+        'Wledic, Guard Captain II',
+        'Wynde, Dragonslayer II',
+        'Xaphan, the Shadow Wing II',
+        'Xin Lon, The Blue Dragon II',
+        'Yale, Avatar of the Forest II',
+        'Zabbak the Eight-Sickles II',
+        'Ziraiya, Master Ninja II',
+        'Ziz, Wings Divine II',
+        'Zombie Dragon II',
+        'Zorg, the Cruncher II'
+    ]
+};
