@@ -1,0 +1,44 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+</head>
+<body>
+	<h1> Change Genshin's wish format to comma delimited format </h1>
+	Input: <textarea id="input" rows="50" cols="60"></textarea>
+
+	Output: <textarea id="output" rows="50" cols="60"></textarea>
+
+	<script>
+		var oldVal;
+
+		// Look for changes in the value
+		$('#input').bind("propertychange keyup input paste", function(event){
+			var elem = $(this);
+			// If value has changed...
+			if (oldVal != elem.val()) {
+				// Updated stored value
+				oldVal = elem.val();
+				
+				// Do action
+				var lines = oldVal.split("\n");
+				var result = '';
+				for (var i = 0; i < lines.length; i++) {
+					if (i % 3 == 0) {
+						result += lines[i];
+					}
+					else {
+						result += ';' + lines[i];
+					}
+				
+					if (i % 3 == 2) {
+						result += '\n';
+					}
+				}
+				
+				$('#output').val(result);
+			}			
+		});
+	</script>
+</body>
+</html>
