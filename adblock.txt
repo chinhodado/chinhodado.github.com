@@ -1,0 +1,10 @@
+[Adblock Plus 2.0]
+! Title: Brave block list
+! Author: Chin
+! Version: 0.1
+! Expires: 1 days
+! Description: Filters to fix advertisements 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! This is a comment
+||diagramjawlineunhappy.com^
+||tessaragair.top^
